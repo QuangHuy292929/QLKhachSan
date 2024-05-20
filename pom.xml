@@ -1,0 +1,32 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+	
+	<groupId>com.example</groupId>
+    <artifactId>QuanLyKhachSan</artifactId>
+    <version>1.0-SNAPSHOT</version>
+    <packaging>jar</packaging>
+
+    <dependencies>
+        <!-- Thêm các phụ thuộc của dự án ở đây -->
+        <!-- gson -->
+        <dependency>
+            <groupId>com.google.code.gson</groupId>
+            <artifactId>gson</artifactId>
+            <version>2.8.9</version>
+        </dependency>
+        <!-- biểu đồ -->
+        <dependency>
+        <groupId>org.jfree</groupId>
+        <artifactId>jfreechart</artifactId>
+        <version>1.5.3</version>
+    	</dependency>
+    	<!-- soạn mail -->
+    	<dependency>
+    	<groupId>com.sun.mail</groupId>
+    	<artifactId>jakarta.mail</artifactId>
+    	<version>2.0.1</version>
+</dependency>
+    </dependencies>
+    
+</project>
