@@ -1,5 +1,5 @@
 package controller;
-import java.awt.CardLayout;  
+import java.awt.CardLayout;   
 import java.awt.Color;   
 
 import javax.swing.JPanel;
@@ -17,6 +17,7 @@ public class PhongManager extends Thread {
     private pn_Danghoatdong hoatdong;
     private JPanel panelhienthi;
     private CardLayout layout;
+   
 
     public PhongManager(Phong phong, JPanel panelPhong, CardLayout layout, pn_Datphong datphong, pn_Choxacnhan xacnhan,
 			pn_Danghoatdong hoatdong, JPanel panelhienthi) {
@@ -26,6 +27,7 @@ public class PhongManager extends Thread {
 		this.datphong = datphong;
 		this.xacnhan = xacnhan;
 		this.hoatdong = hoatdong;
+		
 	}
         
 

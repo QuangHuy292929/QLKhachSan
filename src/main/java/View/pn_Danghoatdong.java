@@ -1,6 +1,6 @@
 package View;
 
-import java.awt.Dimension;        
+import java.awt.Dimension;         
 
 import javax.swing.JPanel;
 import javax.swing.border.BevelBorder;
@@ -25,14 +25,13 @@ import javax.swing.border.TitledBorder;
 import javax.swing.border.EtchedBorder;
 import java.awt.Color;
 import javax.swing.JTextField;
-import javax.net.ssl.SSLSession;
+
 import javax.swing.ImageIcon;
 
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 
-import org.jfree.chart.JFreeChart;
 
 import java.awt.BorderLayout;
 import javax.swing.JComboBox;
@@ -72,7 +71,7 @@ public class pn_Danghoatdong extends JPanel {
 	/**
 	 * Create the panel.
 	 */
-	public pn_Danghoatdong(Phong phong, Giaodien view) {
+	public pn_Danghoatdong(Phong phong, UserUI view) {
 		
 		
 		

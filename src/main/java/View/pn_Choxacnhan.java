@@ -51,7 +51,7 @@ public class pn_Choxacnhan extends JPanel {
 	/**
 	 * Create the panel.
 	 */
-	public pn_Choxacnhan(Phong phong, pn_Danghoatdong hoatdong, Giaodien view) {
+	public pn_Choxacnhan(Phong phong, pn_Danghoatdong hoatdong, UserUI view) {
 
 		setPreferredSize(new Dimension(947, 742));
 		setLayout(null);

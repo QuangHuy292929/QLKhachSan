@@ -1,6 +1,6 @@
 package View;
 
-import javax.swing.JPanel;   
+import javax.swing.JPanel;    
 import javax.swing.JScrollPane;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -49,7 +49,7 @@ public class Bill extends JDialog {
 	/**
 	 * Create the panel.
 	 */
-	public Bill(Phong phong, Giaodien view) {
+	public Bill(Phong phong, UserUI view) {
 
 		getContentPane().setLayout(null);
 		setSize(564, 800);

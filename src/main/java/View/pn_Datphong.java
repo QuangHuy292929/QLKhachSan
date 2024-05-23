@@ -63,7 +63,7 @@ public class pn_Datphong extends JPanel {
 	private Calendar calendar;
 	
 
-	public pn_Datphong(Phong phong, pn_Choxacnhan xacnhan, pn_Danghoatdong hoatdong, Giaodien view) {
+	public pn_Datphong(Phong phong, pn_Choxacnhan xacnhan, pn_Danghoatdong hoatdong, UserUI view) {
 		setPreferredSize(new Dimension(947, 742));
 		setLayout(null);
 		
