@@ -49,7 +49,7 @@ public class Bill extends JDialog {
 	/**
 	 * Create the panel.
 	 */
-	public Bill(Phong phong, UserUI view) {
+	public Bill(Phong phong, ManagerUI view) {
 
 		getContentPane().setLayout(null);
 		setSize(564, 800);

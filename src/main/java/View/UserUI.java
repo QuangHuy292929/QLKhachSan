@@ -1,6 +1,6 @@
 package View;
 
-import java.awt.EventQueue;         
+import java.awt.EventQueue;          
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -80,13 +80,7 @@ public class UserUI extends JFrame {
         Font font = new Font("Roboto", Font.BOLD, 22);
         Font font2 = new Font("Roboto",Font.CENTER_BASELINE, 18);
         String svaddress = "";
-        try {
-			socket = new Socket(svaddress, 8000);
-			in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-			out = new PrintWriter(socket.getOutputStream(), true);
-		} catch (IOException e) {
-			System.out.println("Kết nối không thành công");
-		}
+        
         
 		ArrayList<PhongManager> quanLyPhong = new ArrayList<PhongManager>();
 		this.setVisible(true);
@@ -94,11 +88,11 @@ public class UserUI extends JFrame {
 		this.setLocationRelativeTo(null);
 		getContentPane().setLayout(null);
 
-		JPanel pn_menu = new JPanel();
-		pn_menu.setBackground(new Color(255, 255, 255));
-		pn_menu.setBorder(new BevelBorder(BevelBorder.LOWERED, new Color(0, 255, 255), null, null, null));
-		pn_menu.setBounds(10, 10, 211, 742);
-		getContentPane().add(pn_menu);
+		JPanel pn_button = new JPanel();
+		pn_button.setBackground(new Color(255, 255, 255));
+		pn_button.setBorder(new BevelBorder(BevelBorder.LOWERED, new Color(0, 255, 255), null, null, null));
+		pn_button.setBounds(10, 10, 211, 742);
+		getContentPane().add(pn_button);
 		
 		pn_hoatdong = new JPanel();
 		pn_hoatdong.setBounds(231, 10, 947, 742);
@@ -118,22 +112,32 @@ public class UserUI extends JFrame {
 				cardhd.show(pn_hoatdong, "anhTrangchu");
 			}
 		});
-		pn_menu.setLayout(null);
-		pn_menu.add(bt_trangchu);
+		pn_button.setLayout(null);
+		pn_button.add(bt_trangchu);
 		
 		JButton bt_sodophong = new JButton("Sơ đồ phòng");
 		bt_sodophong.setIcon(new ImageIcon(UserUI.class.getResource("/FileAnh/diagram.png")));
 		bt_sodophong.setBackground(new Color(153, 153, 153));
 		bt_sodophong.setBounds(2, 74, 207, 67);
 		bt_sodophong.setFont(font2);
-		pn_menu.add(bt_sodophong);
+		pn_button.add(bt_sodophong);
 
 		JButton bt_dangxuat = new JButton("Đăng xuất");
+		bt_dangxuat.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+			}
+		});
 		bt_dangxuat.setIcon(new ImageIcon(UserUI.class.getResource("/FileAnh/logout (1).png")));
 		bt_dangxuat.setBackground(new Color(102, 102, 102));
-		bt_dangxuat.setBounds(2, 146, 207, 67);
+		bt_dangxuat.setBounds(2, 218, 207, 67);
 		bt_dangxuat.setFont(font2);
-		pn_menu.add(bt_dangxuat);
+		pn_button.add(bt_dangxuat);
+		
+		JButton bt_Lichsu = new JButton("Lịch sử giao dịch");
+		bt_Lichsu.setFont(new Font("Dialog", Font.BOLD, 18));
+		bt_Lichsu.setBackground(new Color(102, 102, 102));
+		bt_Lichsu.setBounds(2, 146, 207, 67);
+		pn_button.add(bt_Lichsu);
 		 
 
 		JPanel pn_trangchu = new JPanel();
@@ -801,6 +805,4 @@ public class UserUI extends JFrame {
 	public void Order(String request, String maDP, String tenDV, int dongia, int soluong, int thanhtien) {
 		out.println(request+"#"+maDP+"#"+tenDV+"#"+dongia+"#"+soluong+"#"+thanhtien);
 	}
-	
-	
 }

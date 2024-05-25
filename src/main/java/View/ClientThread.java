@@ -1,6 +1,6 @@
 package View;
 
-import java.io.BufferedReader;
+import java.io.BufferedReader;   
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
@@ -13,11 +13,15 @@ public class ClientThread  extends Thread{
 	 private PrintWriter out;
 	 private ManagerUI QuanLy;
 	 
-	 public ClientThread(Socket socket) {
-	        this.socket = socket;
-	 }
 	 
-	 public void run() {
+	 
+	 public ClientThread(Socket socket, ManagerUI quanLy) {
+		
+		this.socket = socket;
+		QuanLy = quanLy;
+	}
+
+	public void run() {
 			try {
 				in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 				out = new PrintWriter(socket.getOutputStream(), true);
@@ -63,7 +67,16 @@ public class ClientThread  extends Thread{
 	            	break;
 	            case "CHECKDKY":
 	            	Dangky(remainingData);
-	            // Thêm các trường hợp xử lý khác tùy theo yêu cầu của ứng dụng
+	            	break;
+	            case "CHANGEPASS":
+	            	ChangePass(remainingData);
+	            	break;
+	            case "CHECKXACTHUC":
+	            	Checkxacthuc(remainingData);
+	            	break;
+	            case "CHECKTONTAI":
+	            	Checktontai(remainingData);
+	            	break;
 	            default:
 	                out.println("Yêu cầu không hợp lệ");
 	                break;
@@ -106,10 +119,38 @@ public class ClientThread  extends Thread{
 		 String Sdth = parts[2];
 		 String email = parts[3];
 		 String mk = parts[4];
-		 if(QuanLy.KiemTraTonTai(name, CCCD) == false) {
-			 QuanLy.DangKy(name, CCCD, Sdth, email, mk);
+		 String username = parts[5];
+		 if(QuanLy.KiemTraTonTai(username, CCCD)==false) {
+			 QuanLy.DangKy(name, CCCD, Sdth, email, mk, username);
 			 out.println("1");//thông báo về ng dùng là đăng ký thành công
 		 } else out.println("0");//thông báo về ng dùng là đky không thành công do name hay cccd đã tồn tại
+	 }
+	 
+	 public void ChangePass(String thongtin) throws SQLException {
+		 String[] parts = thongtin.split("#");
+		 String username = parts[0];
+		 String newpass = parts[1];
+		 if (QuanLy.capNhatMatKhau(username, newpass) == true) {
+			 out.println("1");
+		} else out.println("0");
+	 }
+	 
+	 public void Checkxacthuc(String thongtin) throws SQLException {
+		 String[] parts = thongtin.split("#");
+		 String username = parts[0];
+		 String email = parts[1];
+		 if (QuanLy.kiemtraxacthuc(username, email) == true) {
+			 out.println("1");
+		} else out.println("0");
+	 }
+	 
+	 public void Checktontai(String thongtin) {
+		 String[] parts = thongtin.split("#");
+		 String username = parts[0];
+		 String cccd = parts[1];
+		 if (QuanLy.KiemTraTonTai(username, cccd) == true) {
+			 out.println("1");
+		} else out.println("0");
 	 }
 	 
 	 public void order(String thongtin) {

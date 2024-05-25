@@ -41,7 +41,6 @@ import javax.swing.JComboBox;
 public class pn_Danghoatdong extends JPanel {
 
 	private static final long serialVersionUID = 1L;
-	private JButton btnTrPhng;
 	private JButton btquaylai;
 	public JTextField THovaten;
 	public JTextField TCCCD;
@@ -305,11 +304,6 @@ public class pn_Danghoatdong extends JPanel {
 		});
 		btquaylai.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		
-		btnTrPhng = new JButton("Trả phòng");
-		btnTrPhng.setBounds(751, 10, 149, 49);
-		panel_1.add(btnTrPhng);
-		btnTrPhng.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		
 		JLabel lblNewLabel_6 = new JLabel();
 		lblNewLabel_6.setIcon(new ImageIcon(pn_Danghoatdong.class.getResource("/FileAnh/resort.jpg")));
 		lblNewLabel_6.setSize(947, 742);
@@ -407,60 +401,6 @@ public class pn_Danghoatdong extends JPanel {
 		lblChnDchV.setBounds(10, 50, 98, 26);
 		panel_5.add(lblChnDchV);
 		
-		btnTrPhng.addActionListener(new ActionListener() {
-			
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				
-				Bill bill = new Bill(phong, view);
-				int tongtien = 0;
-				bill.lbMaPhong.setText(phong.getId()+"");
-				bill.TMakH.setText(maKH+"");
-				bill.TTenKH.setText(THovaten.getText());
-				bill.TSdth.setText(TSDTH.getText());
-				bill.TNgayvao.setText(TNgayGioNHanPhong.getText());
-				LocalDateTime now = LocalDateTime.now();
-	            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss dd/MM/yyyy");
-	            String formattedDateTime = now.format(formatter);
-	            bill.TNgayRa.setText(formattedDateTime);
-	            bill.CCCD = TCCCD.getText();
-	            bill.Ngaysinh = TNgaysinh.getText();
-	            int tgian = Tinhgio(TNgayGioNHanPhong.getText(), formattedDateTime);
-	            for (int row = 0; row < db.getRowCount(); row++) {
-	            	Object col1Value = db.getValueAt(row, 0);
-	                String col2Value = db.getValueAt(row, 1)+"";
-	                int gia = convert(col2Value);
-	                tongtien += gia*tgian;
-	                
-	                bill.db.addRow(new Object[] {
-	                	col1Value, col2Value, 1, phantichgia(gia*tgian)	
-	                });
-				}
-	            for (int row = 0; row < dbsau.getRowCount(); row++) {
-	            	Object col1Value = dbsau.getValueAt(row, 0);
-	                String col2Value = dbsau.getValueAt(row, 1)+"";
-	                Object col3value = dbsau.getValueAt(row, 2);
-	                String col4val = dbsau.getValueAt(row, 3)+"";
-	                int tien = convert(col4val);
-	                tongtien+=tien;
-	                
-	                bill.dbsau.addRow(new Object[] {
-	                	col1Value, col2Value, col3value, col4val 	
-	                });
-				}
-	            
-	            int thue = (Math.abs(tongtien)*20)/100;
-	            
-	            bill.TThue.setText(phantichgia(thue));
-	            bill.TTongTien.setText(phantichgia(tongtien+thue));
-				
-//				phong.setTrangThai(TrangThaiPhong.TRONG);
-				xoaform();
-//				view.cardhd.show(view.pn_hoatdong, "sơ đồ phòng");
-				
-			}
-		});
-		
 	}
 	        
 	public String phantichgia(int gia) {
@@ -529,21 +469,6 @@ public class pn_Danghoatdong extends JPanel {
 	    return value;
 	}
 	
-	public static int Tinhgio(String time1, String time2) {
-        SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss dd/MM/yyyy");
-        
-        try {
-            Date date1 = dateFormat.parse(time1);
-            Date date2 = dateFormat.parse(time2);
-            
-            long diffInMillies = Math.abs(date1.getTime() - date2.getTime());
-            int diffInSeconds = (int) TimeUnit.SECONDS.convert(diffInMillies, TimeUnit.MILLISECONDS);
-            
-            return diffInSeconds;
-        } catch (ParseException e) {
-            e.printStackTrace();
-            return -1; // Trả về -1 nếu có lỗi xảy ra
-        }
-    }
+	
 
 }

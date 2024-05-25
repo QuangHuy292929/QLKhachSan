@@ -1,6 +1,5 @@
 package View;
-
-import java.awt.EventQueue;       
+ 
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -8,6 +7,8 @@ import javax.swing.JPanel;
 import javax.swing.UIManager;
 
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+
 import java.awt.BorderLayout;
 
 import javax.swing.BorderFactory;
@@ -22,13 +23,16 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.Base64;
+import java.util.List;
+
 import java.awt.CardLayout;
 import javax.swing.border.BevelBorder;
 import javax.swing.border.Border;
 import Model.Phong;
 import Model.Phong.TrangThaiPhong;
-import controller.PhongManager;
+import controller.PhongManagerQL;
 import controller.connectdatabase;
+
 
 import java.awt.Color;
 import java.awt.Component;
@@ -36,6 +40,9 @@ import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.geom.RoundRectangle2D;
+import java.io.IOException;
+import java.net.ServerSocket;
+import java.net.Socket;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -46,25 +53,38 @@ public class ManagerUI extends JFrame {
 
 	private static final long serialVersionUID = 1L;
 	private Phong[] phong;
-	private UserUI ngdung;
 	JPanel pn_trangchu;
 	JPanel pn_sodophong;
 	JPanel pn_hoatdong;
+	private static List<ClientThread> clients = new ArrayList<>();
     Color colordat = new Color(205, 180, 219);
     Color colorchoxacnhan = new Color(255, 200, 221);
 	public CardLayout cardhd;
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-					new ManagerUI();
+	private String body;
 
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
+	public static void main(String[] args) {
+		try {
+			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+			ManagerUI manager = new ManagerUI();
+			try {
+	            ServerSocket serverSocket = new ServerSocket(8000);
+	            System.out.println("Server đang lắng nghe trên cổng " + 8000);
+
+	            while (true) {
+	                Socket clientSocket = serverSocket.accept();
+	                System.out.println("Đã kết nối với Client: " + clientSocket.getInetAddress().getHostAddress());
+
+	                ClientThread clientThread = new ClientThread(clientSocket, manager);
+	                clients.add(clientThread);
+	                clientThread.start();
+	            }
+	        } catch (IOException e) {
+	            e.printStackTrace();
+	        }
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}	
+		
 	}
 	
 
@@ -73,15 +93,13 @@ public class ManagerUI extends JFrame {
 	 */
 	public ManagerUI() {
 		setTitle("Hệ thống quản lý Khách Sạn");
-		
-		
 		getContentPane().setBackground(new Color(204, 255, 255));
 		Border border = BorderFactory.createEmptyBorder(10, 10, 10, 10);
         border = BorderFactory.createCompoundBorder(new RoundedBorder(20, 20, Color.GRAY), border);
         Font font = new Font("Roboto", Font.BOLD, 22);
         Font font2 = new Font("Roboto",Font.CENTER_BASELINE, 18);
-  
-		ArrayList<PhongManager> quanLyPhong = new ArrayList<PhongManager>();
+        
+		ArrayList<PhongManagerQL> quanLyPhong = new ArrayList<PhongManagerQL>();
 		this.setVisible(true);
 		this.setSize(1200, 800);
 		this.setLocationRelativeTo(null);
@@ -234,15 +252,15 @@ public class ManagerUI extends JFrame {
 		photo1.setIcon(new ImageIcon(ManagerUI.class.getResource("/FileAnh/website.png")));
 		photo1.setBounds(36, 50, 128, 128);
 		panel_phong1.add(photo1);
-		pn_Danghoatdong hoatdong101 = new pn_Danghoatdong(phong[0], ngdung);
-		pn_Choxacnhan xacnhan101 = new pn_Choxacnhan(phong[0], hoatdong101,  ngdung);
-		pn_Datphong datphong101 = new pn_Datphong(phong[0], xacnhan101, hoatdong101, ngdung);
+		pn_DanghoatdongQL hoatdong101 = new pn_DanghoatdongQL(phong[0], this);
+		pn_ChoxacnhanQL xacnhan101 = new pn_ChoxacnhanQL(phong[0], hoatdong101,  this);
+		pn_DatphongQL datphong101 = new pn_DatphongQL(phong[0], xacnhan101, hoatdong101, this);
 		CardLayout cardP1 = new CardLayout();
 		pn_p101.setLayout(cardP1);
 		pn_p101.add(datphong101, "datohong101");
 		pn_p101.add(xacnhan101, "xacnhan101");
 		pn_p101.add(hoatdong101, "hoatdong101");
-		PhongManager manager1 = new PhongManager(phong[0], panel_phong1, cardP1, datphong101, xacnhan101, hoatdong101, pn_p101);
+		PhongManagerQL manager1 = new PhongManagerQL(phong[0], panel_phong1, cardP1, datphong101, xacnhan101, hoatdong101, pn_p101);
 		manager1.start();
 		quanLyPhong.add(manager1);
 		panel_phong1.addMouseListener(new MouseAdapter() {
@@ -267,15 +285,15 @@ public class ManagerUI extends JFrame {
 		photo2.setIcon(new ImageIcon(ManagerUI.class.getResource("/FileAnh/website.png")));
 		photo2.setBounds(36, 50, 128, 128);
 		panel_phong2.add(photo2);
-		pn_Danghoatdong hoatdong102 = new pn_Danghoatdong(phong[1], ngdung);
-		pn_Choxacnhan xacnhan102 = new pn_Choxacnhan(phong[1], hoatdong102,  ngdung);
-		pn_Datphong datphong102 = new pn_Datphong(phong[1], xacnhan102, hoatdong102, ngdung);
+		pn_DanghoatdongQL hoatdong102 = new pn_DanghoatdongQL(phong[1], this);
+		pn_ChoxacnhanQL xacnhan102 = new pn_ChoxacnhanQL(phong[1], hoatdong102,  this);
+		pn_DatphongQL datphong102 = new pn_DatphongQL(phong[1], xacnhan102, hoatdong102, this);
 		CardLayout cardP2 = new CardLayout();
 		pn_p102.setLayout(cardP2);
 		pn_p102.add(datphong102, "datohong102");
 		pn_p102.add(xacnhan102, "xacnhan102");
 		pn_p102.add(hoatdong102, "hoatdong102");
-		PhongManager manager2 = new PhongManager(phong[1], panel_phong2, cardP2, datphong102, xacnhan102, hoatdong102, pn_p102);
+		PhongManagerQL manager2 = new PhongManagerQL(phong[1], panel_phong2, cardP2, datphong102, xacnhan102, hoatdong102, pn_p102);
 		manager2.start();
 		quanLyPhong.add(manager2);
 		panel_phong2.addMouseListener(new MouseAdapter() {
@@ -300,15 +318,15 @@ public class ManagerUI extends JFrame {
 		photo3.setIcon(new ImageIcon(ManagerUI.class.getResource("/FileAnh/website.png")));
 		photo3.setBounds(36, 50, 128, 128);
 		panel_phong3.add(photo3);
-		pn_Danghoatdong hoatdong103 = new pn_Danghoatdong(phong[2], ngdung);
-		pn_Choxacnhan xacnhan103 = new pn_Choxacnhan(phong[2], hoatdong103,  ngdung);
-		pn_Datphong datphong103 = new pn_Datphong(phong[2], xacnhan103, hoatdong103, ngdung);
+		pn_DanghoatdongQL hoatdong103 = new pn_DanghoatdongQL(phong[2], this);
+		pn_ChoxacnhanQL xacnhan103 = new pn_ChoxacnhanQL(phong[2], hoatdong103,  this);
+		pn_DatphongQL datphong103 = new pn_DatphongQL(phong[2], xacnhan103, hoatdong103, this);
 		CardLayout cardP3 = new CardLayout();
 		pn_p103.setLayout(cardP3);
 		pn_p103.add(datphong103, "datohong103");
 		pn_p103.add(xacnhan103, "xacnhan103");
 		pn_p103.add(hoatdong103, "hoatdong103");
-		PhongManager manager3 = new PhongManager(phong[2], panel_phong3, cardP3, datphong103, xacnhan103, hoatdong103, pn_p103);
+		PhongManagerQL manager3 = new PhongManagerQL(phong[2], panel_phong3, cardP3, datphong103, xacnhan103, hoatdong103, pn_p103);
 		manager3.start();
 		quanLyPhong.add(manager3);
 		panel_phong3.addMouseListener(new MouseAdapter() {
@@ -333,15 +351,15 @@ public class ManagerUI extends JFrame {
 		photo4.setIcon(new ImageIcon(ManagerUI.class.getResource("/FileAnh/website.png")));
 		photo4.setBounds(36, 50, 128, 128);
 		panel_phong4.add(photo4);
-		pn_Danghoatdong hoatdong104 = new pn_Danghoatdong(phong[3], ngdung);
-		pn_Choxacnhan xacnhan104 = new pn_Choxacnhan(phong[3], hoatdong104,  ngdung);
-		pn_Datphong datphong104 = new pn_Datphong(phong[3], xacnhan104, hoatdong104, ngdung);
+		pn_DanghoatdongQL hoatdong104 = new pn_DanghoatdongQL(phong[3], this);
+		pn_ChoxacnhanQL xacnhan104 = new pn_ChoxacnhanQL(phong[3], hoatdong104,  this);
+		pn_DatphongQL datphong104 = new pn_DatphongQL(phong[3], xacnhan104, hoatdong104, this);
 		CardLayout cardP4 = new CardLayout();
 		pn_p104.setLayout(cardP4);
 		pn_p104.add(datphong104, "datohong104");
 		pn_p104.add(xacnhan104, "xacnhan104");
 		pn_p104.add(hoatdong104, "hoatdong104");
-		PhongManager manager4 = new PhongManager(phong[3], panel_phong4, cardP4, datphong104, xacnhan104, hoatdong104, pn_p104);
+		PhongManagerQL manager4 = new PhongManagerQL(phong[3], panel_phong4, cardP4, datphong104, xacnhan104, hoatdong104, pn_p104);
 		manager4.start();
 		quanLyPhong.add(manager4);
 		panel_phong4.addMouseListener(new MouseAdapter() {
@@ -365,15 +383,15 @@ public class ManagerUI extends JFrame {
 		photo5.setIcon(new ImageIcon(ManagerUI.class.getResource("/FileAnh/website.png")));
 		photo5.setBounds(36, 50, 128, 128);
 		panel_phong5.add(photo5);
-		pn_Danghoatdong hoatdong201 = new pn_Danghoatdong(phong[4], ngdung);
-		pn_Choxacnhan xacnhan201 = new pn_Choxacnhan(phong[4], hoatdong201,  ngdung);
-		pn_Datphong datphong201 = new pn_Datphong(phong[4], xacnhan201, hoatdong201, ngdung);
+		pn_DanghoatdongQL hoatdong201 = new pn_DanghoatdongQL(phong[4], this);
+		pn_ChoxacnhanQL xacnhan201 = new pn_ChoxacnhanQL(phong[4], hoatdong201,  this);
+		pn_DatphongQL datphong201 = new pn_DatphongQL(phong[4], xacnhan201, hoatdong201, this);
 		CardLayout cardP5 = new CardLayout();
 		pn_p201.setLayout(cardP5);
 		pn_p201.add(datphong201, "datohong201");
 		pn_p201.add(xacnhan201, "xacnhan201");
 		pn_p201.add(hoatdong201, "hoatdong201");
-		PhongManager manager5 = new PhongManager(phong[4], panel_phong5, cardP5, datphong201, xacnhan201, hoatdong201, pn_p201);
+		PhongManagerQL manager5 = new PhongManagerQL(phong[4], panel_phong5, cardP5, datphong201, xacnhan201, hoatdong201, pn_p201);
 		manager5.start();
 		quanLyPhong.add(manager5);
 		panel_phong5.addMouseListener(new MouseAdapter() {
@@ -398,15 +416,15 @@ public class ManagerUI extends JFrame {
 		photo6.setIcon(new ImageIcon(ManagerUI.class.getResource("/FileAnh/website.png")));
 		photo6.setBounds(36, 50, 128, 128);
 		panel_phong6.add(photo6);
-		pn_Danghoatdong hoatdong202 = new pn_Danghoatdong(phong[5], ngdung);
-		pn_Choxacnhan xacnhan202 = new pn_Choxacnhan(phong[5], hoatdong202,  ngdung);
-		pn_Datphong datphong202 = new pn_Datphong(phong[5], xacnhan202, hoatdong202, ngdung);
+		pn_DanghoatdongQL hoatdong202 = new pn_DanghoatdongQL(phong[5], this);
+		pn_ChoxacnhanQL xacnhan202 = new pn_ChoxacnhanQL(phong[5], hoatdong202,  this);
+		pn_DatphongQL datphong202 = new pn_DatphongQL(phong[5], xacnhan202, hoatdong202, this);
 		CardLayout cardP6 = new CardLayout();
 		pn_p202.setLayout(cardP6);
 		pn_p202.add(datphong202, "datohong202");
 		pn_p202.add(xacnhan202, "xacnhan202");
 		pn_p202.add(hoatdong202, "hoatdong202");
-		PhongManager manager6 = new PhongManager(phong[5], panel_phong6, cardP6, datphong202, xacnhan202, hoatdong202, pn_p202);
+		PhongManagerQL manager6 = new PhongManagerQL(phong[5], panel_phong6, cardP6, datphong202, xacnhan202, hoatdong202, pn_p202);
 		manager6.start();
 		quanLyPhong.add(manager6);
 		panel_phong6.addMouseListener(new MouseAdapter() {
@@ -430,16 +448,16 @@ public class ManagerUI extends JFrame {
 		photo7.setIcon(new ImageIcon(ManagerUI.class.getResource("/FileAnh/website.png")));
 		photo7.setBounds(36, 50, 128, 128);
 		panel_phong7.add(photo7);
-		pn_Danghoatdong hoatdong203 = new pn_Danghoatdong(phong[6], ngdung);
-		pn_Choxacnhan xacnhan203 = new pn_Choxacnhan(phong[6], hoatdong203,  ngdung);
-		pn_Datphong datphong203 = new pn_Datphong(phong[6], xacnhan203, hoatdong203, ngdung);
+		pn_DanghoatdongQL hoatdong203 = new pn_DanghoatdongQL(phong[6], this);
+		pn_ChoxacnhanQL xacnhan203 = new pn_ChoxacnhanQL(phong[6], hoatdong203,  this);
+		pn_DatphongQL datphong203 = new pn_DatphongQL(phong[6], xacnhan203, hoatdong203, this);
 		
 		CardLayout cardP7 = new CardLayout();
 		pn_p203.setLayout(cardP7);
 		pn_p203.add(datphong203, "datohong203");
 		pn_p203.add(xacnhan203, "xacnhan203");
 		pn_p203.add(hoatdong203, "hoatdong203");
-		PhongManager manager7 = new PhongManager(phong[6], panel_phong7, cardP7, datphong203, xacnhan203, hoatdong203, pn_p203);
+		PhongManagerQL manager7 = new PhongManagerQL(phong[6], panel_phong7, cardP7, datphong203, xacnhan203, hoatdong203, pn_p203);
 		manager7.start();
 		quanLyPhong.add(manager7);
 		panel_phong7.addMouseListener(new MouseAdapter() {
@@ -463,15 +481,15 @@ public class ManagerUI extends JFrame {
 		photo8.setIcon(new ImageIcon(ManagerUI.class.getResource("/FileAnh/website.png")));
 		photo8.setBounds(36, 50, 128, 128);
 		panel_phong8.add(photo8);
-		pn_Danghoatdong hoatdong204 = new pn_Danghoatdong(phong[7], ngdung);
-		pn_Choxacnhan xacnhan204 = new pn_Choxacnhan(phong[7], hoatdong204,  ngdung);
-		pn_Datphong datphong204 = new pn_Datphong(phong[7], xacnhan204, hoatdong204, ngdung);
+		pn_DanghoatdongQL hoatdong204 = new pn_DanghoatdongQL(phong[7], this);
+		pn_ChoxacnhanQL xacnhan204 = new pn_ChoxacnhanQL(phong[7], hoatdong204,  this);
+		pn_DatphongQL datphong204 = new pn_DatphongQL(phong[7], xacnhan204, hoatdong204, this);
 		CardLayout cardP8 = new CardLayout();
 		pn_p204.setLayout(cardP8);
 		pn_p204.add(datphong204, "datohong204");
 		pn_p204.add(xacnhan204, "xacnhan204");
 		pn_p204.add(hoatdong204, "hoatdong204");
-		PhongManager manager8 = new PhongManager(phong[7], panel_phong8, cardP8, datphong204, xacnhan204, hoatdong204, pn_p204);
+		PhongManagerQL manager8 = new PhongManagerQL(phong[7], panel_phong8, cardP8, datphong204, xacnhan204, hoatdong204, pn_p204);
 		manager8.start();
 		quanLyPhong.add(manager8);
 		panel_phong8.addMouseListener(new MouseAdapter() {
@@ -496,15 +514,15 @@ public class ManagerUI extends JFrame {
 		photo9.setIcon(new ImageIcon(ManagerUI.class.getResource("/FileAnh/website.png")));
 		photo9.setBounds(36, 50, 128, 128);
 		panel_phong9.add(photo9);
-		pn_Danghoatdong hoatdong301 = new pn_Danghoatdong(phong[8], ngdung);
-		pn_Choxacnhan xacnhan301 = new pn_Choxacnhan(phong[8], hoatdong301,  ngdung);
-		pn_Datphong datphong301 = new pn_Datphong(phong[8], xacnhan301, hoatdong301, ngdung);
+		pn_DanghoatdongQL hoatdong301 = new pn_DanghoatdongQL(phong[8], this);
+		pn_ChoxacnhanQL xacnhan301 = new pn_ChoxacnhanQL(phong[8], hoatdong301,  this);
+		pn_DatphongQL datphong301 = new pn_DatphongQL(phong[8], xacnhan301, hoatdong301, this);
 		CardLayout cardP9 = new CardLayout();
 		pn_p301.setLayout(cardP9);
 		pn_p301.add(datphong301, "datohong301");
 		pn_p301.add(xacnhan301, "xacnhan301");
 		pn_p301.add(hoatdong301, "hoatdong301");
-		PhongManager manager9 = new PhongManager(phong[8], panel_phong9, cardP9, datphong301, xacnhan301, hoatdong301, pn_p301);
+		PhongManagerQL manager9 = new PhongManagerQL(phong[8], panel_phong9, cardP9, datphong301, xacnhan301, hoatdong301, pn_p301);
 		manager9.start();
 		quanLyPhong.add(manager9);
 		panel_phong9.addMouseListener(new MouseAdapter() {
@@ -529,15 +547,15 @@ public class ManagerUI extends JFrame {
 		photo10.setIcon(new ImageIcon(ManagerUI.class.getResource("/FileAnh/website.png")));
 		photo10.setBounds(36, 50, 128, 128);
 		panel_phong10.add(photo10);
-		pn_Danghoatdong hoatdong302 = new pn_Danghoatdong(phong[9], ngdung);
-		pn_Choxacnhan xacnhan302 = new pn_Choxacnhan(phong[9], hoatdong302,  ngdung);
-		pn_Datphong datphong302 = new pn_Datphong(phong[9], xacnhan302, hoatdong302, ngdung);
+		pn_DanghoatdongQL hoatdong302 = new pn_DanghoatdongQL(phong[9], this);
+		pn_ChoxacnhanQL xacnhan302 = new pn_ChoxacnhanQL(phong[9], hoatdong302,  this);
+		pn_DatphongQL datphong302 = new pn_DatphongQL(phong[9], xacnhan302, hoatdong302, this);
 		CardLayout cardP10 =new  CardLayout();
 		pn_p302.setLayout(cardP10);
 		pn_p302.add(datphong302, "datohong302");
 		pn_p302.add(xacnhan302, "xacnhan302");
 		pn_p302.add(hoatdong302, "hoatdong302");
-		PhongManager manager10 = new PhongManager(phong[9], panel_phong10, cardP10, datphong302, xacnhan302, hoatdong302, pn_p302);
+		PhongManagerQL manager10 = new PhongManagerQL(phong[9], panel_phong10, cardP10, datphong302, xacnhan302, hoatdong302, pn_p302);
 		manager10.start();
 		quanLyPhong.add(manager10);
 		panel_phong10.addMouseListener(new MouseAdapter() {
@@ -561,15 +579,15 @@ public class ManagerUI extends JFrame {
 		photo11.setIcon(new ImageIcon(ManagerUI.class.getResource("/FileAnh/website.png")));
 		photo11.setBounds(36, 50, 128, 128);
 		panel_phong11.add(photo11);
-		pn_Danghoatdong hoatdong303 = new pn_Danghoatdong(phong[10], ngdung);
-		pn_Choxacnhan xacnhan303 = new pn_Choxacnhan(phong[10], hoatdong303,  ngdung);
-		pn_Datphong datphong303 = new pn_Datphong(phong[10], xacnhan303, hoatdong303, ngdung);
+		pn_DanghoatdongQL hoatdong303 = new pn_DanghoatdongQL(phong[10], this);
+		pn_ChoxacnhanQL xacnhan303 = new pn_ChoxacnhanQL(phong[10], hoatdong303,  this);
+		pn_DatphongQL datphong303 = new pn_DatphongQL(phong[10], xacnhan303, hoatdong303, this);
 		CardLayout cardP11 = new CardLayout();
 		pn_p303.setLayout(cardP11);
 		pn_p303.add(datphong303, "datohong303");
 		pn_p303.add(xacnhan303, "xacnhan303");
 		pn_p303.add(hoatdong303, "hoatdong303");
-		PhongManager manager11 = new PhongManager(phong[10], panel_phong11, cardP11, datphong303, xacnhan303, hoatdong303, pn_p303);
+		PhongManagerQL manager11 = new PhongManagerQL(phong[10], panel_phong11, cardP11, datphong303, xacnhan303, hoatdong303, pn_p303);
 		manager11.start();
 		quanLyPhong.add(manager11);
 		panel_phong11.addMouseListener(new MouseAdapter() {
@@ -593,15 +611,15 @@ public class ManagerUI extends JFrame {
 		photo12.setIcon(new ImageIcon(ManagerUI.class.getResource("/FileAnh/website.png")));
 		photo12.setBounds(36, 50, 128, 128);
 		panel_phong12.add(photo12);
-		pn_Danghoatdong hoatdong304 = new pn_Danghoatdong(phong[11], ngdung);
-		pn_Choxacnhan xacnhan304 = new pn_Choxacnhan(phong[11], hoatdong304,  ngdung);
-		pn_Datphong datphong304 = new pn_Datphong(phong[11], xacnhan304, hoatdong304, ngdung);
+		pn_DanghoatdongQL hoatdong304 = new pn_DanghoatdongQL(phong[11], this);
+		pn_ChoxacnhanQL xacnhan304 = new pn_ChoxacnhanQL(phong[11], hoatdong304,  this);
+		pn_DatphongQL datphong304 = new pn_DatphongQL(phong[11], xacnhan304, hoatdong304, this);
 		CardLayout cardP12 = new CardLayout();
 		pn_p304.setLayout(cardP12);
 		pn_p304.add(datphong304, "datohong304");
 		pn_p304.add(xacnhan304, "xacnhan304");
 		pn_p304.add(hoatdong304, "hoatdong304");
-		PhongManager manager12 = new PhongManager(phong[11], panel_phong12, cardP12, datphong304, xacnhan304, hoatdong304, pn_p304);
+		PhongManagerQL manager12 = new PhongManagerQL(phong[11], panel_phong12, cardP12, datphong304, xacnhan304, hoatdong304, pn_p304);
 		manager12.start();
 		quanLyPhong.add(manager12);
 		panel_phong12.addMouseListener(new MouseAdapter() {
@@ -761,7 +779,7 @@ public class ManagerUI extends JFrame {
 			if (resultSet.next()) {
 				// Get the encoded password from the database
 				String passwordFromDB = resultSet.getString("PASS");
-
+				
 				// Encode the input password with the same salt
 				String salt = "asdfghjkl";
 				String str = pass + salt;
@@ -773,6 +791,7 @@ public class ManagerUI extends JFrame {
 					result = true;
 				} else {
 					// Login failed
+					
 					result = false;
 				}
 			} else {
@@ -796,14 +815,183 @@ public class ManagerUI extends JFrame {
 		return result;
 	}
 	
-	public void DangKy(String Username, String CCCD, String Sdth, String email, String mk) {
-		//hàm insert một đối tượng tài khoản
+	public void DangKy(String hoten, String cccd, String email, String sdt, String username, String pass) {
+	    Connection connection = null;
+	    PreparedStatement preparedStatement = null;
+
+	    try {
+	        // Mã hóa mật khẩu
+	        String salt = "asdfghjkl";
+	        String str = pass + salt;
+	        String encodedPass = Base64.getEncoder().encodeToString(str.getBytes());
+	        System.out.println(encodedPass);
+
+	        // Tạo kết nối đến cơ sở dữ liệu
+	        connection = connectdatabase.getConnection();
+
+	        // Chuẩn bị câu lệnh SQL để thêm người dùng mới
+	        String sql = "INSERT INTO customer (HOTEN, CCCD, SDT, EMAIL, PASS, USERNAME) VALUES (?, ?, ?, ?, ?, ?)";
+	        preparedStatement = connection.prepareStatement(sql);
+
+	        // Gán giá trị cho các tham số
+	        preparedStatement.setString(1, hoten);
+	        preparedStatement.setString(2, cccd);
+	        preparedStatement.setString(3, sdt);
+	        preparedStatement.setString(4, email);
+	        preparedStatement.setString(5, encodedPass);
+	        preparedStatement.setString(6, username);
+
+	        // Thực thi câu lệnh SQL
+	        int rowsAffected = preparedStatement.executeUpdate();
+
+	        if (rowsAffected > 0) {
+	        } else {
+	            JOptionPane.showMessageDialog(this, "Đăng ký tài khoản thất bại.", "Lỗi", JOptionPane.ERROR_MESSAGE);
+	        }
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	        JOptionPane.showMessageDialog(this, "Có lỗi xảy ra khi đăng ký tài khoản.", "Lỗi", JOptionPane.ERROR_MESSAGE);
+	    } finally {
+	        // Đóng các tài nguyên
+	        try {
+	            if (preparedStatement != null) {
+	                preparedStatement.close();
+	            }
+	            if (connection != null) {
+	                connection.close();
+	            }
+	        } catch (SQLException e) {
+	            e.printStackTrace();
+	        }
+	    }
 	}
 	
-	public boolean KiemTraTonTai(String Username, String CCCD) {
-		//hàm kiểm tra database đã có(CCCD và Username) nếu chưa thì cho đky
-		return true;
+	public boolean KiemTraTonTai(String username, String cccd) {
+		   Connection connection = null;
+		   PreparedStatement preparedStatement = null;
+		   ResultSet resultSet = null;
+		   boolean isDuplicated = false;
+
+		   try {
+		       // Tạo kết nối đến cơ sở dữ liệu
+		       connection = connectdatabase.getConnection();
+
+		       // Chuẩn bị câu lệnh SQL để kiểm tra username và CCCD
+		       String sql = "SELECT COUNT(*) FROM customer WHERE USERNAME = ? OR CCCD = ?";
+		       preparedStatement = connection.prepareStatement(sql);
+		       preparedStatement.setString(1, username);
+		       preparedStatement.setString(2, cccd);
+
+		       // Thực thi câu lệnh SQL
+		       resultSet = preparedStatement.executeQuery();
+
+		       // Kiểm tra kết quả
+		       if (resultSet.next()) {
+		           int count = resultSet.getInt(1);
+		           isDuplicated = count > 0;
+		       }
+		   } catch (SQLException e) {
+		       e.printStackTrace();
+		   } finally {
+		       // Đóng các tài nguyên
+		       try {
+		           if (resultSet != null) {
+		               resultSet.close();
+		           }
+		           if (preparedStatement != null) {
+		               preparedStatement.close();
+		           }
+		           if (connection != null) {
+		               connection.close();
+		           }
+		       } catch (SQLException e) {
+		           e.printStackTrace();
+		       }
+		   }
+
+		   return isDuplicated;
 	}
+	
+	// Truy vấn dữ liệu để đăng nhập
+		public boolean kiemtraxacthuc(String tendangnhap, String email) throws SQLException {
+			boolean isValid = false;
+			Connection connection = null;
+			PreparedStatement preparedStatement = null;
+			ResultSet resultSet = null;
+
+			try {
+				// Get a connection to the database
+				connection = connectdatabase.getConnection();
+
+				// SQL query to check if the information is valid
+				String sql = "SELECT * FROM customer WHERE USERNAME = ? AND EMAIL = ?";
+				preparedStatement = connection.prepareStatement(sql);
+				preparedStatement.setString(1, tendangnhap);
+				preparedStatement.setString(2, email);
+
+				// Execute the query
+				resultSet = preparedStatement.executeQuery();
+
+				// Check if the result set has any rows
+				isValid = resultSet.next();
+			} finally {
+				// Close resources in the reverse order of their creation
+				if (resultSet != null) {
+					resultSet.close();
+				}
+				if (preparedStatement != null) {
+					preparedStatement.close();
+				}
+				if (connection != null) {
+					connection.close();
+				}
+			}
+
+			return isValid;
+
+		}
+		
+		
+		public boolean capNhatMatKhau(String tendangnhap, String newpass) throws SQLException {
+		    Connection connection = null;
+		    PreparedStatement preparedStatement = null;
+
+		    try {
+		        // Get a connection to the database
+		        connection = connectdatabase.getConnection();
+
+		        // Encode the new password with salt
+		        String salt = "asdfghjkl";
+		        String str = newpass + salt;
+		        String passnew = Base64.getEncoder().encodeToString(str.getBytes());
+
+		        // SQL query to update the password
+		        String sql = "UPDATE customer SET PASS = ? WHERE USERNAME = ?";
+		        preparedStatement = connection.prepareStatement(sql);
+		        preparedStatement.setString(1,passnew );
+		        preparedStatement.setString(2, tendangnhap);
+
+		        // Execute the update query
+		        int rowsAffected = preparedStatement.executeUpdate();
+
+		        if (rowsAffected > 0) {
+		            
+		            return true;
+		        } else {
+		           
+		            return false;
+		        }
+		    } finally {
+		        // Close resources in the reverse order of their creation
+		        if (preparedStatement != null) {
+		            preparedStatement.close();
+		        }
+		        if (connection != null) {
+		            connection.close();
+		        }
+		    }
+		}
+
 	
 	public void Order() {
 		

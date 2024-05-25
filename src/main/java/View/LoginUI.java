@@ -1,6 +1,6 @@
 package View;
 
-import java.awt.EventQueue;
+import java.awt.EventQueue; 
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -102,7 +102,7 @@ public class LoginUI extends JFrame {
 		setLocationRelativeTo(null);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
-		String svaddress = "";
+		String svaddress = "localhost";
 		try {
 			socket = new Socket(svaddress, 8000);
 			in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
@@ -294,27 +294,22 @@ public class LoginUI extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 String tendangnhap = tftendangnhap.getText();
                 String email = tfemail.getText();
-                try {
-                    if (tendangnhap == null || tendangnhap.isEmpty() || email == null || email.isEmpty()) {
-                        JOptionPane.showMessageDialog(null, "Vui lòng điền đầy đủ thông tin.", "Lỗi", JOptionPane.ERROR_MESSAGE);
-                        return;
-                    }
+                if (tendangnhap == null || tendangnhap.isEmpty() || email == null || email.isEmpty()) {
+				    JOptionPane.showMessageDialog(null, "Vui lòng điền đầy đủ thông tin.", "Lỗi", JOptionPane.ERROR_MESSAGE);
+				    return;
+				}
 
-                    if (!isValidEmail(email)) {
-                        JOptionPane.showMessageDialog(null, "Email không hợp lệ! Email phải có định dạng @gmail.com.", "Lỗi", JOptionPane.ERROR_MESSAGE);
-                        return;
-                    }
+				if (!isValidEmail(email)) {
+				    JOptionPane.showMessageDialog(null, "Email không hợp lệ! Email phải có định dạng @gmail.com.", "Lỗi", JOptionPane.ERROR_MESSAGE);
+				    return;
+				}
 
-                    if (kiemtraxacthuc(tendangnhap, email)) {
-                        mailxacthuc(email, "Xác thực email");
-                        cardtt.show(panel_3,"changepass");
-                    } else {
-                        JOptionPane.showMessageDialog(null, "Thông tin Tên Đăng Nhập hoặc email không đúng.", "Lỗi", JOptionPane.ERROR_MESSAGE);
-                    }
-                } catch (SQLException ex) {
-                    ex.printStackTrace();
-                    JOptionPane.showMessageDialog(null, "Có lỗi xảy ra. Vui lòng thử lại.", "Lỗi", JOptionPane.ERROR_MESSAGE);
-                }
+				if (checkXacthuc(tendangnhap, email)) {
+				    mailxacthuc(email, "Xác thực email");
+				    cardtt.show(panel_3,"changepass");
+				} else {
+				    JOptionPane.showMessageDialog(null, "Thông tin Tên Đăng Nhập hoặc email không đúng.", "Lỗi", JOptionPane.ERROR_MESSAGE);
+				}
             }
         });
 			
@@ -402,7 +397,10 @@ public class LoginUI extends JFrame {
 		            } else {
 		                // Cập nhật mật khẩu mới vào cơ sở dữ liệu
 		                String tendangnhap = tftendangnhap.getText();
-		                capNhatMatKhau(tendangnhap, newpass);
+		                if(ChangePass(tendangnhap, newpass)==true) {
+		                	JOptionPane.showMessageDialog(null, "Cập nhật mật khẩu thành công!");
+		                } else JOptionPane.showMessageDialog(null, "Cập nhật mật khẩu thất bại.", "Lỗi", JOptionPane.ERROR_MESSAGE);
+
 		                cardtt.show(panel_3, "thông tin");
 
 		            }
@@ -546,15 +544,18 @@ public class LoginUI extends JFrame {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				jtotpcreate.setEditable(true);
-				String hoten = jthoten.getText();
+				
+				String username = jtusername.getText();
                 String cccd= jtcccd.getText();
-                String sdt = jtsdt.getText();
+                if(checktontai(username, cccd)==false) {
                 String email = jtemail.getText();
-                String username = jtusername.getText();
-                String pass= new String(jpcreatepass.getPassword());
+                jtotpcreate.setEditable(true);
                 mailxacthuc(email, "otp xác thực!!!");				
+                }else {
+                	JOptionPane.showMessageDialog(null, "TÊN ĐĂNG NHẬP HOẶC CCCD ĐÃ TỒN TẠI");
+                }
 			}
+                
 		});
         pn_dangky.add(btotp);
         btxacnhanthong.addActionListener(new ActionListener() {
@@ -571,10 +572,12 @@ public class LoginUI extends JFrame {
                 // Kiểm tra OTP
                 if (otp.equals(body)) {
                     // OTP đúng, đăng ký tài khoản mới
-                    dangKyTaiKhoan(hoten, cccd, email, sdt, username, pass);
-                    JOptionPane.showMessageDialog(null, "CHÚC MỪNG BẠN ĐÃ TẠO TÀI KHOẢN THÀNH CÔNG.");
-                    cardtt.show(panel_3, "thông tin");
-
+                	boolean check = checkDky(hoten, cccd, sdt, email, pass, username);
+                	if(check == true) {
+                		JOptionPane.showMessageDialog(null, "CHÚC MỪNG BẠN ĐÃ TẠO TÀI KHOẢN THÀNH CÔNG.");
+                        cardtt.show(panel_3, "thông tin");
+                	} else 
+                		JOptionPane.showMessageDialog(null, "ĐÃ CÓ LỖI Ở KHI ĐĂNG KÝ.");
                 } else {
                     // OTP không đúng
                     JOptionPane.showMessageDialog(null, "Mã OTP không đúng, vui lòng kiểm tra lại.", "Lỗi", JOptionPane.ERROR_MESSAGE);
@@ -607,7 +610,8 @@ public class LoginUI extends JFrame {
 	public boolean CheckIn(String data){
 		out.println("CHECKIN#"+data);
 			try {
-				if(in.readLine() == "1") return true;
+				String result = in.readLine();
+				if(result.equals("1")) return true;
 				else return false;
 			} catch (IOException e) {
 				e.printStackTrace();
@@ -615,10 +619,11 @@ public class LoginUI extends JFrame {
 			}
 	}
 	
-	public boolean checkDky(String Username, String CCCD, String Sdth, String email, String mk) {
-		out.println("CHECKDKY#"+Username+"#"+CCCD+"#"+Sdth+"#"+email+"#"+mk);
+	public boolean checkDky(String hoten, String CCCD, String Sdth, String email, String mk, String Username) {
+		out.println("CHECKDKY#"+hoten+"#"+CCCD+"#"+Sdth+"#"+email+"#"+mk+"#"+Username);
 			try {
-				if(in.readLine() == "1") return true;
+				String result = in.readLine();
+				if(result.equals("1")) return true;
 				else return false;
 			} catch (IOException e) {
 				e.printStackTrace();
@@ -631,48 +636,48 @@ public class LoginUI extends JFrame {
 	private boolean isValidEmail(String email) {
 		// Kiểm tra xem email có chứa "@gmail.com" hay không
 		return email != null && email.endsWith("@gmail.com");
+		
 	}
-
-	// Truy vấn dữ liệu để đăng nhập
-	public boolean kiemtraxacthuc(String tendangnhap, String email) throws SQLException {
-		boolean isValid = false;
-		Connection connection = null;
-		PreparedStatement preparedStatement = null;
-		ResultSet resultSet = null;
-
+	
+	
+	public boolean ChangePass(String username, String newpass) {
+		out.println("CHANGEPASS"+"#"+username+"#"+newpass);
 		try {
-			// Get a connection to the database
-			connection = connectdatabase.getConnection();
-
-			// SQL query to check if the information is valid
-			String sql = "SELECT * FROM customer WHERE USERNAME = ? AND EMAIL = ?";
-			preparedStatement = connection.prepareStatement(sql);
-			preparedStatement.setString(1, tendangnhap);
-			preparedStatement.setString(2, email);
-
-			// Execute the query
-			resultSet = preparedStatement.executeQuery();
-
-			// Check if the result set has any rows
-			isValid = resultSet.next();
-		} finally {
-			// Close resources in the reverse order of their creation
-			if (resultSet != null) {
-				resultSet.close();
-			}
-			if (preparedStatement != null) {
-				preparedStatement.close();
-			}
-			if (connection != null) {
-				connection.close();
-			}
-		}
-
-		return isValid;
-
+			String result = in.readLine();
+			if(result.equals("1")) return true;
+			else return false;
+		} catch (IOException e) {
+			e.printStackTrace();
+			return false;
+		}	
 	}
-
-	private int taomaKH() {
+	
+	public boolean checkXacthuc(String username, String email) {
+		out.println("CHECKXACTHUC"+"#"+username+"#"+email);
+		try {
+			String result = in.readLine();
+			if(result.equals("1")) return true;
+			else return false;
+		} catch (IOException e) {
+			e.printStackTrace();
+			return false;
+		}	
+	}
+	
+	public boolean checktontai(String username, String cccd) {
+		out.println("CHECKTONTAI"+"#"+username+"#"+cccd);
+		try {
+			String result = in.readLine();
+			if(result.equals("1")) return true;
+			else return false;
+		} catch (IOException e) {
+			e.printStackTrace();
+			return false;
+		}	
+	}
+	
+	
+	private int taomaOTP() {
 		Random random = new Random();
 		int randomNumber = random.nextInt(900000) + 100000; // Corrected range
 		return randomNumber;
@@ -685,7 +690,7 @@ public class LoginUI extends JFrame {
 
 		String to = email;
 		String subject = tieude;
-		body = String.valueOf(taomaKH()); // Convert int to String
+		body = String.valueOf(taomaOTP()); // Convert int to String
 		System.out.println(body);
 		Properties props = new Properties();
 		props.put("mail.smtp.host", host);
@@ -713,100 +718,17 @@ public class LoginUI extends JFrame {
 			e.printStackTrace();
 		}
 	}
-	private void capNhatMatKhau(String tendangnhap, String newpass) throws SQLException {
-	    Connection connection = null;
-	    PreparedStatement preparedStatement = null;
 
-	    try {
-	        // Get a connection to the database
-	        connection = connectdatabase.getConnection();
-
-	        // Encode the new password with salt
-	        String salt = "asdfghjkl";
-	        String str = newpass + salt;
-	        String passnew = Base64.getEncoder().encodeToString(str.getBytes());
-
-	        // SQL query to update the password
-	        String sql = "UPDATE customer SET PASS = ? WHERE USERNAME = ?";
-	        preparedStatement = connection.prepareStatement(sql);
-	        preparedStatement.setString(1,passnew );
-	        preparedStatement.setString(2, tendangnhap);
-
-	        // Execute the update query
-	        int rowsAffected = preparedStatement.executeUpdate();
-
-	        if (rowsAffected > 0) {
-	            JOptionPane.showMessageDialog(this, "Cập nhật mật khẩu thành công!");
-	            System.out.println(passnew);
-	        } else {
-	            JOptionPane.showMessageDialog(this, "Cập nhật mật khẩu thất bại.", "Lỗi", JOptionPane.ERROR_MESSAGE);
-	        }
-	    } finally {
-	        // Close resources in the reverse order of their creation
-	        if (preparedStatement != null) {
-	            preparedStatement.close();
-	        }
-	        if (connection != null) {
-	            connection.close();
-	        }
-	    }
-	}
-	public void dangKyTaiKhoan(String hoten, String cccd, String email, String sdt, String username, String pass) {
-	    Connection connection = null;
-	    PreparedStatement preparedStatement = null;
-
-	    try {
-	        // Mã hóa mật khẩu
-	        String salt = "asdfghjkl";
-	        String str = pass + salt;
-	        String encodedPass = Base64.getEncoder().encodeToString(str.getBytes());
-	        System.out.println(encodedPass);
-
-	        // Tạo kết nối đến cơ sở dữ liệu
-	        connection = connectdatabase.getConnection();
-
-	        // Chuẩn bị câu lệnh SQL để thêm người dùng mới
-	        String sql = "INSERT INTO customer (HOTEN, CCCD, SDT, EMAIL, PASS, USERNAME) VALUES (?, ?, ?, ?, ?, ?)";
-	        preparedStatement = connection.prepareStatement(sql);
-
-	        // Gán giá trị cho các tham số
-	        preparedStatement.setString(1, hoten);
-	        preparedStatement.setString(2, cccd);
-	        preparedStatement.setString(3, sdt);
-	        preparedStatement.setString(4, email);
-	        preparedStatement.setString(5, encodedPass);
-	        preparedStatement.setString(6, username);
-
-	        // Thực thi câu lệnh SQL
-	        int rowsAffected = preparedStatement.executeUpdate();
-
-	        if (rowsAffected > 0) {
-	        } else {
-	            JOptionPane.showMessageDialog(this, "Đăng ký tài khoản thất bại.", "Lỗi", JOptionPane.ERROR_MESSAGE);
-	        }
-	    } catch (SQLException e) {
-	        e.printStackTrace();
-	        JOptionPane.showMessageDialog(this, "Có lỗi xảy ra khi đăng ký tài khoản.", "Lỗi", JOptionPane.ERROR_MESSAGE);
-	    } finally {
-	        // Đóng các tài nguyên
-	        try {
-	            if (preparedStatement != null) {
-	                preparedStatement.close();
-	            }
-	            if (connection != null) {
-	                connection.close();
-	            }
-	        } catch (SQLException e) {
-	            e.printStackTrace();
-	        }
-	    }
-	}
-	
-
-	
-	
 	
 	
 	
 }
+	
+
+	
+	
+	
+	
+	
+
 	 
