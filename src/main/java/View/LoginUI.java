@@ -1,6 +1,6 @@
 package View;
 
-import java.awt.EventQueue; 
+import java.awt.EventQueue;   
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -22,7 +22,7 @@ import java.awt.CardLayout;
 import javax.swing.JTextField;
 import java.awt.Color;
 import java.awt.Font;
-import java.util.Base64;
+
 import java.util.Properties;
 import java.util.Random;
 
@@ -31,8 +31,6 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JPasswordField;
 import javax.swing.border.TitledBorder;
-
-import controller.connectdatabase;
 
 import javax.swing.border.BevelBorder;
 import java.awt.SystemColor;
@@ -44,10 +42,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+
 import java.awt.event.ActionEvent;
 
 

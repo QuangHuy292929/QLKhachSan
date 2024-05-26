@@ -1,7 +1,7 @@
 package View;
  
 
-import javax.swing.JFrame;
+import javax.swing.JFrame;  
 import javax.swing.JPanel;
 
 import javax.swing.UIManager;
@@ -29,6 +29,7 @@ import java.awt.CardLayout;
 import javax.swing.border.BevelBorder;
 import javax.swing.border.Border;
 import Model.Phong;
+import Model.Phong.LoaiPhong;
 import Model.Phong.TrangThaiPhong;
 import controller.PhongManagerQL;
 import controller.connectdatabase;
@@ -60,7 +61,7 @@ public class ManagerUI extends JFrame {
     Color colordat = new Color(205, 180, 219);
     Color colorchoxacnhan = new Color(255, 200, 221);
 	public CardLayout cardhd;
-	private String body;
+	
 
 	public static void main(String[] args) {
 		try {
@@ -100,6 +101,20 @@ public class ManagerUI extends JFrame {
         Font font2 = new Font("Roboto",Font.CENTER_BASELINE, 18);
         
 		ArrayList<PhongManagerQL> quanLyPhong = new ArrayList<PhongManagerQL>();
+		phong = new Phong[]{
+				new Phong(101, "Phòng 101", TrangThaiPhong.TRONG, LoaiPhong.THUONG),
+				new Phong(102, "Phòng 102", TrangThaiPhong.CHO_XAC_NHAN, LoaiPhong.THUONG),
+				new Phong(103, "Phòng 103", TrangThaiPhong.DANG_HOAT_DONG, LoaiPhong.THUONG),
+				new Phong(104, "Phòng 104", TrangThaiPhong.TRONG, LoaiPhong.THUONG),
+				new Phong(201, "Phòng 201", TrangThaiPhong.TRONG, LoaiPhong.TRUNG),
+				new Phong(202, "Phòng 202", TrangThaiPhong.TRONG, LoaiPhong.TRUNG),
+				new Phong(203, "Phòng 203", TrangThaiPhong.TRONG, LoaiPhong.TRUNG),
+				new Phong(204, "Phòng 204", TrangThaiPhong.DANG_HOAT_DONG, LoaiPhong.TRUNG),
+				new Phong(301, "Phòng 301", TrangThaiPhong.TRONG, LoaiPhong.VIP),
+				new Phong(302, "Phòng 302", TrangThaiPhong.TRONG, LoaiPhong.VIP),
+				new Phong(303, "Phòng 303", TrangThaiPhong.TRONG, LoaiPhong.VIP),
+				new Phong(304, "Phòng 304", TrangThaiPhong.TRONG, LoaiPhong.VIP),
+		};
 		this.setVisible(true);
 		this.setSize(1200, 800);
 		this.setLocationRelativeTo(null);
@@ -209,20 +224,6 @@ public class ManagerUI extends JFrame {
 		lblNewLabel_2.setFont(font);
 		panel_8.add(lblNewLabel_2);
 		
-		phong = new Phong[]{
-				new Phong(101, "Phòng 101", TrangThaiPhong.TRONG),
-				new Phong(102, "Phòng 102", TrangThaiPhong.CHO_XAC_NHAN),
-				new Phong(103, "Phòng 103", TrangThaiPhong.DANG_HOAT_DONG),
-				new Phong(104, "Phòng 104", TrangThaiPhong.TRONG),
-				new Phong(201, "Phòng 201", TrangThaiPhong.TRONG),
-				new Phong(202, "Phòng 202", TrangThaiPhong.TRONG),
-				new Phong(203, "Phòng 203", TrangThaiPhong.TRONG),
-				new Phong(204, "Phòng 204", TrangThaiPhong.DANG_HOAT_DONG),
-				new Phong(301, "Phòng 301", TrangThaiPhong.TRONG),
-				new Phong(302, "Phòng 302", TrangThaiPhong.TRONG),
-				new Phong(303, "Phòng 303", TrangThaiPhong.TRONG),
-				new Phong(304, "Phòng 304", TrangThaiPhong.TRONG),
-		};
 
 		// Tạo các panel để cho thấy thông tin phòng
 		JPanel pn_p101 = new JPanel();

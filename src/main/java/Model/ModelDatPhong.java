@@ -1,55 +1,45 @@
 package Model;
 
-import java.time.LocalDateTime; 
-import java.util.ArrayList;
+import java.time.LocalDateTime;  
+
 
 public class ModelDatPhong {
 	
 	private int madatphong;
-	private int maKhachHang;
-	private int maPhong;
+	private ModelKhachHang khachhang;
+	private Phong phong;
 	private LocalDateTime ngaygiovophong;
 	private LocalDateTime ngaygiotraphong;
-	private int songuoio;
 	private int chiphiphong;
 	
-	public ModelDatPhong(int madatphong, int maKhachHang, int maPhong, LocalDateTime ngaygiovophong,
-			LocalDateTime ngaygiotraphong, int songuoio, int chiphiphong) {
+	public ModelDatPhong(int madatphong, ModelKhachHang khachhang, Phong phong, LocalDateTime ngaygiovophong,
+			LocalDateTime ngaygiotraphong, int chiphiphong) {
 		this.madatphong = madatphong;
-		this.maKhachHang = maKhachHang;
-		this.maPhong = maPhong;
+		this.khachhang = khachhang;
+		this.phong = phong;
 		this.ngaygiovophong = ngaygiovophong;
 		this.ngaygiotraphong = ngaygiotraphong;
-		this.songuoio = songuoio;
 		this.chiphiphong = chiphiphong;
 	}
 	
-	public ModelDatPhong() {
-	}
-
 	public int getMadatphong() {
 		return madatphong;
 	}
 	public void setMadatphong(int madatphong) {
 		this.madatphong = madatphong;
 	}
-
-	public int getMaKhachHang() {
-		return maKhachHang;
+	public ModelKhachHang getKhachhang() {
+		return khachhang;
 	}
-
-	public void setMaKhachHang(int maKhachHang) {
-		this.maKhachHang = maKhachHang;
+	public void setKhachhang(ModelKhachHang khachhang) {
+		this.khachhang = khachhang;
 	}
-
-	public int getMaPhong() {
-		return maPhong;
+	public Phong getPhong() {
+		return phong;
 	}
-
-	public void setMaPhong(int maPhong) {
-		this.maPhong = maPhong;
+	public void setPhong(Phong phong) {
+		this.phong = phong;
 	}
-
 	public LocalDateTime getNgaygiovophong() {
 		return ngaygiovophong;
 	}
@@ -62,12 +52,6 @@ public class ModelDatPhong {
 	public void setNgaygiotraphong(LocalDateTime ngaygiotraphong) {
 		this.ngaygiotraphong = ngaygiotraphong;
 	}
-	public int getSonguoio() {
-		return songuoio;
-	}
-	public void setSonguoio(int songuoio) {
-		this.songuoio = songuoio;
-	}
 	public int getChiphiphong() {
 		return chiphiphong;
 	}
@@ -75,6 +59,6 @@ public class ModelDatPhong {
 		this.chiphiphong = chiphiphong;
 	}
 	
-	static ArrayList<ModelDatPhong> listDatPhong;
 	
 }
+
