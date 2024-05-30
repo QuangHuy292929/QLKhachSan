@@ -1,7 +1,7 @@
 package View;
  
 
-import javax.swing.JFrame;  
+import javax.swing.JFrame;    
 import javax.swing.JPanel;
 
 import javax.swing.UIManager;
@@ -23,11 +23,20 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.Base64;
+import java.util.HashMap;
 import java.util.List;
-
+import java.util.Random;
 import java.awt.CardLayout;
 import javax.swing.border.BevelBorder;
 import javax.swing.border.Border;
+
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+
+import Model.ModelDichVu;
+import Model.ModelKhachHang;
+import Model.Modelchuoi;
 import Model.Phong;
 import Model.Phong.LoaiPhong;
 import Model.Phong.TrangThaiPhong;
@@ -48,6 +57,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 
 public class ManagerUI extends JFrame {
@@ -61,7 +72,13 @@ public class ManagerUI extends JFrame {
     Color colordat = new Color(205, 180, 219);
     Color colorchoxacnhan = new Color(255, 200, 221);
 	public CardLayout cardhd;
-	
+	public HashMap<Integer, String> key_room = new HashMap<Integer, String>();
+	private DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
+	public ArrayList<PhongManagerQL> quanLyPhong;
+	ModelDichVu[] danhsachDV = new ModelDichVu[17];
+
+
+
 
 	public static void main(String[] args) {
 		try {
@@ -100,7 +117,7 @@ public class ManagerUI extends JFrame {
         Font font = new Font("Roboto", Font.BOLD, 22);
         Font font2 = new Font("Roboto",Font.CENTER_BASELINE, 18);
         
-		ArrayList<PhongManagerQL> quanLyPhong = new ArrayList<PhongManagerQL>();
+		quanLyPhong = new ArrayList<PhongManagerQL>();
 		phong = new Phong[]{
 				new Phong(101, "Phòng 101", TrangThaiPhong.TRONG, LoaiPhong.THUONG),
 				new Phong(102, "Phòng 102", TrangThaiPhong.CHO_XAC_NHAN, LoaiPhong.THUONG),
@@ -115,6 +132,37 @@ public class ManagerUI extends JFrame {
 				new Phong(303, "Phòng 303", TrangThaiPhong.TRONG, LoaiPhong.VIP),
 				new Phong(304, "Phòng 304", TrangThaiPhong.TRONG, LoaiPhong.VIP),
 		};
+		danhsachDV[0] = new ModelDichVu(0, "Nước lọc", 15000);
+		danhsachDV[1] = new ModelDichVu(1, "Snack khoai tây", 20000);
+		danhsachDV[2] = new ModelDichVu(2, "Coca/Pepsi", 20000);
+		danhsachDV[3] = new ModelDichVu(3, "Rượu Vodka SMIRNOFF 700ML", 400000);
+		danhsachDV[4] = new ModelDichVu(4, "Bánh KitKat", 25000);
+		danhsachDV[5] = new ModelDichVu(5, "Nước Smartwater 500ML", 60000);
+		danhsachDV[6] = new ModelDichVu(6, "Bia Heineken 250ML", 20000);
+		danhsachDV[7] = new ModelDichVu(7, "Vang Ý Mango Tropical 750ML", 500000);
+		danhsachDV[8] = new ModelDichVu(8, "Chivas Regal 18 Gold Signature 700ML", 1400000);
+		danhsachDV[9] = new ModelDichVu(9, "Cho thuê xe tự lái", 700000);
+		danhsachDV[10] = new ModelDichVu(10, "Dùng điểm tâm", 500000);
+		danhsachDV[11] = new ModelDichVu(11, "Đưa đón sân bay", 200000);
+		danhsachDV[12] = new ModelDichVu(12, "Trông trẻ", 300000);
+		danhsachDV[13] = new ModelDichVu(13, "Tuần trăng mật", 3000000);
+		danhsachDV[14] = new ModelDichVu(14, "Giặt ủi", 100000);
+		danhsachDV[15] = new ModelDichVu(15, "Spa", 1500000);
+		danhsachDV[16] = new ModelDichVu(16, "Fitness", 200000);
+		key_room.put(101, "");
+		key_room.put(102, "");
+		key_room.put(103, "");
+		key_room.put(104, "");
+		key_room.put(201, "");
+		key_room.put(202, "");
+		key_room.put(203, "");
+		key_room.put(204, "");
+		key_room.put(301, "");
+		key_room.put(302, "");
+		key_room.put(303, "");
+		key_room.put(304, "");
+		
+
 		this.setVisible(true);
 		this.setSize(1200, 800);
 		this.setLocationRelativeTo(null);
@@ -829,18 +877,21 @@ public class ManagerUI extends JFrame {
 
 	        // Tạo kết nối đến cơ sở dữ liệu
 	        connection = connectdatabase.getConnection();
-
+	        String lastThreeDigits = sdt.substring(sdt.length() - 3);
+	        String makh = TaoMaKH(lastThreeDigits);
 	        // Chuẩn bị câu lệnh SQL để thêm người dùng mới
-	        String sql = "INSERT INTO customer (HOTEN, CCCD, SDT, EMAIL, PASS, USERNAME) VALUES (?, ?, ?, ?, ?, ?)";
+//insert ma khách hàng
+	        String sql = "INSERT INTO customer (MAKH,HOTEN, CCCD, SDT, EMAIL, PASS, USERNAME) VALUES (?, ?, ?, ?, ?, ?, ?)";
 	        preparedStatement = connection.prepareStatement(sql);
 
 	        // Gán giá trị cho các tham số
-	        preparedStatement.setString(1, hoten);
-	        preparedStatement.setString(2, cccd);
-	        preparedStatement.setString(3, sdt);
-	        preparedStatement.setString(4, email);
-	        preparedStatement.setString(5, encodedPass);
-	        preparedStatement.setString(6, username);
+	        preparedStatement.setString(1, makh);
+	        preparedStatement.setString(2, hoten);
+	        preparedStatement.setString(3, cccd);
+	        preparedStatement.setString(4, sdt);
+	        preparedStatement.setString(5, email);
+	        preparedStatement.setString(6, encodedPass);
+	        preparedStatement.setString(7, username);
 
 	        // Thực thi câu lệnh SQL
 	        int rowsAffected = preparedStatement.executeUpdate();
@@ -912,91 +963,374 @@ public class ManagerUI extends JFrame {
 
 		   return isDuplicated;
 	}
-	
+
 	// Truy vấn dữ liệu để đăng nhập
-		public boolean kiemtraxacthuc(String tendangnhap, String email) throws SQLException {
-			boolean isValid = false;
-			Connection connection = null;
-			PreparedStatement preparedStatement = null;
-			ResultSet resultSet = null;
+	public boolean kiemtraxacthuc(String tendangnhap, String email) throws SQLException {
+		boolean isValid = false;
+		Connection connection = null;
+		PreparedStatement preparedStatement = null;
+		ResultSet resultSet = null;
 
-			try {
-				// Get a connection to the database
-				connection = connectdatabase.getConnection();
+		try {
+			// Get a connection to the database
+			connection = connectdatabase.getConnection();
 
-				// SQL query to check if the information is valid
-				String sql = "SELECT * FROM customer WHERE USERNAME = ? AND EMAIL = ?";
-				preparedStatement = connection.prepareStatement(sql);
-				preparedStatement.setString(1, tendangnhap);
-				preparedStatement.setString(2, email);
+			// SQL query to check if the information is valid
+			String sql = "SELECT * FROM customer WHERE USERNAME = ? AND EMAIL = ?";
+			preparedStatement = connection.prepareStatement(sql);
+			preparedStatement.setString(1, tendangnhap);
+			preparedStatement.setString(2, email);
 
-				// Execute the query
-				resultSet = preparedStatement.executeQuery();
+			// Execute the query
+			resultSet = preparedStatement.executeQuery();
 
-				// Check if the result set has any rows
-				isValid = resultSet.next();
-			} finally {
-				// Close resources in the reverse order of their creation
-				if (resultSet != null) {
-					resultSet.close();
-				}
-				if (preparedStatement != null) {
-					preparedStatement.close();
-				}
-				if (connection != null) {
-					connection.close();
+			// Check if the result set has any rows
+			isValid = resultSet.next();
+		} finally {
+			// Close resources in the reverse order of their creation
+			if (resultSet != null) {
+				resultSet.close();
+			}
+			if (preparedStatement != null) {
+				preparedStatement.close();
+			}
+			if (connection != null) {
+				connection.close();
+			}
+		}
+
+		return isValid;
+
+	}
+
+	public boolean capNhatMatKhau(String tendangnhap, String newpass) throws SQLException {
+		Connection connection = null;
+		PreparedStatement preparedStatement = null;
+
+		try {
+			// Get a connection to the database
+			connection = connectdatabase.getConnection();
+
+			// Encode the new password with salt
+			String salt = "asdfghjkl";
+			String str = newpass + salt;
+			String passnew = Base64.getEncoder().encodeToString(str.getBytes());
+
+			// SQL query to update the password
+			String sql = "UPDATE customer SET PASS = ? WHERE USERNAME = ?";
+			preparedStatement = connection.prepareStatement(sql);
+			preparedStatement.setString(1, passnew);
+			preparedStatement.setString(2, tendangnhap);
+
+			// Execute the update query
+			int rowsAffected = preparedStatement.executeUpdate();
+
+			if (rowsAffected > 0) {
+
+				return true;
+			} else {
+
+				return false;
+			}
+		} finally {
+			// Close resources in the reverse order of their creation
+			if (preparedStatement != null) {
+				preparedStatement.close();
+			}
+			if (connection != null) {
+				connection.close();
+			}
+		}
+	}
+	
+	public String phantichgia(int gia) {
+		String s = new String();
+		int dong = 0, trieu = 0, nghin = 0, copy = gia;
+		String dongs = null, trieus = null, nghins = null;
+		if(copy>0) {
+			dong = copy%1000;
+			copy/=1000;
+			if(copy>0) {
+				nghin = copy%1000;
+				copy/=1000;
+				if(copy>0) {
+					trieu = copy%1000;
 				}
 			}
-
-			return isValid;
-
+		}
+		if(trieu>0&&trieu<=99) {
+			trieus =  "0"+dong;
+		} else if(trieu == 0){
+			trieus = "000";
+		} else if(trieu>99) {
+			trieus = dong+"";
+		}
+		if(dong>0&&dong<=99) {
+			dongs =  "0"+dong;
+		} else if(dong == 0){
+			dongs = "000";
+		} else if(dong>99) {
+			dongs = dong+"";
 		}
 		
-		
-		public boolean capNhatMatKhau(String tendangnhap, String newpass) throws SQLException {
-		    Connection connection = null;
-		    PreparedStatement preparedStatement = null;
-
-		    try {
-		        // Get a connection to the database
-		        connection = connectdatabase.getConnection();
-
-		        // Encode the new password with salt
-		        String salt = "asdfghjkl";
-		        String str = newpass + salt;
-		        String passnew = Base64.getEncoder().encodeToString(str.getBytes());
-
-		        // SQL query to update the password
-		        String sql = "UPDATE customer SET PASS = ? WHERE USERNAME = ?";
-		        preparedStatement = connection.prepareStatement(sql);
-		        preparedStatement.setString(1,passnew );
-		        preparedStatement.setString(2, tendangnhap);
-
-		        // Execute the update query
-		        int rowsAffected = preparedStatement.executeUpdate();
-
-		        if (rowsAffected > 0) {
-		            
-		            return true;
-		        } else {
-		           
-		            return false;
-		        }
-		    } finally {
-		        // Close resources in the reverse order of their creation
-		        if (preparedStatement != null) {
-		            preparedStatement.close();
-		        }
-		        if (connection != null) {
-		            connection.close();
-		        }
-		    }
+		if(nghin>0&&nghin<=99) {
+			nghins =  "0"+nghin;
+		} else if(nghin == 0){
+			nghins = "000";
+		} else if(nghin>99) {
+			nghins = nghin+"";
 		}
-
+		
+		if(gia>=1000000) {
+			s = trieu+"."+nghins+"."+dongs+" VND";
+		} else s = nghin+"."+dongs+" VND";
+		return s;
+	}
 	
+	//phương thức tạo mã khách hàng khi tạo tài khoản
+	public String TaoMaKH(String soduoi) {
+		LocalDateTime now = LocalDateTime.now();
+	    String dateTimeString = now.format(DATE_TIME_FORMATTER);
+		return  soduoi + dateTimeString;
+	}
+	
+	private int taomaDatphong() { 
+        Random random = new Random();
+        int randomNumber = random.nextInt(89999) + 10000;
+        return randomNumber;
+    }
+
 	public void Order() {
 		
 	}
+	
+	
+	
+	public String truyendulieu(pn_ChoxacnhanQL xacnhan, pn_DanghoatdongQL hoatdong) {
+		for(int i = 0; i<12; i++) {
+			if(phong[i].getTrangThai() == TrangThaiPhong.CHO_XAC_NHAN) {
+				int maphong = phong[i].getId();
+				int madp = Integer.parseInt(key_room.get(maphong));
+				for (PhongManagerQL phongql : quanLyPhong) {
+					if(phongql.phong.getId() == maphong) {
+						JsonObject infoKH  = new JsonObject();
+						infoKH.addProperty("maphong", xacnhan.lbMaPhong.getText());
+						infoKH.addProperty("makhachhang", xacnhan.TMaKH.getText());
+						infoKH.addProperty("madatphong", xacnhan.TMadatphong.getText());
+						infoKH.addProperty("hovaten", xacnhan.THovaten.getText());
+						infoKH.addProperty("cccd", xacnhan.TCCCD.getText());
+						infoKH.addProperty("sdth", xacnhan.TSdth.getText());
+						JsonObject dv = new JsonObject();
+						JsonArray dichvu = new JsonArray();
+						for (int row = 0; row < xacnhan.db.getRowCount(); row++) {
+							JsonObject ob = new JsonObject();
+							ob.addProperty("tendichvu", xacnhan.db.getValueAt(i, 0)+"");
+							ob.addProperty("dongia", xacnhan.db.getValueAt(i, 1)+"");
+							dichvu.add(ob);
+						}
+						dv.add("dichvutruoc", dichvu);
+						
+					} else return null;
+				} 
+			} else if(phong[i].getTrangThai() == TrangThaiPhong.DANG_HOAT_DONG) {
+				int maphong = phong[i].getId();
+				int madp = Integer.parseInt(key_room.get(maphong));
+				for (PhongManagerQL phongql : quanLyPhong) {
+					if(phongql.phong.getId() == maphong) {
+						JsonObject infoKH  = new JsonObject();
+						infoKH.addProperty("maphong", hoatdong.lbMaPhong.getText());
+						infoKH.addProperty("makhachhang", hoatdong.TMaKH.getText());
+						infoKH.addProperty("madatphong", hoatdong.TMadatphong.getText());
+						infoKH.addProperty("hovaten", hoatdong.THovaten.getText());
+						infoKH.addProperty("cccd", hoatdong.TCCCD.getText());
+						infoKH.addProperty("sdth", hoatdong.TSDTH.getText());
+						infoKH.addProperty("ngayvao", hoatdong.TNgayGioNHanPhong.getText());
+						JsonObject dvtruoc = new JsonObject();
+						JsonArray dichvu = new JsonArray();
+						for (int row = 0; row < xacnhan.db.getRowCount(); row++) {
+							JsonObject ob = new JsonObject();
+							ob.addProperty("tendichvu", xacnhan.db.getValueAt(i, 0)+"");
+							ob.addProperty("dongia", xacnhan.db.getValueAt(i, 1)+"");
+							dichvu.add(ob);
+						}
+						dvtruoc.add("dichvutruoc", dichvu);
+						JsonObject dvsau = new JsonObject();
+						JsonArray JsSau = new JsonArray();
+						for(int j = 0;j<hoatdong.dbsau.getRowCount();i++) {
+							JsonObject jsob = new JsonObject();
+							jsob.addProperty("tendichvu", hoatdong.dbsau.getValueAt(j, 0)+"");
+							jsob.addProperty("dongia", hoatdong.dbsau.getValueAt(j, 1)+"");
+							jsob.addProperty("soluong", hoatdong.dbsau.getValueAt(j, 2)+"");
+							jsob.addProperty("thanhtien", hoatdong.dbsau.getValueAt(j, 3)+"");
+							JsSau.add(jsob);
+						}
+						dvsau.add("dichvusau", JsSau);
+						return infoKH.toString()+"#"+dvtruoc.toString()+"#"+dvsau.toString();
+					} else return null;
+						
+					}
+				}else 
+					return null;
+					
+			
+		}
+		return null;
+		
+	}
+	
+	public int booking(String chuoithongtin) {
+		Gson tt = new Gson();
+		Modelchuoi chuoi = tt.fromJson(chuoithongtin, Modelchuoi.class);
+		//Xử lý đặt phòng
+		int madp = taomaDatphong();
+		key_room.put(chuoi.getMaphong(), madp+"");
+		if(chuoi.getTrangthai() == TrangThaiPhong.CHO_XAC_NHAN) {
+			for (PhongManagerQL phongql : quanLyPhong) {
+				if(phongql.phong.getId() == chuoi.getMaphong()) {
+					phongql.xacnhan.TMadatphong.setText(madp+"");
+					phongql.xacnhan.TMaKH.setText(chuoi.getMaKhachHang());
+					phongql.xacnhan.THovaten.setText(chuoi.getHoVaTen());
+					phongql.xacnhan.TCCCD.setText(chuoi.getCccd());
+					phongql.xacnhan.TSdth.setText(chuoi.getSdt());
+					if(chuoi.isChoThueXe()) phongql.xacnhan.db.addRow(new Object[] {
+						"Cho thuê xe tự lái",  phantichgia(danhsachDV[9].getGiaca())});				
+					if(chuoi.isDuaDonSanBay()) phongql.xacnhan.db.addRow(new Object[] {
+							"Đưa đón sân bay", phantichgia(danhsachDV[11].getGiaca())});
+					if(chuoi.isDungDiemTam()) phongql.xacnhan.db.addRow(new Object[] {
+							"Dùng điểm tâm", phantichgia(danhsachDV[10].getGiaca())});
+					if(chuoi.isTrongTre()) phongql.xacnhan.db.addRow(new Object[] {
+							"Trông trẻ", phantichgia(danhsachDV[12].getGiaca())});
+					if(chuoi.isTuanTrangMat()) phongql.xacnhan.db.addRow(new Object[] {
+							"Tuần trăng mật", phantichgia(danhsachDV[13].getGiaca())});
+					if(chuoi.isGiatui()) phongql.xacnhan.db.addRow(new Object[] {
+							"Giặt ủi", phantichgia(danhsachDV[14].getGiaca())});
+					if(chuoi.isSpa()) phongql.xacnhan.db.addRow(new Object[] {
+							"Spa", phantichgia(danhsachDV[15].getGiaca())});
+					if(chuoi.isFitness()) phongql.xacnhan.db.addRow(new Object[] {
+							"Fitness", phantichgia(danhsachDV[16].getGiaca())});
+				}
+			}
+		} else if(chuoi.getTrangthai() == TrangThaiPhong.DANG_HOAT_DONG) {
+			for (PhongManagerQL phongql : quanLyPhong) {
+				if(phongql.phong.getId() == chuoi.getMaphong()) {
+					phongql.hoatdong.TMadatphong.setText(madp+"");
+					phongql.hoatdong.TMaKH.setText(chuoi.getMaKhachHang());
+					phongql.hoatdong.THovaten.setText(chuoi.getHoVaTen());
+					phongql.hoatdong.TCCCD.setText(chuoi.getCccd());
+					phongql.hoatdong.TNgayGioNHanPhong.setText(chuoi.getngaygiovaophong());
+					if(chuoi.isChoThueXe()) phongql.hoatdong.db.addRow(new Object[] {
+						"Cho thuê xe tự lái",  phantichgia(danhsachDV[9].getGiaca())});				
+					if(chuoi.isDuaDonSanBay()) phongql.hoatdong.db.addRow(new Object[] {
+							"Đưa đón sân bay", phantichgia(danhsachDV[11].getGiaca())});
+					if(chuoi.isDungDiemTam()) phongql.hoatdong.db.addRow(new Object[] {
+							"Dùng điểm tâm", phantichgia(danhsachDV[10].getGiaca())});
+					if(chuoi.isTrongTre()) phongql.hoatdong.db.addRow(new Object[] {
+							"Trông trẻ", phantichgia(danhsachDV[12].getGiaca())});
+					if(chuoi.isTuanTrangMat()) phongql.hoatdong.db.addRow(new Object[] {
+							"Tuần trăng mật", phantichgia(danhsachDV[13].getGiaca())});
+					if(chuoi.isGiatui()) phongql.hoatdong.db.addRow(new Object[] {
+							"Giặt ủi", phantichgia(danhsachDV[14].getGiaca())});
+					if(chuoi.isSpa()) phongql.hoatdong.db.addRow(new Object[] {
+							"Spa", phantichgia(danhsachDV[15].getGiaca())});
+					if(chuoi.isFitness()) phongql.hoatdong.db.addRow(new Object[] {
+							"Fitness", phantichgia(danhsachDV[16].getGiaca())});
+				}
+			}
+		}
+		
+		return madp;
+	}
+
+//	public boolean truyXuatDatPhong(Connection conn, String maDatPhong) throws SQLException {
+//	    boolean success = false;
+//	    int count = 0;
+//	    PreparedStatement statement = null;
+//	    ResultSet resultSet = null;
+//
+//	    try {
+//	        String query = "SELECT C.MAKH, C.HOTEN, P.MAPHONG, D.MADP, D.NGAYGIOVP, D.NGAYGIOTP, P.TRANGTHAI " +
+//	                "FROM customer C " +
+//	                "JOIN datphong D ON D.MAKH = C.MAKH " +
+//	                "JOIN phongks P ON P.MAPHONG = D.MAPHONG " +
+//	                "WHERE D.MADP = ?";
+//
+//	        statement = conn.prepareStatement(query);
+//	        statement.setString(1, maDatPhong);
+//
+//	        resultSet = statement.executeQuery();
+//
+//	        while (resultSet.next()) {
+//	            count++;
+//	            String makh = resultSet.getString("MAKH");
+//	            String hoten = resultSet.getString("HOTEN");
+//	            String maphong = resultSet.getString("MAPHONG");
+//	            String madp = resultSet.getString("MADP");
+//	            String ngaygiovp = resultSet.getString("NGAYGIOVP");
+//	            String ngaygiotp = resultSet.getString("NGAYGIOTP");
+//	            String trangthai = resultSet.getString("TRANGTHAI");
+//
+//	            System.out.println("MAKH: " + makh + ", HOTEN: " + hoten + ", MAPHONG: " + maphong + ", MADP: " + madp +
+//	                    ", NGAYGIOVP: " + ngaygiovp + ", NGAYGIOTP: " + ngaygiotp + ", TRANGTHAI: " + trangthai);
+//	        }
+//
+//	        if (count > 0) {
+//	            success = true;
+//	        }
+//	    } catch (SQLException e) {
+//	        e.printStackTrace();
+//	    } finally {
+//	        // Đóng ResultSet và PreparedStatement
+//	        if (resultSet != null) {
+//	            resultSet.close();
+//	        }
+//	        if (statement != null) {
+//	            statement.close();
+//	        }
+//	    }
+//
+//	    return success;
+//	}
+	//tao modelchuoi để lưu
+
+	public String truyenthongtin(String username) {
+	    try (
+	    	Connection connection = connectdatabase.getConnection();
+	         PreparedStatement statement = connection.prepareStatement("SELECT MAKH, HOTEN, CCCD, SDT, EMAIL FROM customer WHERE USERNAME = ?");) {
+
+	        statement.setString(1, username);
+	        ResultSet resultSet = statement.executeQuery();
+
+	        if (resultSet.next()) {
+	            String makh = resultSet.getString("MAKH");
+	            String hoten = resultSet.getString("HOTEN");
+	            String cccd = resultSet.getString("CCCD");
+	            String sdt = resultSet.getString("SDT");
+	            String email = resultSet.getString("EMAIL");
+
+	            // Tạo đối tượng ModelKhachHang và đặt các thuộc tính
+	            ModelKhachHang khachHang = new ModelKhachHang();
+	            khachHang.setMakhachhang(makh);
+	            khachHang.setHoten(hoten);
+	            khachHang.setCccd(cccd);
+	            khachHang.setSdt(sdt);
+	            khachHang.setEmail(email);
+	            
+
+	            // Sử dụng Gson để chuyển đối tượng thành chuỗi JSON
+	            Gson gson = new Gson();
+	            String thongtin = gson.toJson(khachHang);
+
+	            // In chuỗi JSON ra console hoặc xử lý theo yêu cầu
+
+	            return thongtin;
+	        }
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	    }
+
+	    return null;
+	}
+	
 	
 	
 }

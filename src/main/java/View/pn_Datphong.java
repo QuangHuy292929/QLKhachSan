@@ -1,6 +1,6 @@
 package View;
 
-import java.awt.Dimension; 
+import java.awt.Dimension;    
 
 import javax.swing.JPanel;
 import javax.swing.JLabel;
@@ -8,7 +8,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JSpinner;
 import javax.swing.SpinnerDateModel;
 import java.util.Date;
-import java.util.Properties;
+
 import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -27,9 +27,13 @@ import javax.swing.JButton;
 import javax.swing.border.BevelBorder;
 import javax.swing.border.TitledBorder;
 
+import com.google.gson.Gson;
+
+import Model.ModelKhachHang;
+import Model.Modelchuoi;
 import Model.Phong;
 import Model.Phong.TrangThaiPhong;
-import jakarta.mail.Session;
+
 
 import javax.swing.border.EtchedBorder;
 
@@ -39,10 +43,10 @@ import javax.swing.ImageIcon;
 public class pn_Datphong extends JPanel {
 
 	private static final long serialVersionUID = 1L;
-	private JTextField tfhovaten;
-	private JTextField tftinh;
+	public JTextField tfhovaten;
+	public JTextField tfmaKhachHang;
 	public JTextField tfcccd;
-	private JTextField tfsdt;
+	public JTextField tfsdt;
 	private JCheckBox cbtuantrangmat;
 	private JCheckBox cbduadonsanbay;
 	private JCheckBox cbdungdiemtam;
@@ -61,6 +65,11 @@ public class pn_Datphong extends JPanel {
 	private JCheckBox cbSPA;
 	private JCheckBox cbFitness;
 	private Calendar calendar;
+	private String formattedDateTime;
+	private String ngaygionhan;
+	private DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
+
+	
 	
 
 	public pn_Datphong(Phong phong, pn_Choxacnhan xacnhan, pn_Danghoatdong hoatdong, UserUI view) {
@@ -91,55 +100,34 @@ public class pn_Datphong extends JPanel {
 
 		JLabel lblNewLabel_1 = new JLabel("Họ và Tên:  ");
 		lblNewLabel_1.setBackground(new Color(255, 255, 255));
-		lblNewLabel_1.setBounds(32, 56, 120, 17);
+		lblNewLabel_1.setBounds(32, 124, 120, 17);
 		panel.add(lblNewLabel_1);
 		lblNewLabel_1.setFont(new Font("Arial", Font.BOLD, 14));
 
 		tfhovaten = new JTextField();
+		tfhovaten.setEditable(false);
 		tfhovaten.setBackground(new Color(255, 255, 255));
-		tfhovaten.setBounds(224, 53, 246, 23);
+		tfhovaten.setBounds(224, 120, 246, 23);
 		panel.add(tfhovaten);
 		tfhovaten.setFont(new Font("Monospaced", Font.PLAIN, 14));
 		tfhovaten.setColumns(10);
 
-		JLabel lblNewLabel_3 = new JLabel("Ngày sinh:");
-		lblNewLabel_3.setBackground(new Color(255, 255, 255));
-		lblNewLabel_3.setBounds(32, 88, 120, 17);
-		panel.add(lblNewLabel_3);
-		lblNewLabel_3.setFont(new Font("Arial", Font.BOLD, 14));
-
-		// Tạo một JSpinner
-		spinnerngaysinh = new JSpinner();
-		spinnerngaysinh.setBackground(new Color(255, 255, 255));
-		spinnerngaysinh.setFont(new Font("Arial", Font.PLAIN, 14));
-		spinnerngaysinh.setBounds(224, 86, 120, 20);
-		panel.add(spinnerngaysinh);
-
-		// Thiết lập SpinnerDateModel cho JSpinner
-		 SpinnerDateModel dateModel = new SpinnerDateModel();
-	        dateModel.setCalendarField(Calendar.DAY_OF_MONTH);
-	        spinnerngaysinh.setModel(dateModel);
-	        spinnerngaysinh.setEditor(new JSpinner.DateEditor(spinnerngaysinh, "dd/MM/yyyy"));
-
-	        // Thiết lập ngày tháng là 1/1/2024
-	        calendar = Calendar.getInstance();
-	        calendar.set(2024, 0, 1); // Năm 2024, tháng 0 (tháng 1), ngày 1
-	        Date date = calendar.getTime();
-	        spinnerngaysinh.setValue(date);
+		
 
 
-		JLabel lblNewLabel_2 = new JLabel("Tỉnh (Thành phố):");
+		JLabel lblNewLabel_2 = new JLabel("Mã khách hàng");
 		lblNewLabel_2.setBackground(new Color(255, 255, 255));
-		lblNewLabel_2.setBounds(32, 120, 171, 17);
+		lblNewLabel_2.setBounds(32, 93, 171, 17);
 		panel.add(lblNewLabel_2);
 		lblNewLabel_2.setFont(new Font("Arial", Font.BOLD, 14));
 
-		tftinh = new JTextField();
-		tftinh.setBackground(new Color(255, 255, 255));
-		tftinh.setBounds(224, 116, 246, 23);
-		panel.add(tftinh);
-		tftinh.setFont(new Font("Monospaced", Font.PLAIN, 14));
-		tftinh.setColumns(10);
+		tfmaKhachHang = new JTextField();
+		tfmaKhachHang.setEditable(false);
+		tfmaKhachHang.setBackground(new Color(255, 255, 255));
+		tfmaKhachHang.setBounds(224, 87, 246, 23);
+		panel.add(tfmaKhachHang);
+		tfmaKhachHang.setFont(new Font("Monospaced", Font.PLAIN, 14));
+		tfmaKhachHang.setColumns(10);
 
 		JLabel lblNewLabel_4 = new JLabel("CCCD:");
 		lblNewLabel_4.setBackground(new Color(255, 255, 255));
@@ -148,6 +136,7 @@ public class pn_Datphong extends JPanel {
 		lblNewLabel_4.setFont(new Font("Arial", Font.BOLD, 14));
 
 		tfcccd = new JTextField();
+		tfcccd.setEditable(false);
 		tfcccd.setBackground(new Color(255, 255, 255));
 		tfcccd.setBounds(224, 149, 246, 23);
 		panel.add(tfcccd);
@@ -161,13 +150,14 @@ public class pn_Datphong extends JPanel {
 		lblNewLabel_5.setFont(new Font("Arial", Font.BOLD, 14));
 
 		tfsdt = new JTextField();
+		tfsdt.setEditable(false);
 		tfsdt.setBackground(new Color(255, 255, 255));
 		tfsdt.setBounds(224, 182, 246, 23);
 		panel.add(tfsdt);
 		tfsdt.setFont(new Font("Monospaced", Font.PLAIN, 14));
 		tfsdt.setColumns(10);
 
-		JPanel panel_1 = new JPanel();
+		JPanel panel_1 =  new JPanel();
 		panel_1.setBackground(new Color(255, 255, 255));
 		panel_1.setBorder(new TitledBorder(new EtchedBorder(EtchedBorder.RAISED, new Color(0, 255, 255), new Color(192, 192, 192)), "CH\u1ECCN D\u1ECACH V\u1EE4 TR\u01AF\u1EDAC KHI NH\u1EACN PH\u00D2NG", TitledBorder.CENTER, TitledBorder.TOP, null, new Color(0, 0, 0)));
 		panel_1.setBounds(536, 80, 350, 362);
@@ -301,22 +291,24 @@ public class pn_Datphong extends JPanel {
 		pn_button.add(btxacnhan);
 		btxacnhan.addActionListener(new ActionListener() {
 
+			
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				if (checkdata() == true) {
 					phong.setTrangThai(TrangThaiPhong.DANG_HOAT_DONG);
-					hoatdong.THovaten.setText(tfhovaten.getText());
-					hoatdong.TCCCD.setText(tfcccd.getText());
-					Date date = (Date) spinnerngaysinh.getValue();
-					String formattedDate = dateFormat.format(date);
-					hoatdong.TNgaysinh.setText(formattedDate);
-					LocalDateTime now = LocalDateTime.now();
+					
+		            LocalDateTime now = LocalDateTime.now();
 		            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss dd/MM/yyyy");
-		            String formattedDateTime = now.format(formatter);
-		            hoatdong.TNgayGioNHanPhong.setText(formattedDateTime);
+		            ngaygionhan = now.format(formatter);
+		            String thongtindp = chuoithongtindp(phong);
+		            int madp = view.booking(thongtindp);
+		            hoatdong.TMadatphong.setText(madp+"");
+		            hoatdong.THovaten.setText(tfhovaten.getText());
+					hoatdong.TCCCD.setText(tfcccd.getText());
+		            hoatdong.TNgayGioNHanPhong.setText(ngaygionhan);
 		            hoatdong.lbMaPhong.setText(phong.getId()+"");
 		            hoatdong.TSDTH.setText(tfsdt.getText());
-		            hoatdong.TTinh.setText(tftinh.getText());
+		            
 
 		            if(cbchothuexe.isSelected()) {
 		            	hoatdong.db.addRow(new Object[] {
@@ -383,16 +375,14 @@ public class pn_Datphong extends JPanel {
 			public void actionPerformed(ActionEvent e) {
 				if (checkdata() == true) {
 					phong.setTrangThai(TrangThaiPhong.CHO_XAC_NHAN);
+					ngaygionhan = "";
+					String tt  = chuoithongtindp(phong);
+					int madp = view.booking(tt);
+					xacnhan.TMadatphong.setText(madp+"");
 					xacnhan.THovaten.setText(tfhovaten.getText());
 					xacnhan.TCCCD.setText(tfcccd.getText());
-					Date date = (Date) spinnerngaysinh.getValue();
-					String formattedDate = dateFormat.format(date);
-					xacnhan.TNgaysinh.setText(formattedDate);
-					xacnhan.TTinh.setText(tftinh.getText());
-					xacnhan.TSDTH.setText(tfsdt.getText());
-					int ma = taomaKH();
-					xacnhan.maKH = ma;
-					xacnhan.TMaKH.setText(ma+"");
+					xacnhan.TMaKH.setText(tfmaKhachHang.getText());
+					xacnhan.TSdth.setText(tfsdt.getText());
 					xacnhan.lbMaPhong.setText(phong.getId()+"");
 					if(cbchothuexe.isSelected()) {
 		            	xacnhan.db.addRow(new Object[] {
@@ -486,6 +476,7 @@ public class pn_Datphong extends JPanel {
 		} else s = nghin+"."+dongs+" VND";
 		return s;
 	}
+	
 	private int taomaKH() { 
         Random random = new Random();
         int randomNumber = random.nextInt(8999) + 1000;
@@ -493,14 +484,7 @@ public class pn_Datphong extends JPanel {
     }
 	
 	public void xoaform() {
-		tfhovaten.setText(null);
-	        calendar.set(2024, 0, 1); // Năm 2024, tháng 0 (tháng 1), ngày 1
-	        Date date = calendar.getTime();
-	        spinnerngaysinh.setValue(date);
-
-		tftinh.setText(null);
-		tfcccd.setText(null);
-		tfsdt.setText(null);
+		
 		cbdungdiemtam.setSelected(false);
 		cbduadonsanbay.setSelected(false);
 		cbtrongtre.setSelected(false);
@@ -523,8 +507,30 @@ public class pn_Datphong extends JPanel {
         return matcher.matches();
 	}
 	public boolean checkdata() {
-		if (dinhdang(tfcccd.getText())==true || dinhdangsdth(tfsdt.getText()) == true || tfhovaten.getText() != null || tftinh.getText()!=null) {
+		if (dinhdang(tfcccd.getText())==true || dinhdangsdth(tfsdt.getText()) == true || tfhovaten.getText() != null || tfmaKhachHang.getText()!=null) {
 			return true;
 		} else return false;
 	}
+	public String chuoithongtindp(Phong phong) {
+		Modelchuoi data = new Modelchuoi();
+		data.setTrangthai(phong.getTrangThai());
+		data.setMaKhachHang(tfmaKhachHang.getText());
+		data.setHoVaTen(tfhovaten.getText());
+		data.setCccd(tfcccd.getText());
+		data.setSdt(tfsdt.getText());
+		data.setTuanTrangMat(cbtuantrangmat.isSelected());
+		data.setDuaDonSanBay(cbduadonsanbay.isSelected());
+		data.setDungDiemTam(cbdungdiemtam.isSelected());
+		data.setTrongTre(cbtrongtre.isSelected());
+		data.setChoThueXe(cbchothuexe.isSelected());
+		data.setSpa(cbSPA.isSelected());
+		data.setFitness(cbFitness.isSelected());
+		data.setngaygiovaophong(ngaygionhan);
+		data.setGiatui(cbGiatui.isSelected());
+		data.setMaphong(phong.getId());
+		Gson gson= new Gson();
+		String jsonData = gson.toJson(data);
+		return jsonData;
+	}
+	
 }

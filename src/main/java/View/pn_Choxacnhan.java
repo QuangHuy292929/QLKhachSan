@@ -1,6 +1,6 @@
 package View;
 
-import java.awt.Dimension;      
+import java.awt.Dimension;       
 
 import javax.swing.JPanel;
 import javax.swing.border.BevelBorder;
@@ -39,9 +39,8 @@ public class pn_Choxacnhan extends JPanel {
 	public Color colordat = new Color(205, 180, 219);
 	public JTextField THovaten;
 	public JTextField TCCCD;
-	public JTextField TNgaysinh;
-	public JTextField TTinh;
-	public JTextField TSDTH;
+	public JTextField TSdth;
+	public JTextField TMadatphong;
 	public double bill;
 	protected DefaultTableModel db;
 	protected int maKH;
@@ -96,77 +95,64 @@ public class pn_Choxacnhan extends JPanel {
 		panel_1.setLayout(null);
 
 		JLabel lblNewLabel_1 = new JLabel("Họ và Tên:  ");
-		lblNewLabel_1.setBounds(10, 82, 134, 30);
+		lblNewLabel_1.setBounds(10, 193, 134, 30);
 		panel_1.add(lblNewLabel_1);
 		lblNewLabel_1.setFont(new Font("Arial", Font.BOLD, 14));
 
 		JLabel lblNewLabel_4 = new JLabel("CCCD:");
-		lblNewLabel_4.setBounds(10, 162, 134, 30);
+		lblNewLabel_4.setBounds(10, 233, 134, 30);
 		panel_1.add(lblNewLabel_4);
 		lblNewLabel_4.setFont(new Font("Arial", Font.BOLD, 14));
 
-		JLabel lblNewLabel_3 = new JLabel("Ngày sinh:");
-		lblNewLabel_3.setBounds(10, 202, 134, 30);
+		JLabel lblNewLabel_3 = new JLabel("Số điện thoại :");
+		lblNewLabel_3.setBounds(10, 273, 134, 30);
 		panel_1.add(lblNewLabel_3);
 		lblNewLabel_3.setFont(new Font("Arial", Font.BOLD, 14));
 
-		JLabel lblNewLabel_2 = new JLabel("Tỉnh (Thành phố):");
-		lblNewLabel_2.setBounds(10, 242, 134, 30);
+		JLabel lblNewLabel_2 = new JLabel("Mã đặt phòng:");
+		lblNewLabel_2.setBounds(10, 155, 134, 30);
 		panel_1.add(lblNewLabel_2);
 		lblNewLabel_2.setFont(new Font("Arial", Font.BOLD, 14));
 
-		JLabel lblNewLabel_5 = new JLabel("Số điện thoại :");
-		lblNewLabel_5.setBounds(10, 282, 134, 30);
+		JLabel lblNewLabel_5 = new JLabel("Mã khách hàng:");
+		lblNewLabel_5.setBounds(10, 115, 134, 30);
 		panel_1.add(lblNewLabel_5);
 		lblNewLabel_5.setFont(new Font("Arial", Font.BOLD, 14));
 
 		THovaten = new JTextField();
-		THovaten.setBounds(168, 82, 288, 30);
+		THovaten.setBounds(168, 193, 288, 30);
 		panel_1.add(THovaten);
 		THovaten.setFont(new Font("Monospaced", Font.BOLD, 14));
 		THovaten.setEditable(false);
 		THovaten.setColumns(10);
 
 		TCCCD = new JTextField();
-		TCCCD.setBounds(168, 162, 288, 30);
+		TCCCD.setBounds(168, 233, 288, 30);
 		panel_1.add(TCCCD);
 		TCCCD.setFont(new Font("Monospaced", Font.BOLD, 14));
 		TCCCD.setEditable(false);
 		TCCCD.setColumns(10);
 
-		TNgaysinh = new JTextField();
-		TNgaysinh.setBounds(168, 202, 288, 30);
-		panel_1.add(TNgaysinh);
-		TNgaysinh.setFont(new Font("Monospaced", Font.BOLD, 14));
-		TNgaysinh.setEditable(false);
-		TNgaysinh.setColumns(10);
+		TSdth = new JTextField();
+		TSdth.setBounds(168, 273, 288, 30);
+		panel_1.add(TSdth);
+		TSdth.setFont(new Font("Monospaced", Font.BOLD, 14));
+		TSdth.setEditable(false);
+		TSdth.setColumns(10);
 
-		TTinh = new JTextField();
-		TTinh.setBounds(168, 242, 288, 30);
-		panel_1.add(TTinh);
-		TTinh.setFont(new Font("Monospaced", Font.BOLD, 14));
-		TTinh.setEditable(false);
-		TTinh.setColumns(10);
-
-		TSDTH = new JTextField();
-		TSDTH.setBounds(168, 282, 288, 30);
-		panel_1.add(TSDTH);
-		TSDTH.setBackground(SystemColor.control);
-		TSDTH.setFont(new Font("Monospaced", Font.BOLD, 14));
-		TSDTH.setEditable(false);
-		TSDTH.setColumns(10);
+		TMadatphong = new JTextField();
+		TMadatphong.setBounds(168, 155, 288, 30);
+		panel_1.add(TMadatphong);
+		TMadatphong.setFont(new Font("Monospaced", Font.BOLD, 14));
+		TMadatphong.setEditable(false);
+		TMadatphong.setColumns(10);
 
 		TMaKH = new JTextField();
 		TMaKH.setFont(new Font("Monospaced", Font.BOLD, 14));
 		TMaKH.setEditable(false);
 		TMaKH.setColumns(10);
-		TMaKH.setBounds(168, 122, 288, 30);
+		TMaKH.setBounds(168, 115, 288, 30);
 		panel_1.add(TMaKH);
-
-		JLabel lblNewLabel_4_1 = new JLabel("Mã khách hàng");
-		lblNewLabel_4_1.setFont(new Font("Arial", Font.BOLD, 14));
-		lblNewLabel_4_1.setBounds(10, 122, 134, 30);
-		panel_1.add(lblNewLabel_4_1);
 
 		JPanel panel_2 = new JPanel();
 		panel_2.setBackground(SystemColor.window);
@@ -228,9 +214,10 @@ public class pn_Choxacnhan extends JPanel {
 				int luachon = JOptionPane.showConfirmDialog(view, "Xác nhận hủy phòng");
 				if (luachon == JOptionPane.OK_OPTION) {
 					phong.setTrangThai(TrangThaiPhong.TRONG);
+					
 					view.cardhd.show(view.pn_hoatdong, "sơ đồ phòng");
-					// phương thức xóa form
-					xoaform();
+					view.Cancel(phong.getId()+"");
+					db.setRowCount(0);
 				}
 			}
 		});
@@ -243,36 +230,8 @@ public class pn_Choxacnhan extends JPanel {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				// TODO Auto-generated method stub
-
-				phong.setTrangThai(TrangThaiPhong.DANG_HOAT_DONG);
-				// phương thức chuyển thông tin sang panel đặt phòng
-				hoatdong.THovaten.setText(THovaten.getText());
-				hoatdong.TCCCD.setText(TCCCD.getText());
-				hoatdong.TNgaysinh.setText(TNgaysinh.getText());
-				hoatdong.TSDTH.setText(TSDTH.getText());
-				hoatdong.TTinh.setText(TTinh.getText());
-				LocalDateTime now = LocalDateTime.now();
-				DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss dd/MM/yyyy");
-				String formattedDateTime = now.format(formatter);
-				hoatdong.TNgayGioNHanPhong.setText(formattedDateTime);
-				hoatdong.maKH = maKH;
-				hoatdong.TMaKH.setText(maKH+"");
-				hoatdong.lbMaPhong.setText(phong.getId()+"");
-				for (int row = 0; row < db.getRowCount(); row++) {
-					// Tạo một mảng để lưu trữ dữ liệu của dòng hiện tại
-					Object[] rowData = new Object[db.getColumnCount()];
-
-					// Lấy dữ liệu từ mỗi ô trong dòng hiện tại của bảng nguồn
-					for (int col = 0; col < db.getColumnCount(); col++) {
-						rowData[col] = db.getValueAt(row, col);
-					}
-					// Thêm dữ liệu dòng vào bảng đích
-					hoatdong.db.addRow(rowData);
-					// phương thức xóa form
-
-				}
-				xoaform();
+				datphong(hoatdong, phong);
+				db.setRowCount(0);
 			}
 		});
 		JLabel lblNewLabel_61 = new JLabel();
@@ -280,17 +239,36 @@ public class pn_Choxacnhan extends JPanel {
 		lblNewLabel_61.setSize(947, 742);
 		add(lblNewLabel_61);
 
+	
+	}
+	public void datphong(pn_Danghoatdong hoatdong, Phong phong) {
+		phong.setTrangThai(TrangThaiPhong.DANG_HOAT_DONG);
+		// phương thức chuyển thông tin sang panel đặt phòng
+		hoatdong.THovaten.setText(THovaten.getText());
+		hoatdong.TCCCD.setText(TCCCD.getText());				
+		hoatdong.TSDTH.setText(TSdth.getText());
+		LocalDateTime now = LocalDateTime.now();
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss dd/MM/yyyy");
+		String formattedDateTime = now.format(formatter);
+		hoatdong.TNgayGioNHanPhong.setText(formattedDateTime);
+		hoatdong.maKH = maKH;
+		hoatdong.TMaKH.setText(maKH+"");
+		hoatdong.lbMaPhong.setText(phong.getId()+"");
+		for (int row = 0; row < db.getRowCount(); row++) {
+			// Tạo một mảng để lưu trữ dữ liệu của dòng hiện tại
+			Object[] rowData = new Object[db.getColumnCount()];
+
+			// Lấy dữ liệu từ mỗi ô trong dòng hiện tại của bảng nguồn
+			for (int col = 0; col < db.getColumnCount(); col++) {
+				rowData[col] = db.getValueAt(row, col);
+			}
+			// Thêm dữ liệu dòng vào bảng đích
+			hoatdong.db.addRow(rowData);
+			// phương thức xóa form
+
+		}
 	}
 	
-	public void xoaform() {
-		lbMaPhong.setText(null);
-		THovaten.setText(null);
-		TMaKH.setText(null);
-		TCCCD.setText(null);
-		TNgaysinh.setText(null);
-		TTinh.setText(null);
-		TSDTH.setText(null);
-		db.setRowCount(0);
-	}
+	
 	
 }

@@ -1,6 +1,6 @@
 package View;
 
-import java.awt.EventQueue;   
+import java.awt.EventQueue;      
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -31,6 +31,10 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JPasswordField;
 import javax.swing.border.TitledBorder;
+
+import com.google.gson.Gson;
+
+import Model.ModelKhachHang;
 
 import javax.swing.border.BevelBorder;
 import java.awt.SystemColor;
@@ -97,7 +101,7 @@ public class LoginUI extends JFrame {
 		setLocationRelativeTo(null);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
-		String svaddress = "localhost";
+		String svaddress = "172.21.0.79";
 		try {
 			socket = new Socket(svaddress, 8000);
 			in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
@@ -206,9 +210,32 @@ public class LoginUI extends JFrame {
 				boolean result = CheckIn(data);
 				if (result == true) {
 				    // Đăng nhập thành công
+					
 				    JOptionPane.showMessageDialog(null, "Đăng nhập thành công");
 				    jttenDangnhap.setText("");
 				    jpassword.setText("");
+				    String khs = null;
+				    try {
+						khs = receiKH(username);
+						
+					} catch (IOException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+				    Gson gs = new Gson();
+				    ModelKhachHang kh = gs.fromJson(khs, ModelKhachHang.class);
+				    try {
+						socket.close();
+						dispose();
+					} catch (IOException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+				    
+				    UserUI view = new UserUI(kh);
+				    
+				    
+				    view.setVisible(true);
 				    // Thực hiện các hành động tiếp theo sau khi đăng nhập thành công
 				} else {
 				    // Đăng nhập thất bại
@@ -567,9 +594,11 @@ public class LoginUI extends JFrame {
                 // Kiểm tra OTP
                 if (otp.equals(body)) {
                     // OTP đúng, đăng ký tài khoản mới
+                	//chèn thêm mã khách hàng
                 	boolean check = checkDky(hoten, cccd, sdt, email, pass, username);
                 	if(check == true) {
                 		JOptionPane.showMessageDialog(null, "CHÚC MỪNG BẠN ĐÃ TẠO TÀI KHOẢN THÀNH CÔNG.");
+                		
                         cardtt.show(panel_3, "thông tin");
                 	} else 
                 		JOptionPane.showMessageDialog(null, "ĐÃ CÓ LỖI Ở KHI ĐĂNG KÝ.");
@@ -615,6 +644,7 @@ public class LoginUI extends JFrame {
 	}
 	
 	public boolean checkDky(String hoten, String CCCD, String Sdth, String email, String mk, String Username) {
+		System.out.println("CHECKDKY#"+hoten+"#"+CCCD+"#"+Sdth+"#"+email+"#"+mk+"#"+Username);
 		out.println("CHECKDKY#"+hoten+"#"+CCCD+"#"+Sdth+"#"+email+"#"+mk+"#"+Username);
 			try {
 				String result = in.readLine();
@@ -677,6 +707,8 @@ public class LoginUI extends JFrame {
 		int randomNumber = random.nextInt(900000) + 100000; // Corrected range
 		return randomNumber;
 	}
+	
+	
 
 	public void mailxacthuc(String email, String tieude) {
 		String host = "smtp.gmail.com";
@@ -712,7 +744,16 @@ public class LoginUI extends JFrame {
 		} catch (MessagingException e) {
 			e.printStackTrace();
 		}
+		
 	}
+	
+	public String receiKH(String username) throws IOException {
+		out.println("TRUYENDULIEU"+"#"+username);
+		
+		return in.readLine();
+	}
+	
+	
 
 	
 	

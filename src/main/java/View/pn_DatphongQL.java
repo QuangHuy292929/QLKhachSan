@@ -16,6 +16,8 @@ import java.util.Calendar;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.BufferedReader;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -40,7 +42,6 @@ public class pn_DatphongQL extends JPanel {
 
 	private static final long serialVersionUID = 1L;
 	private JTextField tfhovaten;
-	private JTextField tftinh;
 	public JTextField tfcccd;
 	private JTextField tfsdt;
 	private JCheckBox cbtuantrangmat;
@@ -61,6 +62,7 @@ public class pn_DatphongQL extends JPanel {
 	private JCheckBox cbSPA;
 	private JCheckBox cbFitness;
 	private Calendar calendar;
+	private JTextField TMaKH;
 	
 
 	public pn_DatphongQL(Phong phong, pn_ChoxacnhanQL xacnhan, pn_DanghoatdongQL hoatdong, ManagerUI view) {
@@ -91,55 +93,16 @@ public class pn_DatphongQL extends JPanel {
 
 		JLabel lblNewLabel_1 = new JLabel("Họ và Tên:  ");
 		lblNewLabel_1.setBackground(new Color(255, 255, 255));
-		lblNewLabel_1.setBounds(32, 56, 120, 17);
+		lblNewLabel_1.setBounds(32, 123, 120, 17);
 		panel.add(lblNewLabel_1);
 		lblNewLabel_1.setFont(new Font("Arial", Font.BOLD, 14));
 
 		tfhovaten = new JTextField();
 		tfhovaten.setBackground(new Color(255, 255, 255));
-		tfhovaten.setBounds(224, 53, 246, 23);
+		tfhovaten.setBounds(224, 120, 246, 23);
 		panel.add(tfhovaten);
 		tfhovaten.setFont(new Font("Monospaced", Font.PLAIN, 14));
 		tfhovaten.setColumns(10);
-
-		JLabel lblNewLabel_3 = new JLabel("Ngày sinh:");
-		lblNewLabel_3.setBackground(new Color(255, 255, 255));
-		lblNewLabel_3.setBounds(32, 88, 120, 17);
-		panel.add(lblNewLabel_3);
-		lblNewLabel_3.setFont(new Font("Arial", Font.BOLD, 14));
-
-		// Tạo một JSpinner
-		spinnerngaysinh = new JSpinner();
-		spinnerngaysinh.setBackground(new Color(255, 255, 255));
-		spinnerngaysinh.setFont(new Font("Arial", Font.PLAIN, 14));
-		spinnerngaysinh.setBounds(224, 86, 120, 20);
-		panel.add(spinnerngaysinh);
-
-		// Thiết lập SpinnerDateModel cho JSpinner
-		 SpinnerDateModel dateModel = new SpinnerDateModel();
-	        dateModel.setCalendarField(Calendar.DAY_OF_MONTH);
-	        spinnerngaysinh.setModel(dateModel);
-	        spinnerngaysinh.setEditor(new JSpinner.DateEditor(spinnerngaysinh, "dd/MM/yyyy"));
-
-	        // Thiết lập ngày tháng là 1/1/2024
-	        calendar = Calendar.getInstance();
-	        calendar.set(2024, 0, 1); // Năm 2024, tháng 0 (tháng 1), ngày 1
-	        Date date = calendar.getTime();
-	        spinnerngaysinh.setValue(date);
-
-
-		JLabel lblNewLabel_2 = new JLabel("Tỉnh (Thành phố):");
-		lblNewLabel_2.setBackground(new Color(255, 255, 255));
-		lblNewLabel_2.setBounds(32, 120, 171, 17);
-		panel.add(lblNewLabel_2);
-		lblNewLabel_2.setFont(new Font("Arial", Font.BOLD, 14));
-
-		tftinh = new JTextField();
-		tftinh.setBackground(new Color(255, 255, 255));
-		tftinh.setBounds(224, 116, 246, 23);
-		panel.add(tftinh);
-		tftinh.setFont(new Font("Monospaced", Font.PLAIN, 14));
-		tftinh.setColumns(10);
 
 		JLabel lblNewLabel_4 = new JLabel("CCCD:");
 		lblNewLabel_4.setBackground(new Color(255, 255, 255));
@@ -166,6 +129,19 @@ public class pn_DatphongQL extends JPanel {
 		panel.add(tfsdt);
 		tfsdt.setFont(new Font("Monospaced", Font.PLAIN, 14));
 		tfsdt.setColumns(10);
+		
+		JLabel lblNewLabel_1_1 = new JLabel("Mã khách hàng:");
+		lblNewLabel_1_1.setFont(new Font("Arial", Font.BOLD, 14));
+		lblNewLabel_1_1.setBackground(Color.WHITE);
+		lblNewLabel_1_1.setBounds(32, 93, 120, 17);
+		panel.add(lblNewLabel_1_1);
+		
+		TMaKH = new JTextField();
+		TMaKH.setFont(new Font("Monospaced", Font.PLAIN, 14));
+		TMaKH.setColumns(10);
+		TMaKH.setBackground(Color.WHITE);
+		TMaKH.setBounds(224, 90, 246, 23);
+		panel.add(TMaKH);
 
 		JPanel panel_1 = new JPanel();
 		panel_1.setBackground(new Color(255, 255, 255));
@@ -304,58 +280,59 @@ public class pn_DatphongQL extends JPanel {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				if (checkdata() == true) {
+					
 					phong.setTrangThai(TrangThaiPhong.DANG_HOAT_DONG);
-					hoatdong.THovaten.setText(tfhovaten.getText());
-					hoatdong.TCCCD.setText(tfcccd.getText());
-					Date date = (Date) spinnerngaysinh.getValue();
-					String formattedDate = dateFormat.format(date);
-					hoatdong.TNgaysinh.setText(formattedDate);
+					
 					LocalDateTime now = LocalDateTime.now();
 		            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss dd/MM/yyyy");
 		            String formattedDateTime = now.format(formatter);
+		            
+		            hoatdong.THovaten.setText(tfhovaten.getText());
+					hoatdong.TCCCD.setText(tfcccd.getText());
+					
 		            hoatdong.TNgayGioNHanPhong.setText(formattedDateTime);
 		            hoatdong.lbMaPhong.setText(phong.getId()+"");
 		            hoatdong.TSDTH.setText(tfsdt.getText());
-		            hoatdong.TTinh.setText(tftinh.getText());
+		            
 
 		            if(cbchothuexe.isSelected()) {
 		            	hoatdong.db.addRow(new Object[] {
-							"Cho thuê xe tự lái",  phantichgia(hoatdong.danhsachDV[9].getGiaca()) 
+							"Cho thuê xe tự lái",  phantichgia(view.danhsachDV[9].getGiaca()) 
 						});					
 					}
 					if(cbduadonsanbay.isSelected()) {
 						hoatdong.db.addRow(new Object[] {
-								"Đưa đón sân bay", phantichgia(hoatdong.danhsachDV[11].getGiaca())	
+								"Đưa đón sân bay", phantichgia(view.danhsachDV[11].getGiaca())	
 						});		
 					}
 					if(cbdungdiemtam.isSelected()) {
 						hoatdong.db.addRow(new Object[] {
-								"Dùng điểm tâm", phantichgia(hoatdong.danhsachDV[10].getGiaca())	
+								"Dùng điểm tâm", phantichgia(view.danhsachDV[10].getGiaca())	
 						});	
 					}
 					if(cbtrongtre.isSelected()) {
 						hoatdong.db.addRow(new Object[] {
-								"Trông trẻ", phantichgia(hoatdong.danhsachDV[12].getGiaca())	
+								"Trông trẻ", phantichgia(view.danhsachDV[12].getGiaca())	
 						});
 					}
 					if(cbtuantrangmat.isSelected()) {
 						hoatdong.db.addRow(new Object[] {
-								"Tuần trăng mật", phantichgia(hoatdong.danhsachDV[13].getGiaca())	
+								"Tuần trăng mật", phantichgia(view.danhsachDV[13].getGiaca())	
 						});
 					}
 					if(cbGiatui.isSelected()) {
 						hoatdong.db.addRow(new Object[] {
-								"Giặt ủi", phantichgia(hoatdong.danhsachDV[14].getGiaca())	
+								"Giặt ủi", phantichgia(view.danhsachDV[14].getGiaca())	
 						});
 					}
 					if(cbSPA.isSelected()) {
 						hoatdong.db.addRow(new Object[] {
-								"Spa", phantichgia(hoatdong.danhsachDV[15].getGiaca())	
+								"Spa", phantichgia(view.danhsachDV[15].getGiaca())	
 						});
 					}
 					if(cbFitness.isSelected()){
 						hoatdong.db.addRow(new Object[] {
-								"Fitness", phantichgia(hoatdong.danhsachDV[16].getGiaca())
+								"Fitness", phantichgia(view.danhsachDV[16].getGiaca())
 						});
 					}
 					
@@ -385,53 +362,49 @@ public class pn_DatphongQL extends JPanel {
 					phong.setTrangThai(TrangThaiPhong.CHO_XAC_NHAN);
 					xacnhan.THovaten.setText(tfhovaten.getText());
 					xacnhan.TCCCD.setText(tfcccd.getText());
-					Date date = (Date) spinnerngaysinh.getValue();
-					String formattedDate = dateFormat.format(date);
-					xacnhan.TNgaysinh.setText(formattedDate);
-					xacnhan.TTinh.setText(tftinh.getText());
-					xacnhan.TSDTH.setText(tfsdt.getText());
+					
 					int ma = taomaKH();
 					xacnhan.maKH = ma;
 					xacnhan.TMaKH.setText(ma+"");
 					xacnhan.lbMaPhong.setText(phong.getId()+"");
 					if(cbchothuexe.isSelected()) {
 		            	xacnhan.db.addRow(new Object[] {
-							"Cho thuê xe tự lái",  phantichgia(hoatdong.danhsachDV[9].getGiaca()) 
+							"Cho thuê xe tự lái",  phantichgia(view.danhsachDV[9].getGiaca()) 
 						});					
 					}
 					if(cbduadonsanbay.isSelected()) {
 						xacnhan.db.addRow(new Object[] {
-								"Đưa đón sân bay", phantichgia(hoatdong.danhsachDV[11].getGiaca())	
+								"Đưa đón sân bay", phantichgia(view.danhsachDV[11].getGiaca())	
 						});		
 					}
 					if(cbdungdiemtam.isSelected()) {
 						xacnhan.db.addRow(new Object[] {
-								"Dùng điểm tâm", phantichgia(hoatdong.danhsachDV[10].getGiaca())	
+								"Dùng điểm tâm", phantichgia(view.danhsachDV[10].getGiaca())	
 						});	
 					}
 					if(cbtrongtre.isSelected()) {
 						xacnhan.db.addRow(new Object[] {
-								"Trông trẻ", phantichgia(hoatdong.danhsachDV[12].getGiaca())	
+								"Trông trẻ", phantichgia(view.danhsachDV[12].getGiaca())	
 						});
 					}
 					if(cbtuantrangmat.isSelected()) {
 						xacnhan.db.addRow(new Object[] {
-								"Tuần trăng mật", phantichgia(hoatdong.danhsachDV[13].getGiaca())	
+								"Tuần trăng mật", phantichgia(view.danhsachDV[13].getGiaca())	
 						});
 					}
 					if(cbGiatui.isSelected()) {
 						xacnhan.db.addRow(new Object[] {
-								"Giặt ủi", phantichgia(hoatdong.danhsachDV[14].getGiaca())	
+								"Giặt ủi", phantichgia(view.danhsachDV[14].getGiaca())	
 						});
 					}
 					if(cbSPA.isSelected()) {
 						xacnhan.db.addRow(new Object[] {
-								"Spa", phantichgia(hoatdong.danhsachDV[15].getGiaca())	
+								"Spa", phantichgia(view.danhsachDV[15].getGiaca())	
 						});
 					}
 					if(cbFitness.isSelected()){
 						xacnhan.db.addRow(new Object[] {
-								"Fitness", phantichgia(hoatdong.danhsachDV[16].getGiaca())
+								"Fitness", phantichgia(view.danhsachDV[16].getGiaca())
 						});
 					}
 					
@@ -498,7 +471,7 @@ public class pn_DatphongQL extends JPanel {
 	        Date date = calendar.getTime();
 	        spinnerngaysinh.setValue(date);
 
-		tftinh.setText(null);
+		
 		tfcccd.setText(null);
 		tfsdt.setText(null);
 		cbdungdiemtam.setSelected(false);
@@ -523,8 +496,28 @@ public class pn_DatphongQL extends JPanel {
         return matcher.matches();
 	}
 	public boolean checkdata() {
-		if (dinhdang(tfcccd.getText())==true || dinhdangsdth(tfsdt.getText()) == true || tfhovaten.getText() != null || tftinh.getText()!=null) {
+		if (dinhdang(tfcccd.getText())==true || dinhdangsdth(tfsdt.getText()) == true || tfhovaten.getText() != null ) {
 			return true;
 		} else return false;
 	}
+	private static class UpdateReceiver extends Thread {
+        private BufferedReader reader;
+
+        public UpdateReceiver(BufferedReader reader) {
+            this.reader = reader;
+        }
+
+        @Override
+        public void run() {
+            try {
+                String update;
+                while ((update = reader.readLine()) != null) {
+                    System.out.println("Received update from server: " + update);
+                    // Xử lý cập nhật ở đây
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
 }

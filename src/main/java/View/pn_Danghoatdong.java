@@ -45,10 +45,8 @@ public class pn_Danghoatdong extends JPanel {
 	public JTextField THovaten;
 	public JTextField TCCCD;
 	public JTextField TNgayGioNHanPhong;
-	public JTextField TTinh;
 	public JTextField TSDTH;
-	public JTextField TNgaysinh;
-	private JTextField Tsoluong;
+	protected JTextField Tsoluong;
 	public int maKH;
 	public Object datadattrc[][] = {};
 	public Object datadatsau[][] = {};
@@ -65,6 +63,7 @@ public class pn_Danghoatdong extends JPanel {
 	protected DefaultTableModel db;
 	protected JTextField TMaKH;
 	protected JLabel lbMaPhong;
+	protected JTextField TMadatphong;
 
 
 	/**
@@ -148,14 +147,14 @@ public class pn_Danghoatdong extends JPanel {
 		panel_6.setLayout(null);
 		
 		JLabel lblNewLabel_3_1_1 = new JLabel("Dịch vụ đặt thêm:");
-		lblNewLabel_3_1_1.setBounds(25, 46, 124, 17);
+		lblNewLabel_3_1_1.setBounds(24, 45, 124, 17);
 		panel_6.add(lblNewLabel_3_1_1);
 		lblNewLabel_3_1_1.setFont(new Font("Arial", Font.BOLD, 14));
 		
 		
 		JTable table2 = new JTable();
 		JPanel panel_7 = new JPanel();
-		panel_7.setBounds(25, 93, 400, 180);
+		panel_7.setBounds(24, 84, 400, 171);
 		panel_6.add(panel_7);
 		panel_7.setLayout(new BorderLayout(0, 0));
 		dbsau = new DefaultTableModel(datadatsau, column);
@@ -176,39 +175,29 @@ public class pn_Danghoatdong extends JPanel {
 		panel.add(lblThngTinKhch_1);
 
 		JLabel lblNewLabel = new JLabel("Họ và tên:");
-		lblNewLabel.setBounds(33, 82, 174, 26);
+		lblNewLabel.setBounds(33, 158, 174, 26);
 		lblNewLabel.setFont(new Font("Arial", Font.BOLD, 14));
 		panel.add(lblNewLabel);
 
-		JLabel lblNewLabel_1 = new JLabel("Ngày sinh:");
-		lblNewLabel_1.setBounds(33, 188, 174, 26);
-		lblNewLabel_1.setFont(new Font("Arial", Font.BOLD, 14));
-		panel.add(lblNewLabel_1);
-
-		JLabel lblNewLabel_2 = new JLabel("Tỉnh (Thành phố):");
-		lblNewLabel_2.setBounds(33, 260, 174, 26);
-		lblNewLabel_2.setFont(new Font("Arial", Font.BOLD, 14));
-		panel.add(lblNewLabel_2);
-
 		JLabel lblNewLabel_3 = new JLabel("CCCD:");
-		lblNewLabel_3.setBounds(33, 152, 174, 26);
+		lblNewLabel_3.setBounds(33, 194, 174, 26);
 		lblNewLabel_3.setFont(new Font("Arial", Font.BOLD, 14));
 		panel.add(lblNewLabel_3);
 
 		JLabel lblNewLabel_4 = new JLabel("Số điện thoại:");
-		lblNewLabel_4.setBounds(33, 224, 174, 26);
+		lblNewLabel_4.setBounds(33, 230, 174, 26);
 		lblNewLabel_4.setFont(new Font("Arial", Font.BOLD, 14));
 		panel.add(lblNewLabel_4);
 
 		JLabel lblNewLabel_5 = new JLabel("Ngày giờ nhận phòng:");
-		lblNewLabel_5.setBounds(33, 296, 174, 26);
+		lblNewLabel_5.setBounds(33, 266, 174, 26);
 		lblNewLabel_5.setFont(new Font("Arial", Font.BOLD, 14));
 		panel.add(lblNewLabel_5);
 		
 		THovaten = new JTextField();
 		THovaten.setEditable(false);
 		THovaten.setFont(new Font("Monospaced", Font.BOLD, 14));
-		THovaten.setBounds(217, 82, 208, 26);
+		THovaten.setBounds(217, 158, 208, 26);
 		panel.add(THovaten);
 		THovaten.setColumns(10);
 		
@@ -216,44 +205,30 @@ public class pn_Danghoatdong extends JPanel {
 		TCCCD.setEditable(false);
 		TCCCD.setFont(new Font("Monospaced", Font.BOLD, 14));
 		TCCCD.setColumns(10);
-		TCCCD.setBounds(217, 152, 208, 26);
+		TCCCD.setBounds(217, 194, 208, 26);
 		panel.add(TCCCD);
 		
 		TNgayGioNHanPhong = new JTextField();
 		TNgayGioNHanPhong.setEditable(false);
 		TNgayGioNHanPhong.setFont(new Font("Monospaced", Font.BOLD, 14));
 		TNgayGioNHanPhong.setColumns(10);
-		TNgayGioNHanPhong.setBounds(217, 296, 208, 26);
+		TNgayGioNHanPhong.setBounds(217, 266, 208, 26);
 		panel.add(TNgayGioNHanPhong);
-		
-		TTinh = new JTextField();
-		TTinh.setEditable(false);
-		TTinh.setFont(new Font("Monospaced", Font.BOLD, 14));
-		TTinh.setColumns(10);
-		TTinh.setBounds(217, 260, 208, 26);
-		panel.add(TTinh);
 		
 		TSDTH = new JTextField();
 		TSDTH.setEditable(false);
 		TSDTH.setFont(new Font("Monospaced", Font.BOLD, 14));
 		TSDTH.setColumns(10);
-		TSDTH.setBounds(217, 224, 208, 26);
+		TSDTH.setBounds(217, 230, 208, 26);
 		panel.add(TSDTH);
-		
-		TNgaysinh = new JTextField();
-		TNgaysinh.setEditable(false);
-		TNgaysinh.setFont(new Font("Monospaced", Font.BOLD, 14));
-		TNgaysinh.setColumns(10);
-		TNgaysinh.setBounds(217, 188, 208, 26);
-		panel.add(TNgaysinh);
 		
 		JLabel lblNewLabel_3_1 = new JLabel("Dịch vụ đặt trước:");
 		lblNewLabel_3_1.setFont(new Font("Arial", Font.BOLD, 14));
-		lblNewLabel_3_1.setBounds(33, 344, 174, 26);
+		lblNewLabel_3_1.setBounds(33, 294, 174, 26);
 		panel.add(lblNewLabel_3_1);
 		
 		JPanel panel_2 = new JPanel();
-		panel_2.setBounds(33, 380, 392, 166);
+		panel_2.setBounds(33, 330, 392, 166);
 		panel.add(panel_2);
 		panel_2.setLayout(new BorderLayout(0, 0));
 		
@@ -277,15 +252,27 @@ public class pn_Danghoatdong extends JPanel {
 		
 		JLabel lblMKhchHng = new JLabel("Mã khách hàng:");
 		lblMKhchHng.setFont(new Font("Arial", Font.BOLD, 14));
-		lblMKhchHng.setBounds(33, 116, 174, 26);
+		lblMKhchHng.setBounds(33, 86, 174, 26);
 		panel.add(lblMKhchHng);
 		
 		TMaKH = new JTextField();
 		TMaKH.setFont(new Font("Monospaced", Font.BOLD, 14));
 		TMaKH.setEditable(false);
 		TMaKH.setColumns(10);
-		TMaKH.setBounds(217, 116, 208, 26);
+		TMaKH.setBounds(217, 86, 208, 26);
 		panel.add(TMaKH);
+		
+		JLabel lblMtPhng = new JLabel("Mã đặt phòng:");
+		lblMtPhng.setFont(new Font("Arial", Font.BOLD, 14));
+		lblMtPhng.setBounds(33, 122, 174, 26);
+		panel.add(lblMtPhng);
+		
+		TMadatphong = new JTextField();
+		TMadatphong.setFont(new Font("Monospaced", Font.BOLD, 14));
+		TMadatphong.setEditable(false);
+		TMadatphong.setColumns(10);
+		TMadatphong.setBounds(217, 122, 208, 26);
+		panel.add(TMadatphong);
 		
 		JPanel panel_1 = new JPanel();
 		panel_1.setBackground(new Color(255, 255, 255));
@@ -449,10 +436,10 @@ public class pn_Danghoatdong extends JPanel {
 	
 	public void xoaform() {
 		THovaten.setText(null);
-		TNgaysinh.setText(null);
+		TMaKH.setText(null);
 		TCCCD.setText(null);
 		TSDTH.setText(null);
-		TTinh.setText(null);
+		TMadatphong.setText(null);
 		TNgayGioNHanPhong.setText(null);
 		TMaKH.setText(null);
 		lbMaPhong.setText(null);
@@ -468,7 +455,4 @@ public class pn_Danghoatdong extends JPanel {
 	    
 	    return value;
 	}
-	
-	
-
 }

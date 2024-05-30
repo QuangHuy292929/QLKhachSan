@@ -1,5 +1,5 @@
 package controller;
-import java.awt.CardLayout;   
+import java.awt.CardLayout;    
 import java.awt.Color;   
 
 import javax.swing.JPanel;
@@ -10,11 +10,11 @@ import View.pn_DanghoatdongQL;
 import View.pn_DatphongQL;
 
 public class PhongManagerQL extends Thread {
-    private Phong phong;
-    private JPanel panelPhong;
-    private pn_DatphongQL datphong;
-    private pn_ChoxacnhanQL xacnhan;
-    private pn_DanghoatdongQL hoatdong;
+    public Phong phong;
+    public JPanel panelPhong;
+    public pn_DatphongQL datphong;
+    public pn_ChoxacnhanQL xacnhan;
+    public pn_DanghoatdongQL hoatdong;
     private JPanel panelhienthi;
     private CardLayout layout;
    

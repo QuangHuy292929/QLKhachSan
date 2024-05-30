@@ -1,15 +1,13 @@
 package Model;
 
-
-
 public class ModelKhachHang {
-	private int makhachhang;
+	private String makhachhang;
 	private String hoten;
 	private String cccd;
 	private String sdt;
 	private String email;
 	private String username;
-	public ModelKhachHang(int makhachhang, String hoten, String cccd, String sdt, String email, String username) {
+	public ModelKhachHang(String makhachhang, String hoten, String cccd, String sdt, String email, String username) {
 		this.makhachhang = makhachhang;
 		this.hoten = hoten;
 		this.cccd = cccd;
@@ -17,10 +15,16 @@ public class ModelKhachHang {
 		this.email = email;
 		this.username = username;
 	}
-	public int getMakhachhang() {
+	
+	
+	public ModelKhachHang() {
+	}
+
+
+	public String getMakhachhang() {
 		return makhachhang;
 	}
-	public void setMakhachhang(int makhachhang) {
+	public void setMakhachhang(String makhachhang) {
 		this.makhachhang = makhachhang;
 	}
 	public String getHoten() {

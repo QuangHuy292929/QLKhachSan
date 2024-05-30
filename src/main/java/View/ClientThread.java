@@ -1,6 +1,6 @@
 package View;
 
-import java.io.BufferedReader;   
+import java.io.BufferedReader;        
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
@@ -45,7 +45,7 @@ public class ClientThread  extends Thread{
 			}
 		}
 	 
-	 private void handleClientData(String data) throws SQLException {
+	 private void handleClientData(String data) throws SQLException, IOException {
 	        // Tách yêu cầu và dữ liệu
 	        String[] parts = data.split("#", 2);
 	        String request = parts[0];
@@ -77,6 +77,12 @@ public class ClientThread  extends Thread{
 	            case "CHECKTONTAI":
 	            	Checktontai(remainingData);
 	            	break;
+	            case "TAOMAKH":
+	            	taomakh(remainingData);
+	            	break;
+	            case "TRUYENDULIEU":
+	            	truyendulieu(remainingData);
+	            	break;
 	            default:
 	                out.println("Yêu cầu không hợp lệ");
 	                break;
@@ -88,9 +94,19 @@ public class ClientThread  extends Thread{
 	 }
 	 
 	 public void Booking(String thongtin) {
-		 
+		 int madp = QuanLy.booking(thongtin);
+		 out.println(madp);
 	 }
 	 
+	 public void taomakh(String thongtin) {
+		 String ma = QuanLy.TaoMaKH(thongtin);
+		 out.println(ma);
+	 }
+	 public void truyendulieu(String username){
+			String thongtin = QuanLy.truyenthongtin(username);
+			out.println(thongtin);
+	}
+
 	 public void CheckDP(String thongtin) {
 		 String[] parts = thongtin.split("#", 2);
 		 String madp = parts[0];
@@ -153,6 +169,8 @@ public class ClientThread  extends Thread{
 		} else out.println("0");
 	 }
 	 
+	
+	 
 	 public void order(String thongtin) {
 		 String[] part = thongtin.split("#");
 		 String madp = part[0];
@@ -162,6 +180,7 @@ public class ClientThread  extends Thread{
 		 String Thanhtien = part[4];
 		 
 	 }
+	 
 	 
 	 
 	 

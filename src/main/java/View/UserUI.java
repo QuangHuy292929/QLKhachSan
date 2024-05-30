@@ -1,12 +1,7 @@
 package View;
 
-import java.awt.EventQueue;          
-
-import javax.swing.JFrame;
+import javax.swing.JFrame;  
 import javax.swing.JPanel;
-
-import javax.swing.UIManager;
-
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 
@@ -16,6 +11,7 @@ import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import java.awt.GridLayout;
+
 import java.awt.Insets;
 import java.awt.RenderingHints;
 import java.awt.event.ActionEvent;
@@ -26,6 +22,8 @@ import java.util.ArrayList;
 import java.awt.CardLayout;
 import javax.swing.border.BevelBorder;
 import javax.swing.border.Border;
+
+import Model.ModelKhachHang;
 import Model.Phong;
 import Model.Phong.LoaiPhong;
 import Model.Phong.TrangThaiPhong;
@@ -59,28 +57,31 @@ public class UserUI extends JFrame {
     Color colordat = new Color(205, 180, 219);
     Color colorchoxacnhan = new Color(255, 200, 221);
 	public CardLayout cardhd;
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-					new UserUI();
-
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
+	public JLabel lb_makhachhang;
+	public ModelKhachHang khachHang;
 	
-	public UserUI(){
+	
+	
+	
+
+
+	public UserUI(ModelKhachHang khachHang){
+		this.khachHang = khachHang;
 		setTitle("Hệ thống quản lý Khách Sạn");
 		getContentPane().setBackground(new Color(204, 255, 255));
 		Border border = BorderFactory.createEmptyBorder(10, 10, 10, 10);
         border = BorderFactory.createCompoundBorder(new RoundedBorder(20, 20, Color.GRAY), border);
         Font font = new Font("Roboto", Font.BOLD, 22);
         Font font2 = new Font("Roboto",Font.CENTER_BASELINE, 18);
-        String svaddress = "";
+        
+        String svaddress = "172.21.0.79";
+		try {
+			socket = new Socket(svaddress, 8000);
+			in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+			out = new PrintWriter(socket.getOutputStream(), true);
+		} catch (IOException e) {
+			System.out.println("Kết nối không thành công");
+		}
         
         
 		ArrayList<PhongManager> quanLyPhong = new ArrayList<PhongManager>();
@@ -159,14 +160,14 @@ public class UserUI extends JFrame {
 		
 
 		JPanel pn_bar = new JPanel();
-		pn_bar.setBounds(10, 10, 927, 40);
+		pn_bar.setBounds(10, 10, 688, 40);
 		pn_sodophong.add(pn_bar);
 		pn_bar.setLayout(new GridLayout(1, 0, 10, 10));
 
 		JPanel pn_luachon = new JPanel();
 		pn_luachon.setBackground(new Color(255, 255, 255));
 		pn_bar.add(pn_luachon);
-		pn_luachon.setLayout(new GridLayout(1, 5, 10, 10));
+		pn_luachon.setLayout(new GridLayout(0, 3, 10, 0));
 
 		JPanel panel_7 = new JPanel();
 	    panel_7.setBackground(Color.getHSBColor(0, 0, (float) 0.94));
@@ -235,6 +236,7 @@ public class UserUI extends JFrame {
 		pn_Danghoatdong hoatdong101 = new pn_Danghoatdong(phong[0], this);
 		pn_Choxacnhan xacnhan101 = new pn_Choxacnhan(phong[0], hoatdong101,  this);
 		pn_Datphong datphong101 = new pn_Datphong(phong[0], xacnhan101, hoatdong101, this);
+		setdulieukh(datphong101, this);
 		CardLayout cardP1 = new CardLayout();
 		pn_p101.setLayout(cardP1);
 		pn_p101.add(datphong101, "datohong101");
@@ -279,6 +281,8 @@ public class UserUI extends JFrame {
 		pn_Danghoatdong hoatdong102 = new pn_Danghoatdong(phong[1], this);
 		pn_Choxacnhan xacnhan102 = new pn_Choxacnhan(phong[1], hoatdong102,  this);
 		pn_Datphong datphong102 = new pn_Datphong(phong[1], xacnhan102, hoatdong102, this);
+		setdulieukh(datphong102, this);
+		
 		CardLayout cardP2 = new CardLayout();
 		pn_p102.setLayout(cardP2);
 		pn_p102.add(datphong102, "datohong102");
@@ -365,6 +369,8 @@ public class UserUI extends JFrame {
 		pn_Danghoatdong hoatdong104 = new pn_Danghoatdong(phong[3], this);
 		pn_Choxacnhan xacnhan104 = new pn_Choxacnhan(phong[3], hoatdong104,  this);
 		pn_Datphong datphong104 = new pn_Datphong(phong[3], xacnhan104, hoatdong104, this);
+		setdulieukh(datphong103, this);
+
 		CardLayout cardP4 = new CardLayout();
 		pn_p104.setLayout(cardP4);
 		pn_p104.add(datphong104, "datohong104");
@@ -407,6 +413,7 @@ public class UserUI extends JFrame {
 		pn_Danghoatdong hoatdong201 = new pn_Danghoatdong(phong[4], this);
 		pn_Choxacnhan xacnhan201 = new pn_Choxacnhan(phong[4], hoatdong201,  this);
 		pn_Datphong datphong201 = new pn_Datphong(phong[4], xacnhan201, hoatdong201, this);
+		setdulieukh(datphong104, this);
 		CardLayout cardP5 = new CardLayout();
 		pn_p201.setLayout(cardP5);
 		pn_p201.add(datphong201, "datohong201");
@@ -450,6 +457,7 @@ public class UserUI extends JFrame {
 		pn_Danghoatdong hoatdong202 = new pn_Danghoatdong(phong[5], this);
 		pn_Choxacnhan xacnhan202 = new pn_Choxacnhan(phong[5], hoatdong202,  this);
 		pn_Datphong datphong202 = new pn_Datphong(phong[5], xacnhan202, hoatdong202, this);
+		setdulieukh(datphong201, this);
 		CardLayout cardP6 = new CardLayout();
 		pn_p202.setLayout(cardP6);
 		pn_p202.add(datphong202, "datohong202");
@@ -492,7 +500,7 @@ public class UserUI extends JFrame {
 		pn_Danghoatdong hoatdong203 = new pn_Danghoatdong(phong[6], this);
 		pn_Choxacnhan xacnhan203 = new pn_Choxacnhan(phong[6], hoatdong203,  this);
 		pn_Datphong datphong203 = new pn_Datphong(phong[6], xacnhan203, hoatdong203, this);
-		
+		setdulieukh(datphong203, this);
 		CardLayout cardP7 = new CardLayout();
 		pn_p203.setLayout(cardP7);
 		pn_p203.add(datphong203, "datohong203");
@@ -535,6 +543,7 @@ public class UserUI extends JFrame {
 		pn_Danghoatdong hoatdong204 = new pn_Danghoatdong(phong[7], this);
 		pn_Choxacnhan xacnhan204 = new pn_Choxacnhan(phong[7], hoatdong204,  this);
 		pn_Datphong datphong204 = new pn_Datphong(phong[7], xacnhan204, hoatdong204, this);
+		setdulieukh(datphong204, this);
 		CardLayout cardP8 = new CardLayout();
 		pn_p204.setLayout(cardP8);
 		pn_p204.add(datphong204, "datohong204");
@@ -578,6 +587,7 @@ public class UserUI extends JFrame {
 		pn_Danghoatdong hoatdong301 = new pn_Danghoatdong(phong[8], this);
 		pn_Choxacnhan xacnhan301 = new pn_Choxacnhan(phong[8], hoatdong301,  this);
 		pn_Datphong datphong301 = new pn_Datphong(phong[8], xacnhan301, hoatdong301, this);
+		setdulieukh(datphong301, this);
 		CardLayout cardP9 = new CardLayout();
 		pn_p301.setLayout(cardP9);
 		pn_p301.add(datphong301, "datohong301");
@@ -621,6 +631,7 @@ public class UserUI extends JFrame {
 		pn_Danghoatdong hoatdong302 = new pn_Danghoatdong(phong[9], this);
 		pn_Choxacnhan xacnhan302 = new pn_Choxacnhan(phong[9], hoatdong302,  this);
 		pn_Datphong datphong302 = new pn_Datphong(phong[9], xacnhan302, hoatdong302, this);
+		setdulieukh(datphong302, this);
 		CardLayout cardP10 =new  CardLayout();
 		pn_p302.setLayout(cardP10);
 		pn_p302.add(datphong302, "datohong302");
@@ -663,6 +674,8 @@ public class UserUI extends JFrame {
 		pn_Danghoatdong hoatdong303 = new pn_Danghoatdong(phong[10], this);
 		pn_Choxacnhan xacnhan303 = new pn_Choxacnhan(phong[10], hoatdong303,  this);
 		pn_Datphong datphong303 = new pn_Datphong(phong[10], xacnhan303, hoatdong303, this);
+		setdulieukh(datphong303, this);
+
 		CardLayout cardP11 = new CardLayout();
 		pn_p303.setLayout(cardP11);
 		pn_p303.add(datphong303, "datohong303");
@@ -705,12 +718,23 @@ public class UserUI extends JFrame {
 		pn_Danghoatdong hoatdong304 = new pn_Danghoatdong(phong[11], this);
 		pn_Choxacnhan xacnhan304 = new pn_Choxacnhan(phong[11], hoatdong304,  this);
 		pn_Datphong datphong304 = new pn_Datphong(phong[11], xacnhan304, hoatdong304, this);
+		setdulieukh(datphong304, this);
 		CardLayout cardP12 = new CardLayout();
 		pn_p304.setLayout(cardP12);
 		pn_p304.add(datphong304, "datohong304");
 		pn_p304.add(xacnhan304, "xacnhan304");
 		pn_p304.add(hoatdong304, "hoatdong304");
 		PhongManager manager12 = new PhongManager(phong[11], panel_phong12, cardP12, datphong304, xacnhan304, hoatdong304, pn_p304);
+		
+		JLabel lblNewLabel_15 = new JLabel("MÃ KHÁCH HÀNG:");
+		lblNewLabel_15.setFont(new Font("Monospaced", Font.BOLD | Font.ITALIC, 14));
+		lblNewLabel_15.setBounds(708, 20, 112, 30);
+		pn_sodophong.add(lblNewLabel_15);
+		
+		lb_makhachhang = new JLabel("");
+		lb_makhachhang.setFont(new Font("Monospaced", Font.BOLD | Font.ITALIC, 14));
+		lb_makhachhang.setBounds(841, 20, 106, 30);
+		pn_sodophong.add(lb_makhachhang);
 		manager12.start();
 		quanLyPhong.add(manager12);
 		panel_phong12.addMouseListener(new MouseAdapter() {
@@ -750,6 +774,9 @@ public class UserUI extends JFrame {
 		pn_hoatdong.add(pn_p302, "phong 302");
 		pn_hoatdong.add(pn_p303, "phong 303");
 		pn_hoatdong.add(pn_p304, "phong 304");
+		
+		JPanel panel_1 = new JPanel();
+		pn_hoatdong.add(panel_1, "name_2281070891800");
 
 	}
 	
@@ -806,4 +833,34 @@ public class UserUI extends JFrame {
 	public void Order(String request, String maDP, String tenDV, int dongia, int soluong, int thanhtien) {
 		out.println(request+"#"+maDP+"#"+tenDV+"#"+dongia+"#"+soluong+"#"+thanhtien);
 	}
+	
+	public int booking(String chuoithongtindp) {
+		out.println("BOOKING#"+chuoithongtindp);
+		String a = "";
+		try {
+			a = in.readLine();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		int madp = Integer.parseInt(a);
+		return madp;
+	}
+	
+	public void Cancel(String thongtin) {
+		out.println("CANCEL#"+thongtin);
+	}
+	public void xacnhan(String thongtin) {
+		
+	}
+	
+	public void setdulieukh(pn_Datphong datphong ,UserUI view) {
+		datphong.tfcccd.setText(view.khachHang.getCccd());
+		datphong.tfhovaten.setText(view.khachHang.getHoten());
+		datphong.tfmaKhachHang.setText(view.khachHang.getMakhachhang());
+		datphong.tfsdt.setText(view.khachHang.getSdt());
+	}
+	
+	
+	
+	
 }
