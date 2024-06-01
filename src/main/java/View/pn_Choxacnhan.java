@@ -43,7 +43,6 @@ public class pn_Choxacnhan extends JPanel {
 	public JTextField TMadatphong;
 	public double bill;
 	protected DefaultTableModel db;
-	protected int maKH;
 	protected JTextField TMaKH;
 	protected JLabel lbMaPhong;
 	
@@ -212,13 +211,7 @@ public class pn_Choxacnhan extends JPanel {
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
 				int luachon = JOptionPane.showConfirmDialog(view, "Xác nhận hủy phòng");
-				if (luachon == JOptionPane.OK_OPTION) {
-					phong.setTrangThai(TrangThaiPhong.TRONG);
-					
-					view.cardhd.show(view.pn_hoatdong, "sơ đồ phòng");
-					view.Cancel(phong.getId()+"");
-					db.setRowCount(0);
-				}
+				huyphong(luachon, phong, view);
 			}
 		});
 
@@ -230,7 +223,12 @@ public class pn_Choxacnhan extends JPanel {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				datphong(hoatdong, phong);
+				LocalDateTime now = LocalDateTime.now();
+				DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss dd/MM/yyyy");
+				String formattedDateTime = now.format(formatter);
+				datphong(hoatdong, phong, formattedDateTime);
+				int maphong = Integer.parseInt(lbMaPhong.getText());
+				view.xacnhan(maphong , formattedDateTime);
 				db.setRowCount(0);
 			}
 		});
@@ -241,31 +239,32 @@ public class pn_Choxacnhan extends JPanel {
 
 	
 	}
-	public void datphong(pn_Danghoatdong hoatdong, Phong phong) {
+	
+	public void huyphong(int luachon, Phong phong, UserUI view ) {
+		if(luachon == JOptionPane.OK_OPTION) {
+			phong.setTrangThai(TrangThaiPhong.TRONG);
+			view.cardhd.show(view.pn_hoatdong, "sơ đồ phòng");
+			view.Cancel(phong.getId()+"");
+			db.setRowCount(0);
+		}
+	}
+	
+	public void datphong(pn_Danghoatdong hoatdong, Phong phong, String tgian) {
 		phong.setTrangThai(TrangThaiPhong.DANG_HOAT_DONG);
 		// phương thức chuyển thông tin sang panel đặt phòng
 		hoatdong.THovaten.setText(THovaten.getText());
 		hoatdong.TCCCD.setText(TCCCD.getText());				
 		hoatdong.TSDTH.setText(TSdth.getText());
-		LocalDateTime now = LocalDateTime.now();
-		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss dd/MM/yyyy");
-		String formattedDateTime = now.format(formatter);
-		hoatdong.TNgayGioNHanPhong.setText(formattedDateTime);
-		hoatdong.maKH = maKH;
-		hoatdong.TMaKH.setText(maKH+"");
+		hoatdong.TNgayGioNHanPhong.setText(tgian);
+		hoatdong.TMadatphong.setText(TMadatphong.getText());
+		hoatdong.TMaKH.setText(TMaKH.getText());
 		hoatdong.lbMaPhong.setText(phong.getId()+"");
 		for (int row = 0; row < db.getRowCount(); row++) {
-			// Tạo một mảng để lưu trữ dữ liệu của dòng hiện tại
 			Object[] rowData = new Object[db.getColumnCount()];
-
-			// Lấy dữ liệu từ mỗi ô trong dòng hiện tại của bảng nguồn
 			for (int col = 0; col < db.getColumnCount(); col++) {
 				rowData[col] = db.getValueAt(row, col);
 			}
-			// Thêm dữ liệu dòng vào bảng đích
 			hoatdong.db.addRow(rowData);
-			// phương thức xóa form
-
 		}
 	}
 	

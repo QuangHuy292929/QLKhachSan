@@ -1,6 +1,6 @@
 package View;
 
-import java.awt.EventQueue;      
+       
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -26,7 +26,7 @@ import java.awt.Font;
 import java.util.Properties;
 import java.util.Random;
 
-import javax.swing.UIManager;
+
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JPasswordField;
@@ -43,7 +43,7 @@ import javax.swing.border.EtchedBorder;
 import java.awt.event.ActionListener;
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
+
 import java.io.PrintWriter;
 import java.net.Socket;
 
@@ -71,45 +71,19 @@ public class LoginUI extends JFrame {
 	private JPanel pn_dangky;
 	private JPasswordField jpcreatepass;
 	private JTextField jtotpcreate;
-	private Socket socket;
-	private BufferedReader in;
-	private PrintWriter out;
-
+	private static Client client;
 	// Truy vấn dữ liệu để đăng nhập
 	
 
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-					new LoginUI();
-
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
-
-	/**
-	 * Create the frame.
-	 */
-	public LoginUI() {
+	
+	public LoginUI(Client client) {
+		this.client = client;
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setSize(1200, 800);
 		setLocationRelativeTo(null);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
-		String svaddress = "172.21.0.79";
-		try {
-			socket = new Socket(svaddress, 8000);
-			in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-			out = new PrintWriter(socket.getOutputStream(), true);
-		} catch (IOException e) {
-			System.out.println("Kết nối không thành công");
-		}
-        
+		
 		setContentPane(contentPane);
 		CardLayout cardinfo = new CardLayout();
 		contentPane.setLayout(cardinfo);
@@ -212,6 +186,7 @@ public class LoginUI extends JFrame {
 				    // Đăng nhập thành công
 					
 				    JOptionPane.showMessageDialog(null, "Đăng nhập thành công");
+				    
 				    jttenDangnhap.setText("");
 				    jpassword.setText("");
 				    String khs = null;
@@ -224,15 +199,8 @@ public class LoginUI extends JFrame {
 					}
 				    Gson gs = new Gson();
 				    ModelKhachHang kh = gs.fromJson(khs, ModelKhachHang.class);
-				    try {
-						socket.close();
-						dispose();
-					} catch (IOException e1) {
-						// TODO Auto-generated catch block
-						e1.printStackTrace();
-					}
-				    
-				    UserUI view = new UserUI(kh);
+				    dispose();
+				    UserUI view = new UserUI(kh, client);
 				    
 				    
 				    view.setVisible(true);
@@ -632,28 +600,17 @@ public class LoginUI extends JFrame {
 
 	
 	public boolean CheckIn(String data){
-		out.println("CHECKIN#"+data);
-			try {
-				String result = in.readLine();
-				if(result.equals("1")) return true;
-				else return false;
-			} catch (IOException e) {
-				e.printStackTrace();
-				return false;
-			}
+		client.sendMessage("CHECKIN#"+data);
+			String result = client.receiveMessage();
+			if(result.equals("1")) return true;
+			else return false;
 	}
 	
 	public boolean checkDky(String hoten, String CCCD, String Sdth, String email, String mk, String Username) {
-		System.out.println("CHECKDKY#"+hoten+"#"+CCCD+"#"+Sdth+"#"+email+"#"+mk+"#"+Username);
-		out.println("CHECKDKY#"+hoten+"#"+CCCD+"#"+Sdth+"#"+email+"#"+mk+"#"+Username);
-			try {
-				String result = in.readLine();
-				if(result.equals("1")) return true;
-				else return false;
-			} catch (IOException e) {
-				e.printStackTrace();
-				return false;
-			}		
+		client.sendMessage("CHECKDKY#"+hoten+"#"+CCCD+"#"+Sdth+"#"+email+"#"+mk+"#"+Username);
+			String result = client.receiveMessage();
+			if(result.equals("1")) return true;
+			else return false;		
 	}
 	
 	
@@ -666,39 +623,24 @@ public class LoginUI extends JFrame {
 	
 	
 	public boolean ChangePass(String username, String newpass) {
-		out.println("CHANGEPASS"+"#"+username+"#"+newpass);
-		try {
-			String result = in.readLine();
-			if(result.equals("1")) return true;
-			else return false;
-		} catch (IOException e) {
-			e.printStackTrace();
-			return false;
-		}	
+		client.sendMessage("CHANGEPASS"+"#"+username+"#"+newpass);
+		String result = client.receiveMessage();
+		if(result.equals("1")) return true;
+		else return false;	
 	}
 	
 	public boolean checkXacthuc(String username, String email) {
-		out.println("CHECKXACTHUC"+"#"+username+"#"+email);
-		try {
-			String result = in.readLine();
-			if(result.equals("1")) return true;
-			else return false;
-		} catch (IOException e) {
-			e.printStackTrace();
-			return false;
-		}	
+		client.sendMessage("CHECKXACTHUC"+"#"+username+"#"+email);
+		String result = client.receiveMessage();
+		if(result.equals("1")) return true;
+		else return false;	
 	}
 	
 	public boolean checktontai(String username, String cccd) {
-		out.println("CHECKTONTAI"+"#"+username+"#"+cccd);
-		try {
-			String result = in.readLine();
-			if(result.equals("1")) return true;
-			else return false;
-		} catch (IOException e) {
-			e.printStackTrace();
-			return false;
-		}	
+		client.sendMessage("CHECKTONTAI"+"#"+username+"#"+cccd);
+		String result = client.receiveMessage();
+		if(result.equals("1")) return true;
+		else return false;	
 	}
 	
 	
@@ -718,7 +660,7 @@ public class LoginUI extends JFrame {
 		String to = email;
 		String subject = tieude;
 		body = String.valueOf(taomaOTP()); // Convert int to String
-		System.out.println(body);
+		client.sendMessage(body);
 		Properties props = new Properties();
 		props.put("mail.smtp.host", host);
 		props.put("mail.smtp.auth", "true");
@@ -748,14 +690,9 @@ public class LoginUI extends JFrame {
 	}
 	
 	public String receiKH(String username) throws IOException {
-		out.println("TRUYENDULIEU"+"#"+username);
-		
-		return in.readLine();
+		client.sendMessage("TRUYENDULIEU"+"#"+username);
+		return client.receiveMessage();
 	}
-	
-	
-
-	
 	
 	
 }

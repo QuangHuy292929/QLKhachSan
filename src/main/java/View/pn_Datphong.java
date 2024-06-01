@@ -54,7 +54,6 @@ public class pn_Datphong extends JPanel {
 	private JButton btquaylai;
 	private JButton btxacnhan;
 	private JButton btchoxacnhan;
-	private JSpinner spinnerngaysinh;
 	public Color colordat = new Color(205, 180, 219);
 	public Color colorchoxacnhan = new Color(255, 200, 221);
 	SimpleDateFormat formatNgayGio = new SimpleDateFormat("dd:MM:yyyy HH:mm:ss");
@@ -64,10 +63,7 @@ public class pn_Datphong extends JPanel {
 	private JCheckBox cbGiatui;
 	private JCheckBox cbSPA;
 	private JCheckBox cbFitness;
-	private Calendar calendar;
-	private String formattedDateTime;
 	private String ngaygionhan;
-	private DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
 
 	
 	
@@ -308,7 +304,7 @@ public class pn_Datphong extends JPanel {
 		            hoatdong.TNgayGioNHanPhong.setText(ngaygionhan);
 		            hoatdong.lbMaPhong.setText(phong.getId()+"");
 		            hoatdong.TSDTH.setText(tfsdt.getText());
-		            
+		            hoatdong.TMaKH.setText(tfmaKhachHang.getText());
 
 		            if(cbchothuexe.isSelected()) {
 		            	hoatdong.db.addRow(new Object[] {
@@ -355,9 +351,7 @@ public class pn_Datphong extends JPanel {
 //							u.getSdthlienhe() + "", u.getDoituong() + "", ngay, u.getLoaighe() + "",
 //							u.getKhuHoi() + "", u.getNoiDi() + "", u.getNoiDen() + "", u.getGiaVe(),
 //							u.getMasove() });
-					int ma = taomaKH();
-					hoatdong.maKH = ma;
-					hoatdong.TMaKH.setText(ma+"");
+				
 					xoaform();		
 				} else JOptionPane.showMessageDialog(null, "Nhập sai định dạng\n Vui lòng nhập lại!");
 			}
@@ -477,11 +471,7 @@ public class pn_Datphong extends JPanel {
 		return s;
 	}
 	
-	private int taomaKH() { 
-        Random random = new Random();
-        int randomNumber = random.nextInt(8999) + 1000;
-        return randomNumber;
-    }
+	
 	
 	public void xoaform() {
 		

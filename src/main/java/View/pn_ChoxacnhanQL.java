@@ -211,13 +211,11 @@ public class pn_ChoxacnhanQL extends JPanel {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
-				int luachon = JOptionPane.showConfirmDialog(view, "Xác nhận hủy phòng");
+				int luachon = JOptionPane.showConfirmDialog(view, "Xác nhận hủy phòng", "Hủy phong", JOptionPane.OK_OPTION);
 				if (luachon == JOptionPane.OK_OPTION) {
-					phong.setTrangThai(TrangThaiPhong.TRONG);
-					view.cardhd.show(view.pn_hoatdong, "sơ đồ phòng");
-					// phương thức xóa form
-					xoaform();
+					huyphong(phong, view);
 				}
+
 			}
 		});
 
@@ -230,32 +228,10 @@ public class pn_ChoxacnhanQL extends JPanel {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
-
-				phong.setTrangThai(TrangThaiPhong.DANG_HOAT_DONG);
-				// phương thức chuyển thông tin sang panel đặt phòng
-				hoatdong.THovaten.setText(THovaten.getText());
-				hoatdong.TCCCD.setText(TCCCD.getText());				
-				hoatdong.TSDTH.setText(TSdth.getText());
 				LocalDateTime now = LocalDateTime.now();
 				DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss dd/MM/yyyy");
 				String formattedDateTime = now.format(formatter);
-				hoatdong.TNgayGioNHanPhong.setText(formattedDateTime);
-				hoatdong.maKH = maKH;
-				hoatdong.TMaKH.setText(maKH+"");
-				hoatdong.lbMaPhong.setText(phong.getId()+"");
-				for (int row = 0; row < db.getRowCount(); row++) {
-					// Tạo một mảng để lưu trữ dữ liệu của dòng hiện tại
-					Object[] rowData = new Object[db.getColumnCount()];
-
-					// Lấy dữ liệu từ mỗi ô trong dòng hiện tại của bảng nguồn
-					for (int col = 0; col < db.getColumnCount(); col++) {
-						rowData[col] = db.getValueAt(row, col);
-					}
-					// Thêm dữ liệu dòng vào bảng đích
-					hoatdong.db.addRow(rowData);
-					// phương thức xóa form
-
-				}
+				datphong(hoatdong, phong, formattedDateTime);
 				xoaform();
 			}
 		});
@@ -266,10 +242,47 @@ public class pn_ChoxacnhanQL extends JPanel {
 
 	}
 	
+	public void datphong(pn_DanghoatdongQL hoatdong, Phong phong, String tgian) {
+		phong.setTrangThai(TrangThaiPhong.DANG_HOAT_DONG);
+		// phương thức chuyển thông tin sang panel đặt phòng
+		hoatdong.TMadatphong.setText(TMadatphong.getText());
+		hoatdong.TMaKH.setText(TMaKH.getText());
+		hoatdong.THovaten.setText(THovaten.getText());
+		hoatdong.TCCCD.setText(TCCCD.getText());				
+		hoatdong.TSDTH.setText(TSdth.getText());
+		hoatdong.TNgayGioNHanPhong.setText(tgian);
+		hoatdong.lbMaPhong.setText(phong.getId()+"");
+		for (int row = 0; row < db.getRowCount(); row++) {
+			// Tạo một mảng để lưu trữ dữ liệu của dòng hiện tại
+			Object[] rowData = new Object[db.getColumnCount()];
+
+			// Lấy dữ liệu từ mỗi ô trong dòng hiện tại của bảng nguồn
+			for (int col = 0; col < db.getColumnCount(); col++) {
+				rowData[col] = db.getValueAt(row, col);
+			}
+			// Thêm dữ liệu dòng vào bảng đích
+			hoatdong.db.addRow(rowData);
+			// phương thức xóa form
+
+		}
+	}
+	
+	public void huyphong(Phong phong, ManagerUI view) {
+			phong.setTrangThai(TrangThaiPhong.TRONG);
+			view.cardhd.show(view.pn_hoatdong, "sơ đồ phòng");
+			// phương thức xóa form
+			xoaform();
+		
+	}
+	
+	
+		
+		
 	public void xoaform() {
 		lbMaPhong.setText(null);
 		THovaten.setText(null);
 		TMaKH.setText(null);
+		TMadatphong.setText(null);
 		TCCCD.setText(null);
 		TSdth.setText(null);
 		TMadatphong.setText(null);

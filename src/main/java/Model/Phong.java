@@ -4,13 +4,17 @@ public class Phong {
 	private int id;
 	private String tenPhong;
 	private TrangThaiPhong TrangThai;
+	private int giaphong;
 	private LoaiPhong loaiphong;
-	public Phong(int id, String tenPhong, TrangThaiPhong TrangThai, LoaiPhong loaiphong) {
+	
+	public Phong(int id, String tenPhong, TrangThaiPhong TrangThai, int giaphong, LoaiPhong loaiphong) {
 		this.id = id;
 		this.tenPhong = tenPhong;
 		this.TrangThai = TrangThai;
+		this.giaphong = giaphong;
 		this.loaiphong = loaiphong;
 	}
+
 	
 	public LoaiPhong getLoaiphong() {
 		return loaiphong;
@@ -20,6 +24,12 @@ public class Phong {
 		this.loaiphong = loaiphong;
 	}
 
+	public int getGiaphong() {
+		return giaphong;
+	}
+	public void setGiaphong(int giaphong) {
+		this.giaphong = giaphong;
+	}
 	public int getId() {
 		return id;
 	}
@@ -44,7 +54,5 @@ public class Phong {
 	public enum LoaiPhong{
 		THUONG, TRUNG, VIP
 	}
-	
-
 }
 

@@ -34,9 +34,12 @@ import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
+import Model.ModelDVSau;
+import Model.ModelDVTruoc;
 import Model.ModelDichVu;
 import Model.ModelKhachHang;
 import Model.Modelchuoi;
+import Model.Modelthongtinphong;
 import Model.Phong;
 import Model.Phong.LoaiPhong;
 import Model.Phong.TrangThaiPhong;
@@ -64,7 +67,7 @@ import java.time.format.DateTimeFormatter;
 public class ManagerUI extends JFrame {
 
 	private static final long serialVersionUID = 1L;
-	private Phong[] phong;
+	public Phong[] phong;
 	JPanel pn_trangchu;
 	JPanel pn_sodophong;
 	JPanel pn_hoatdong;
@@ -73,6 +76,8 @@ public class ManagerUI extends JFrame {
     Color colorchoxacnhan = new Color(255, 200, 221);
 	public CardLayout cardhd;
 	public HashMap<Integer, String> key_room = new HashMap<Integer, String>();
+	public HashMap<ClientThread, String> dulieukhach = new HashMap<ClientThread, String>();
+	public HashMap<String, Integer> dulieudp = new HashMap<String, Integer>();
 	private DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
 	public ArrayList<PhongManagerQL> quanLyPhong;
 	ModelDichVu[] danhsachDV = new ModelDichVu[17];
@@ -119,18 +124,18 @@ public class ManagerUI extends JFrame {
         
 		quanLyPhong = new ArrayList<PhongManagerQL>();
 		phong = new Phong[]{
-				new Phong(101, "Phòng 101", TrangThaiPhong.TRONG, LoaiPhong.THUONG),
-				new Phong(102, "Phòng 102", TrangThaiPhong.CHO_XAC_NHAN, LoaiPhong.THUONG),
-				new Phong(103, "Phòng 103", TrangThaiPhong.DANG_HOAT_DONG, LoaiPhong.THUONG),
-				new Phong(104, "Phòng 104", TrangThaiPhong.TRONG, LoaiPhong.THUONG),
-				new Phong(201, "Phòng 201", TrangThaiPhong.TRONG, LoaiPhong.TRUNG),
-				new Phong(202, "Phòng 202", TrangThaiPhong.TRONG, LoaiPhong.TRUNG),
-				new Phong(203, "Phòng 203", TrangThaiPhong.TRONG, LoaiPhong.TRUNG),
-				new Phong(204, "Phòng 204", TrangThaiPhong.DANG_HOAT_DONG, LoaiPhong.TRUNG),
-				new Phong(301, "Phòng 301", TrangThaiPhong.TRONG, LoaiPhong.VIP),
-				new Phong(302, "Phòng 302", TrangThaiPhong.TRONG, LoaiPhong.VIP),
-				new Phong(303, "Phòng 303", TrangThaiPhong.TRONG, LoaiPhong.VIP),
-				new Phong(304, "Phòng 304", TrangThaiPhong.TRONG, LoaiPhong.VIP),
+				new Phong(101, "Phòng 101", TrangThaiPhong.TRONG, 400000, LoaiPhong.THUONG),
+				new Phong(102, "Phòng 102", TrangThaiPhong.TRONG, 400000, LoaiPhong.THUONG),
+				new Phong(103, "Phòng 103", TrangThaiPhong.TRONG, 400000, LoaiPhong.THUONG),
+				new Phong(104, "Phòng 104", TrangThaiPhong.TRONG, 400000, LoaiPhong.THUONG),
+				new Phong(201, "Phòng 201", TrangThaiPhong.TRONG, 600000, LoaiPhong.TRUNG),
+				new Phong(202, "Phòng 202", TrangThaiPhong.TRONG, 600000, LoaiPhong.TRUNG),
+				new Phong(203, "Phòng 203", TrangThaiPhong.TRONG, 600000, LoaiPhong.TRUNG),
+				new Phong(204, "Phòng 204", TrangThaiPhong.TRONG, 600000, LoaiPhong.TRUNG),
+				new Phong(301, "Phòng 301", TrangThaiPhong.TRONG, 800000, LoaiPhong.VIP),
+				new Phong(302, "Phòng 302", TrangThaiPhong.TRONG, 800000, LoaiPhong.VIP),
+				new Phong(303, "Phòng 303", TrangThaiPhong.TRONG, 800000, LoaiPhong.VIP),
+				new Phong(304, "Phòng 304", TrangThaiPhong.TRONG, 800000, LoaiPhong.VIP),
 		};
 		danhsachDV[0] = new ModelDichVu(0, "Nước lọc", 15000);
 		danhsachDV[1] = new ModelDichVu(1, "Snack khoai tây", 20000);
@@ -149,6 +154,7 @@ public class ManagerUI extends JFrame {
 		danhsachDV[14] = new ModelDichVu(14, "Giặt ủi", 100000);
 		danhsachDV[15] = new ModelDichVu(15, "Spa", 1500000);
 		danhsachDV[16] = new ModelDichVu(16, "Fitness", 200000);
+		
 		key_room.put(101, "");
 		key_room.put(102, "");
 		key_room.put(103, "");
@@ -800,17 +806,36 @@ public class ManagerUI extends JFrame {
 	//phương thức kết nối database
 	
 	public boolean CheckDPKH(String MaDP, int maphong) {
-		//if()
-		return true;
-		//else return false;
+		if(MaDP.equals(key_room.get(maphong))) {
+			return true;
+		} else return false;
 	}
 	
-	
+	public String laymakh(String username) throws SQLException {
+		String makh = null;
+		try (Connection connection = connectdatabase.getConnection();
+				PreparedStatement statement = connection
+						.prepareStatement("SELECT MAKH FROM customer WHERE USERNAME = ?");) {
+
+			statement.setString(1, username);
+			ResultSet resultSet = statement.executeQuery();
+
+			if (resultSet.next()) {
+				makh = resultSet.getString("MAKH");
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return makh;
+
+	}
+
 	public boolean CheckIn(String username, String pass) throws SQLException {
 		boolean result = false;
 		Connection connection = null;
 		PreparedStatement preparedStatement = null;
 		ResultSet resultSet = null;
+		ResultSet rs = null;
 
 		try {
 			// Get a connection to the database
@@ -836,7 +861,7 @@ public class ManagerUI extends JFrame {
 				System.out.println(encodedPass);
 				// Check if the encoded password matches the password from the database
 				if (encodedPass.equals(passwordFromDB)) {
-					// Login successful
+					
 					result = true;
 				} else {
 					// Login failed
@@ -1100,83 +1125,90 @@ public class ManagerUI extends JFrame {
         return randomNumber;
     }
 
-	public void Order() {
-		
-	}
-	
-	
-	
-	public String truyendulieu(pn_ChoxacnhanQL xacnhan, pn_DanghoatdongQL hoatdong) {
-		for(int i = 0; i<12; i++) {
-			if(phong[i].getTrangThai() == TrangThaiPhong.CHO_XAC_NHAN) {
-				int maphong = phong[i].getId();
-				int madp = Integer.parseInt(key_room.get(maphong));
-				for (PhongManagerQL phongql : quanLyPhong) {
-					if(phongql.phong.getId() == maphong) {
-						JsonObject infoKH  = new JsonObject();
-						infoKH.addProperty("maphong", xacnhan.lbMaPhong.getText());
-						infoKH.addProperty("makhachhang", xacnhan.TMaKH.getText());
-						infoKH.addProperty("madatphong", xacnhan.TMadatphong.getText());
-						infoKH.addProperty("hovaten", xacnhan.THovaten.getText());
-						infoKH.addProperty("cccd", xacnhan.TCCCD.getText());
-						infoKH.addProperty("sdth", xacnhan.TSdth.getText());
-						JsonObject dv = new JsonObject();
-						JsonArray dichvu = new JsonArray();
-						for (int row = 0; row < xacnhan.db.getRowCount(); row++) {
-							JsonObject ob = new JsonObject();
-							ob.addProperty("tendichvu", xacnhan.db.getValueAt(i, 0)+"");
-							ob.addProperty("dongia", xacnhan.db.getValueAt(i, 1)+"");
-							dichvu.add(ob);
-						}
-						dv.add("dichvutruoc", dichvu);
-						
-					} else return null;
-				} 
-			} else if(phong[i].getTrangThai() == TrangThaiPhong.DANG_HOAT_DONG) {
-				int maphong = phong[i].getId();
-				int madp = Integer.parseInt(key_room.get(maphong));
-				for (PhongManagerQL phongql : quanLyPhong) {
-					if(phongql.phong.getId() == maphong) {
-						JsonObject infoKH  = new JsonObject();
-						infoKH.addProperty("maphong", hoatdong.lbMaPhong.getText());
-						infoKH.addProperty("makhachhang", hoatdong.TMaKH.getText());
-						infoKH.addProperty("madatphong", hoatdong.TMadatphong.getText());
-						infoKH.addProperty("hovaten", hoatdong.THovaten.getText());
-						infoKH.addProperty("cccd", hoatdong.TCCCD.getText());
-						infoKH.addProperty("sdth", hoatdong.TSDTH.getText());
-						infoKH.addProperty("ngayvao", hoatdong.TNgayGioNHanPhong.getText());
-						JsonObject dvtruoc = new JsonObject();
-						JsonArray dichvu = new JsonArray();
-						for (int row = 0; row < xacnhan.db.getRowCount(); row++) {
-							JsonObject ob = new JsonObject();
-							ob.addProperty("tendichvu", xacnhan.db.getValueAt(i, 0)+"");
-							ob.addProperty("dongia", xacnhan.db.getValueAt(i, 1)+"");
-							dichvu.add(ob);
-						}
-						dvtruoc.add("dichvutruoc", dichvu);
-						JsonObject dvsau = new JsonObject();
-						JsonArray JsSau = new JsonArray();
-						for(int j = 0;j<hoatdong.dbsau.getRowCount();i++) {
-							JsonObject jsob = new JsonObject();
-							jsob.addProperty("tendichvu", hoatdong.dbsau.getValueAt(j, 0)+"");
-							jsob.addProperty("dongia", hoatdong.dbsau.getValueAt(j, 1)+"");
-							jsob.addProperty("soluong", hoatdong.dbsau.getValueAt(j, 2)+"");
-							jsob.addProperty("thanhtien", hoatdong.dbsau.getValueAt(j, 3)+"");
-							JsSau.add(jsob);
-						}
-						dvsau.add("dichvusau", JsSau);
-						return infoKH.toString()+"#"+dvtruoc.toString()+"#"+dvsau.toString();
-					} else return null;
-						
-					}
-				}else 
-					return null;
-					
-			
+
+	public void Order(int maphong, int madv, int soluong) {
+		for (PhongManagerQL phongql : quanLyPhong) {
+			if(phongql.phong.getId() == maphong) {
+				phongql.hoatdong.dbsau.addRow(new Object[] { danhsachDV[madv].getTenDichvu(), phantichgia(danhsachDV[madv].getGiaca()),
+						soluong, phantichgia(danhsachDV[madv].getGiaca() * soluong) });
+			}
 		}
-		return null;
-		
 	}
+	
+
+	
+//	public String truyendulieu() {
+//		JsonArray mangthongtin = new JsonArray();
+//		Gson gson = new Gson();
+//		
+//		for (PhongManagerQL phongql : quanLyPhong) {
+//			if(phongql.phong.getTrangThai()==TrangThaiPhong.TRONG) {
+//				Modelthongtinphong thongtin = new Modelthongtinphong(TrangThaiPhong.TRONG, null, null, null, null, null, null, null, null);
+//				String json = gson.toJson(thongtin);
+//				mangthongtin.add(json);
+//			} else if (phongql.phong.getTrangThai()==TrangThaiPhong.CHO_XAC_NHAN) {
+//				Modelthongtinphong thongtin = new Modelthongtinphong();
+//				thongtin.setTrangthai(TrangThaiPhong.CHO_XAC_NHAN);
+//				thongtin.setCccd(phongql.xacnhan.TCCCD.getText());
+//				thongtin.setHoten(phongql.xacnhan.THovaten.getText());
+//				int madp = Integer.parseInt(phongql.xacnhan.TMadatphong.getText());
+//				thongtin.setSdth(phongql.xacnhan.TSdth.getText());
+//				thongtin.setNgayvao(null);
+//				thongtin.setMadp(madp);
+//				thongtin.setMakh(phongql.xacnhan.TMaKH.getText());
+//				ArrayList<ModelDVTruoc> dichvutrc = new ArrayList<ModelDVTruoc>();
+//				for (int row = 0; row < phongql.xacnhan.db.getRowCount(); row++) {
+//					ModelDVTruoc dvtrc = new ModelDVTruoc();
+//					dvtrc.setTendv(phongql.xacnhan.db.getValueAt(row, 0)+"");
+//					int giatien = convert(phongql.xacnhan.db.getValueAt(row, 1)+"");
+//					dvtrc.setGia(giatien);
+//					dichvutrc.add(dvtrc);
+//					
+//				}
+//				thongtin.setDvtruoc(dichvutrc);
+//				thongtin.setDvsau(null);
+//				String json = gson.toJson(thongtin);
+//				mangthongtin.add(json);
+//			} else {
+//				Modelthongtinphong thongtin = new Modelthongtinphong();
+//				thongtin.setTrangthai(TrangThaiPhong.DANG_HOAT_DONG);
+//				thongtin.setCccd(phongql.hoatdong.TCCCD.getText());
+//				thongtin.setHoten(phongql.hoatdong.THovaten.getText());
+//				int madp = Integer.parseInt(phongql.hoatdong.TMadatphong.getText());
+//				thongtin.setMadp(madp);
+//				thongtin.setSdth(phongql.hoatdong.TSDTH.getText());
+//				thongtin.setNgayvao(phongql.hoatdong.TNgayGioNHanPhong.getText());
+//				thongtin.setMakh(phongql.hoatdong.TMaKH.getText());
+//				ArrayList<ModelDVTruoc> dichvutrc = new ArrayList<ModelDVTruoc>();
+//				for (int row = 0; row < phongql.hoatdong.db.getRowCount(); row++) {
+//					ModelDVTruoc dvtrc = new ModelDVTruoc();
+//					dvtrc.setTendv(phongql.hoatdong.db.getValueAt(row, 0)+"");
+//					int giatien = convert(phongql.hoatdong.db.getValueAt(row, 1)+"");
+//					dvtrc.setGia(giatien);
+//					dichvutrc.add(dvtrc);
+//					
+//				}
+//				thongtin.setDvtruoc(dichvutrc);
+//				ArrayList<ModelDVSau> dichvusau = new ArrayList<ModelDVSau>();
+//				for (int row = 0; row < phongql.hoatdong.dbsau.getRowCount(); row++) {
+//					ModelDVSau dvsau = new ModelDVSau();
+//					dvsau.setTendv(phongql.hoatdong.dbsau.getValueAt(row, 0)+"");
+//					int giatien = convert(phongql.hoatdong.dbsau.getValueAt(row, 1)+"");
+//					dvsau.setDongia(giatien);
+//					int soluong = Integer.parseInt(phongql.hoatdong.dbsau.getValueAt(row, 2)+"");
+//					dvsau.setSoluong(soluong);
+//					int thanhtien = convert(phongql.hoatdong.dbsau.getValueAt(row, 3)+"");
+//					dvsau.setThanhtien(thanhtien);
+//					dichvusau.add(dvsau);
+//				}
+//				thongtin.setDvsau(dichvusau);
+//				String json = gson.toJson(thongtin);
+//				mangthongtin.add(json);
+//			}
+//		}
+//
+//		return mangthongtin.toString();
+//	}
 	
 	public int booking(String chuoithongtin) {
 		Gson tt = new Gson();
@@ -1184,9 +1216,11 @@ public class ManagerUI extends JFrame {
 		//Xử lý đặt phòng
 		int madp = taomaDatphong();
 		key_room.put(chuoi.getMaphong(), madp+"");
+		dulieudp.put(chuoi.getMaKhachHang(), madp);
 		if(chuoi.getTrangthai() == TrangThaiPhong.CHO_XAC_NHAN) {
 			for (PhongManagerQL phongql : quanLyPhong) {
 				if(phongql.phong.getId() == chuoi.getMaphong()) {
+					phongql.phong.setTrangThai(TrangThaiPhong.CHO_XAC_NHAN);
 					phongql.xacnhan.TMadatphong.setText(madp+"");
 					phongql.xacnhan.TMaKH.setText(chuoi.getMaKhachHang());
 					phongql.xacnhan.THovaten.setText(chuoi.getHoVaTen());
@@ -1213,6 +1247,7 @@ public class ManagerUI extends JFrame {
 		} else if(chuoi.getTrangthai() == TrangThaiPhong.DANG_HOAT_DONG) {
 			for (PhongManagerQL phongql : quanLyPhong) {
 				if(phongql.phong.getId() == chuoi.getMaphong()) {
+					phongql.phong.setTrangThai(TrangThaiPhong.DANG_HOAT_DONG);
 					phongql.hoatdong.TMadatphong.setText(madp+"");
 					phongql.hoatdong.TMaKH.setText(chuoi.getMaKhachHang());
 					phongql.hoatdong.THovaten.setText(chuoi.getHoVaTen());
@@ -1238,59 +1273,41 @@ public class ManagerUI extends JFrame {
 			}
 		}
 		
+		for (ClientThread clientThread : clients) {
+			clientThread.dongbohoa();
+		}
 		return madp;
 	}
+	
+	public void xacnhan(int maphong, String tgian) {
+		for (PhongManagerQL phongql : quanLyPhong) {
+			if(phongql.phong.getId() == maphong) {
+				phongql.xacnhan.datphong(phongql.hoatdong, phongql.phong, tgian);
+			}
+		}
+	}
+	
+	public void cancel(int maphong) {
+		for (PhongManagerQL phongql : quanLyPhong) {
+			if(phongql.phong.getId() == maphong) {
+				phongql.xacnhan.huyphong(phongql.phong, this);
+			}
+		}
+	}
+	
 
-//	public boolean truyXuatDatPhong(Connection conn, String maDatPhong) throws SQLException {
-//	    boolean success = false;
-//	    int count = 0;
-//	    PreparedStatement statement = null;
-//	    ResultSet resultSet = null;
-//
-//	    try {
-//	        String query = "SELECT C.MAKH, C.HOTEN, P.MAPHONG, D.MADP, D.NGAYGIOVP, D.NGAYGIOTP, P.TRANGTHAI " +
-//	                "FROM customer C " +
-//	                "JOIN datphong D ON D.MAKH = C.MAKH " +
-//	                "JOIN phongks P ON P.MAPHONG = D.MAPHONG " +
-//	                "WHERE D.MADP = ?";
-//
-//	        statement = conn.prepareStatement(query);
-//	        statement.setString(1, maDatPhong);
-//
-//	        resultSet = statement.executeQuery();
-//
-//	        while (resultSet.next()) {
-//	            count++;
-//	            String makh = resultSet.getString("MAKH");
-//	            String hoten = resultSet.getString("HOTEN");
-//	            String maphong = resultSet.getString("MAPHONG");
-//	            String madp = resultSet.getString("MADP");
-//	            String ngaygiovp = resultSet.getString("NGAYGIOVP");
-//	            String ngaygiotp = resultSet.getString("NGAYGIOTP");
-//	            String trangthai = resultSet.getString("TRANGTHAI");
-//
-//	            System.out.println("MAKH: " + makh + ", HOTEN: " + hoten + ", MAPHONG: " + maphong + ", MADP: " + madp +
-//	                    ", NGAYGIOVP: " + ngaygiovp + ", NGAYGIOTP: " + ngaygiotp + ", TRANGTHAI: " + trangthai);
-//	        }
-//
-//	        if (count > 0) {
-//	            success = true;
-//	        }
-//	    } catch (SQLException e) {
-//	        e.printStackTrace();
-//	    } finally {
-//	        // Đóng ResultSet và PreparedStatement
-//	        if (resultSet != null) {
-//	            resultSet.close();
-//	        }
-//	        if (statement != null) {
-//	            statement.close();
-//	        }
-//	    }
-//
-//	    return success;
-//	}
+
 	//tao modelchuoi để lưu
+	
+	public static int convert(String input) {
+	    // Loại bỏ ký tự "VND" và dấu chấm phẩy
+	    String cleanedInput = input.replaceAll("[^0-9]", "");
+	    
+	    // Chuyển đổi chuỗi thành số nguyên kiểu int
+	    int value = Integer.parseInt(cleanedInput);
+	    
+	    return value;
+	}
 
 	public String truyenthongtin(String username) {
 	    try (

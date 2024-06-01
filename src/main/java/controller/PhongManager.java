@@ -10,13 +10,13 @@ import View.pn_Danghoatdong;
 import View.pn_Datphong;
 
 public class PhongManager extends Thread {
-    private Phong phong;
-    private JPanel panelPhong;
-    private pn_Datphong datphong;
-    private pn_Choxacnhan xacnhan;
-    private pn_Danghoatdong hoatdong;
-    private JPanel panelhienthi;
-    private CardLayout layout;
+	public Phong phong;
+	public JPanel panelPhong;
+	public pn_Datphong datphong;
+	public pn_Choxacnhan xacnhan;
+	public pn_Danghoatdong hoatdong;
+	public JPanel panelhienthi;
+	public CardLayout layout;
    
 
     public PhongManager(Phong phong, JPanel panelPhong, CardLayout layout, pn_Datphong datphong, pn_Choxacnhan xacnhan,

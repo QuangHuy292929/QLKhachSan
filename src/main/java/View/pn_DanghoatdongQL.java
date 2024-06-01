@@ -1,13 +1,12 @@
 package View;
 
-import java.awt.Dimension;          
+import java.awt.Dimension;           
 
 import javax.swing.JPanel;
 import javax.swing.border.BevelBorder;
 import javax.swing.JLabel;
 import java.awt.Font;
 
-import Model.ModelDichVu;
 import Model.Phong;
 
 import javax.swing.JButton;
@@ -49,7 +48,7 @@ public class pn_DanghoatdongQL extends JPanel {
 	public JTextField TSDTH;
 	public JTextField TMadatphong;
 	private JTextField Tsoluong;
-	public int maKH;
+	
 	public Object datadattrc[][] = {};
 	public Object datadatsau[][] = {};
 	private JTable table_1;
@@ -361,9 +360,8 @@ public class pn_DanghoatdongQL extends JPanel {
 					dbsau.addRow(new Object[] { view.danhsachDV[8].getTenDichvu(), phantichgia(view.danhsachDV[8].getGiaca()),
 							soluong, phantichgia(view.danhsachDV[8].getGiaca() * soluong) });
 					break;
+				default:  Tsoluong.setText("1");
 				}
-				Tsoluong.setText("1");
-				
 				
 			}
 		});
@@ -385,23 +383,23 @@ public class pn_DanghoatdongQL extends JPanel {
 				Bill bill = new Bill(phong, view);
 				int tongtien = 0;
 				bill.lbMaPhong.setText(phong.getId()+"");
-				bill.TMakH.setText(maKH+"");
+				bill.TMadp.setText(TMadatphong.getText());
+				bill.TMakH.setText(TMaKH.getText()+"");
 				bill.TTenKH.setText(THovaten.getText());
-				bill.TSdth.setText(TSDTH.getText());
 				bill.TNgayvao.setText(TNgayGioNHanPhong.getText());
 				LocalDateTime now = LocalDateTime.now();
 	            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss dd/MM/yyyy");
 	            String formattedDateTime = now.format(formatter);
 	            bill.TNgayRa.setText(formattedDateTime);
-	            bill.CCCD = TCCCD.getText();
-	            bill.Ngaysinh = TMadatphong.getText();
 	            int tgian = Tinhgio(TNgayGioNHanPhong.getText(), formattedDateTime);
+	            int ngayo = tgian/12 + 1;
+	            int tienphong = phong.getGiaphong()*ngayo;
+	            bill.TTienPhong.setText(phantichgia(phong.getGiaphong()*ngayo)+"");
 	            for (int row = 0; row < db.getRowCount(); row++) {
 	            	Object col1Value = db.getValueAt(row, 0);
 	                String col2Value = db.getValueAt(row, 1)+"";
 	                int gia = convert(col2Value);
 	                tongtien += gia*tgian;
-	                
 	                bill.db.addRow(new Object[] {
 	                	col1Value, col2Value, 1, phantichgia(gia*tgian)	
 	                });
@@ -419,10 +417,10 @@ public class pn_DanghoatdongQL extends JPanel {
 	                });
 				}
 	            
-	            int thue = (Math.abs(tongtien)*20)/100;
-	            
+	            double thuedb = (Math.abs(tongtien)*20)/100;
+	            int thue = (int) thuedb;
 	            bill.TThue.setText(phantichgia(thue));
-	            bill.TTongTien.setText(phantichgia(tongtien+thue));
+	            bill.TTongTien.setText(phantichgia(tongtien+thue+tienphong));
 				
 //				phong.setTrangThai(TrangThaiPhong.TRONG);
 				xoaform();

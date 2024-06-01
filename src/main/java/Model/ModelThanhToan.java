@@ -5,10 +5,10 @@ import java.time.LocalDateTime;
 public class ModelThanhToan {
 
 	private int mathanhtoan;
-	private ModelDatPhong datphong;
+	private Modelthongtinphong datphong;
 	private LocalDateTime GioThanhToan;
 	private int tongchiphi;
-	public ModelThanhToan(int mathanhtoan, ModelDatPhong datphong, LocalDateTime gioThanhToan, int tongchiphi) {
+	public ModelThanhToan(int mathanhtoan, Modelthongtinphong datphong, LocalDateTime gioThanhToan, int tongchiphi) {
 		this.mathanhtoan = mathanhtoan;
 		this.datphong = datphong;
 		this.GioThanhToan = gioThanhToan;
@@ -21,10 +21,10 @@ public class ModelThanhToan {
 	public void setMathanhtoan(int mathanhtoan) {
 		this.mathanhtoan = mathanhtoan;
 	}
-	public ModelDatPhong getDatphong() {
+	public Modelthongtinphong getDatphong() {
 		return datphong;
 	}
-	public void setDatphong(ModelDatPhong datphong) {
+	public void setDatphong(Modelthongtinphong datphong) {
 		this.datphong = datphong;
 	}
 	public LocalDateTime getGioThanhToan() {

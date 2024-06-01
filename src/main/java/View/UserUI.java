@@ -1,6 +1,6 @@
 package View;
 
-import javax.swing.JFrame;  
+import javax.swing.JFrame;   
 import javax.swing.JPanel;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -19,11 +19,15 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
+
 import java.awt.CardLayout;
 import javax.swing.border.BevelBorder;
 import javax.swing.border.Border;
 
+import com.google.gson.Gson;
+
 import Model.ModelKhachHang;
+import Model.Modelthongtinphong;
 import Model.Phong;
 import Model.Phong.LoaiPhong;
 import Model.Phong.TrangThaiPhong;
@@ -39,17 +43,14 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
+
 import java.net.Socket;
-
-
 
 public class UserUI extends JFrame {
 
 	private static final long serialVersionUID = 1L;
 	private Phong[] phong;
-	private Socket socket;
-    private BufferedReader in;
-    private PrintWriter out;
+	
 	JPanel pn_trangchu;
 	JPanel pn_sodophong;
 	JPanel pn_hoatdong;
@@ -59,14 +60,21 @@ public class UserUI extends JFrame {
 	public CardLayout cardhd;
 	public JLabel lb_makhachhang;
 	public ModelKhachHang khachHang;
-	
-	
+	private ClientReceiver clientreceive;
+	private ArrayList<PhongManager> quanLyPhong;
+	private static Client client;
+	private String makh;
 	
 	
 
 
-	public UserUI(ModelKhachHang khachHang){
+	public UserUI(ModelKhachHang khachHang, Client client){
 		this.khachHang = khachHang;
+		makh = khachHang.getMakhachhang();
+		UserUI.client = client;
+		clientreceive = new ClientReceiver(client, this);
+		clientreceive.start();
+		
 		setTitle("Hệ thống quản lý Khách Sạn");
 		getContentPane().setBackground(new Color(204, 255, 255));
 		Border border = BorderFactory.createEmptyBorder(10, 10, 10, 10);
@@ -74,17 +82,10 @@ public class UserUI extends JFrame {
         Font font = new Font("Roboto", Font.BOLD, 22);
         Font font2 = new Font("Roboto",Font.CENTER_BASELINE, 18);
         
-        String svaddress = "172.21.0.79";
-		try {
-			socket = new Socket(svaddress, 8000);
-			in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-			out = new PrintWriter(socket.getOutputStream(), true);
-		} catch (IOException e) {
-			System.out.println("Kết nối không thành công");
-		}
+    
         
         
-		ArrayList<PhongManager> quanLyPhong = new ArrayList<PhongManager>();
+		quanLyPhong = new ArrayList<PhongManager>();
 		this.setVisible(true);
 		this.setSize(1200, 800);
 		this.setLocationRelativeTo(null);
@@ -191,18 +192,18 @@ public class UserUI extends JFrame {
 		panel_8.add(lblNewLabel_2);
 		
 		phong = new Phong[]{
-				new Phong(101, "Phòng 101", TrangThaiPhong.TRONG, LoaiPhong.THUONG),
-				new Phong(102, "Phòng 102", TrangThaiPhong.CHO_XAC_NHAN, LoaiPhong.THUONG),
-				new Phong(103, "Phòng 103", TrangThaiPhong.DANG_HOAT_DONG, LoaiPhong.THUONG),
-				new Phong(104, "Phòng 104", TrangThaiPhong.TRONG, LoaiPhong.THUONG),
-				new Phong(201, "Phòng 201", TrangThaiPhong.TRONG, LoaiPhong.TRUNG),
-				new Phong(202, "Phòng 202", TrangThaiPhong.TRONG, LoaiPhong.TRUNG),
-				new Phong(203, "Phòng 203", TrangThaiPhong.TRONG, LoaiPhong.TRUNG),
-				new Phong(204, "Phòng 204", TrangThaiPhong.DANG_HOAT_DONG, LoaiPhong.TRUNG),
-				new Phong(301, "Phòng 301", TrangThaiPhong.TRONG, LoaiPhong.VIP),
-				new Phong(302, "Phòng 302", TrangThaiPhong.TRONG, LoaiPhong.VIP),
-				new Phong(303, "Phòng 303", TrangThaiPhong.TRONG, LoaiPhong.VIP),
-				new Phong(304, "Phòng 304", TrangThaiPhong.TRONG, LoaiPhong.VIP),
+				new Phong(101, "Phòng 101", TrangThaiPhong.TRONG, 400000, LoaiPhong.THUONG),
+				new Phong(102, "Phòng 102", TrangThaiPhong.CHO_XAC_NHAN, 400000, LoaiPhong.THUONG),
+				new Phong(103, "Phòng 103", TrangThaiPhong.DANG_HOAT_DONG, 400000, LoaiPhong.THUONG),
+				new Phong(104, "Phòng 104", TrangThaiPhong.TRONG, 400000, LoaiPhong.THUONG),
+				new Phong(201, "Phòng 201", TrangThaiPhong.TRONG, 600000, LoaiPhong.TRUNG),
+				new Phong(202, "Phòng 202", TrangThaiPhong.TRONG, 600000, LoaiPhong.TRUNG),
+				new Phong(203, "Phòng 203", TrangThaiPhong.TRONG, 600000, LoaiPhong.TRUNG),
+				new Phong(204, "Phòng 204", TrangThaiPhong.DANG_HOAT_DONG, 600000, LoaiPhong.TRUNG),
+				new Phong(301, "Phòng 301", TrangThaiPhong.TRONG, 800000, LoaiPhong.VIP),
+				new Phong(302, "Phòng 302", TrangThaiPhong.TRONG, 800000, LoaiPhong.VIP),
+				new Phong(303, "Phòng 303", TrangThaiPhong.TRONG, 800000, LoaiPhong.VIP),
+				new Phong(303, "Phòng 304", TrangThaiPhong.TRONG, 800000, LoaiPhong.VIP)
 		};
 
 		// Tạo các panel để cho thấy thông tin phòng
@@ -250,14 +251,23 @@ public class UserUI extends JFrame {
 			public void mouseClicked(MouseEvent e) {
 				if(phong[0].getTrangThai()==TrangThaiPhong.TRONG) cardhd.show(pn_hoatdong, "phong 101");
 				else {
-					String madatphongs = JOptionPane.showInputDialog(null, "Nhập mã đặt phòng \n+"+"Mà chúng tôi đã cung cấp!");
-					String phanhoi = checkmaDP("CHECKINROOM", madatphongs, phong[0]);
-					int reply = Integer.parseInt(phanhoi);
-					if(reply == 1){
+					String madatphongs = JOptionPane.showInputDialog(null, "Nhập mã đặt phòng \n"+"Mà chúng tôi đã cung cấp!");
+					int madatphong = 0;
+					if(madatphongs!=null) {
+					try {
+						madatphong = Integer.parseInt(madatphongs);
+					} catch (NumberFormatException e1) {
+						JOptionPane.showMessageDialog(null, "Nhập không đúng định dạng");
+					}
+					boolean phanhoi = checkmaDP(madatphong, phong[0]);
+					if(phanhoi == true){
 						cardhd.show(pn_hoatdong, "phong 101");
 					} else {
 						JOptionPane.showMessageDialog(null, "Mã đặt phòng không đúng!");
 					}
+					}
+					
+					
 				}
 				
 			}
@@ -294,15 +304,22 @@ public class UserUI extends JFrame {
 		panel_phong2.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				if(phong[0].getTrangThai()==TrangThaiPhong.TRONG) cardhd.show(pn_hoatdong, "phong 102");
-				else if(phong[0].getTrangThai()==TrangThaiPhong.CHO_XAC_NHAN||phong[0].getTrangThai()==TrangThaiPhong.DANG_HOAT_DONG){
-					String madatphongs = JOptionPane.showInputDialog(null, "Nhập mã đặt phòng \n+"+"Mà chúng tôi đã cung cấp!");
-					String phanhoi = checkmaDP("CHECKINROOM", madatphongs, phong[1]);
-					int reply = Integer.parseInt(phanhoi);
-					if(reply == 1){
+				if(phong[1].getTrangThai()==TrangThaiPhong.TRONG) cardhd.show(pn_hoatdong, "phong 102");
+				else {
+					String madatphongs = JOptionPane.showInputDialog(null, "Nhập mã đặt phòng \n"+"Mà chúng tôi đã cung cấp!");
+					int madatphong = 0;
+					if(madatphongs!=null) {
+					try {
+						madatphong = Integer.parseInt(madatphongs);
+					} catch (NumberFormatException e1) {
+						JOptionPane.showMessageDialog(null, "Nhập không đúng định dạng");
+					}
+					boolean phanhoi = checkmaDP(madatphong, phong[1]);
+					if(phanhoi == true){
 						cardhd.show(pn_hoatdong, "phong 102");
 					} else {
 						JOptionPane.showMessageDialog(null, "Mã đặt phòng không đúng!");
+					}
 					}
 				}
 			}
@@ -337,16 +354,25 @@ public class UserUI extends JFrame {
 		panel_phong3.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				if(phong[0].getTrangThai()==TrangThaiPhong.TRONG) cardhd.show(pn_hoatdong, "phong 103");
+				if(phong[2].getTrangThai()==TrangThaiPhong.TRONG) cardhd.show(pn_hoatdong, "phong 103");
 				else {
-					String madatphongs = JOptionPane.showInputDialog("Nhập mã đặt phòng \n+"+"Mà chúng tôi đã cung cấp!");
-					String phanhoi = checkmaDP("CHECKINROOM", madatphongs, phong[2]);
-					int reply = Integer.parseInt(phanhoi);
-					if(reply == 1){
+					String madatphongs = JOptionPane.showInputDialog(null, "Nhập mã đặt phòng \n"+"Mà chúng tôi đã cung cấp!");
+					int madatphong = 0;
+					if(madatphongs!=null) {
+					try {
+						madatphong = Integer.parseInt(madatphongs);
+					} catch (NumberFormatException e1) {
+						JOptionPane.showMessageDialog(null, "Nhập không đúng định dạng");
+					}
+					boolean phanhoi = checkmaDP(madatphong, phong[2]);
+					if(phanhoi == true){
 						cardhd.show(pn_hoatdong, "phong 103");
 					} else {
 						JOptionPane.showMessageDialog(null, "Mã đặt phòng không đúng!");
 					}
+					}
+					
+					
 				}
 			}
 		});
@@ -382,16 +408,25 @@ public class UserUI extends JFrame {
 		panel_phong4.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				if(phong[0].getTrangThai()==TrangThaiPhong.TRONG) cardhd.show(pn_hoatdong, "phong 104");
+				if(phong[3].getTrangThai()==TrangThaiPhong.TRONG) cardhd.show(pn_hoatdong, "phong 104");
 				else {
-					String madatphongs = JOptionPane.showInputDialog("Nhập mã đặt phòng \n+"+"Mà chúng tôi đã cung cấp!");
-					String phanhoi = checkmaDP("CHECKINROOM", madatphongs, phong[3]);
-					int reply = Integer.parseInt(phanhoi);
-					if(reply == 1){
+					String madatphongs = JOptionPane.showInputDialog(null, "Nhập mã đặt phòng \n"+"Mà chúng tôi đã cung cấp!");
+					int madatphong = 0;
+					if(madatphongs!=null) {
+					try {
+						madatphong = Integer.parseInt(madatphongs);
+					} catch (NumberFormatException e1) {
+						JOptionPane.showMessageDialog(null, "Nhập không đúng định dạng");
+					}
+					boolean phanhoi = checkmaDP(madatphong, phong[3]);
+					if(phanhoi == true){
 						cardhd.show(pn_hoatdong, "phong 104");
 					} else {
 						JOptionPane.showMessageDialog(null, "Mã đặt phòng không đúng!");
 					}
+					}
+					
+					
 				}
 			}
 		});
@@ -425,16 +460,25 @@ public class UserUI extends JFrame {
 		panel_phong5.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				if(phong[0].getTrangThai()==TrangThaiPhong.TRONG) cardhd.show(pn_hoatdong, "phong 201");
+				if(phong[4].getTrangThai()==TrangThaiPhong.TRONG) cardhd.show(pn_hoatdong, "phong 201");
 				else {
-					String madatphongs = JOptionPane.showInputDialog("Nhập mã đặt phòng \n+"+"Mà chúng tôi đã cung cấp!");
-					String phanhoi = checkmaDP("CHECKINROOM", madatphongs, phong[4]);
-					int reply = Integer.parseInt(phanhoi);
-					if(reply == 1){
+					String madatphongs = JOptionPane.showInputDialog(null, "Nhập mã đặt phòng \n"+"Mà chúng tôi đã cung cấp!");
+					int madatphong = 0;
+					if(madatphongs!=null) {
+					try {
+						madatphong = Integer.parseInt(madatphongs);
+					} catch (NumberFormatException e1) {
+						JOptionPane.showMessageDialog(null, "Nhập không đúng định dạng");
+					}
+					boolean phanhoi = checkmaDP(madatphong, phong[2]);
+					if(phanhoi == true){
 						cardhd.show(pn_hoatdong, "phong 201");
 					} else {
 						JOptionPane.showMessageDialog(null, "Mã đặt phòng không đúng!");
 					}
+					}
+					
+					
 				}
 			}
 		});
@@ -469,16 +513,25 @@ public class UserUI extends JFrame {
 		panel_phong6.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				if(phong[0].getTrangThai()==TrangThaiPhong.TRONG) cardhd.show(pn_hoatdong, "phong 202");
+				if(phong[5].getTrangThai()==TrangThaiPhong.TRONG) cardhd.show(pn_hoatdong, "phong 202");
 				else {
-					String madatphongs = JOptionPane.showInputDialog("Nhập mã đặt phòng \n+"+"Mà chúng tôi đã cung cấp!");
-					String phanhoi = checkmaDP("CHECKINROOM", madatphongs, phong[5]);
-					int reply = Integer.parseInt(phanhoi);
-					if(reply == 1){
+					String madatphongs = JOptionPane.showInputDialog(null, "Nhập mã đặt phòng \n"+"Mà chúng tôi đã cung cấp!");
+					int madatphong = 0;
+					if(madatphongs!=null) {
+					try {
+						madatphong = Integer.parseInt(madatphongs);
+					} catch (NumberFormatException e1) {
+						JOptionPane.showMessageDialog(null, "Nhập không đúng định dạng");
+					}
+					boolean phanhoi = checkmaDP(madatphong, phong[5]);
+					if(phanhoi == true){
 						cardhd.show(pn_hoatdong, "phong 202");
 					} else {
 						JOptionPane.showMessageDialog(null, "Mã đặt phòng không đúng!");
 					}
+					}
+					
+					
 				}
 			}
 		});
@@ -512,16 +565,25 @@ public class UserUI extends JFrame {
 		panel_phong7.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				if(phong[0].getTrangThai()==TrangThaiPhong.TRONG) cardhd.show(pn_hoatdong, "phong 203");
+				if(phong[6].getTrangThai()==TrangThaiPhong.TRONG) cardhd.show(pn_hoatdong, "phong 203");
 				else {
-					String madatphongs = JOptionPane.showInputDialog("Nhập mã đặt phòng \n+"+"Mà chúng tôi đã cung cấp!");
-					String phanhoi = checkmaDP("CHECKINROOM", madatphongs, phong[6]);
-					int reply = Integer.parseInt(phanhoi);
-					if(reply == 1){
+					String madatphongs = JOptionPane.showInputDialog(null, "Nhập mã đặt phòng \n"+"Mà chúng tôi đã cung cấp!");
+					int madatphong = 0;
+					if(madatphongs!=null) {
+					try {
+						madatphong = Integer.parseInt(madatphongs);
+					} catch (NumberFormatException e1) {
+						JOptionPane.showMessageDialog(null, "Nhập không đúng định dạng");
+					}
+					boolean phanhoi = checkmaDP(madatphong, phong[6]);
+					if(phanhoi == true){
 						cardhd.show(pn_hoatdong, "phong 203");
 					} else {
 						JOptionPane.showMessageDialog(null, "Mã đặt phòng không đúng!");
 					}
+					}
+					
+					
 				}
 			}
 		});
@@ -555,16 +617,25 @@ public class UserUI extends JFrame {
 		panel_phong8.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				if(phong[0].getTrangThai()==TrangThaiPhong.TRONG) cardhd.show(pn_hoatdong, "phong 204");
+				if(phong[7].getTrangThai()==TrangThaiPhong.TRONG) cardhd.show(pn_hoatdong, "phong 204");
 				else {
-					String madatphongs = JOptionPane.showInputDialog(null, "Nhập mã đặt phòng \n+"+"Mà chúng tôi đã cung cấp!");
-					String phanhoi = checkmaDP("CHECKINROOM", madatphongs, phong[7]);
-					int reply = Integer.parseInt(phanhoi);
-					if(reply == 1){
+					String madatphongs = JOptionPane.showInputDialog(null, "Nhập mã đặt phòng \n"+"Mà chúng tôi đã cung cấp!");
+					int madatphong = 0;
+					if(madatphongs!=null) {
+					try {
+						madatphong = Integer.parseInt(madatphongs);
+					} catch (NumberFormatException e1) {
+						JOptionPane.showMessageDialog(null, "Nhập không đúng định dạng");
+					}
+					boolean phanhoi = checkmaDP(madatphong, phong[7]);
+					if(phanhoi == true){
 						cardhd.show(pn_hoatdong, "phong 204");
 					} else {
 						JOptionPane.showMessageDialog(null, "Mã đặt phòng không đúng!");
 					}
+					}
+					
+					
 				}
 			}
 		});
@@ -599,16 +670,25 @@ public class UserUI extends JFrame {
 		panel_phong9.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				if(phong[0].getTrangThai()==TrangThaiPhong.TRONG) cardhd.show(pn_hoatdong, "phong 301");
+				if(phong[8].getTrangThai()==TrangThaiPhong.TRONG) cardhd.show(pn_hoatdong, "phong 301");
 				else {
-					String madatphongs = JOptionPane.showInputDialog("Nhập mã đặt phòng \n+"+"Mà chúng tôi đã cung cấp!");
-					String phanhoi = checkmaDP("CHECKINROOM", madatphongs, phong[8]);
-					int reply = Integer.parseInt(phanhoi);
-					if(reply == 1){
+					String madatphongs = JOptionPane.showInputDialog(null, "Nhập mã đặt phòng \n"+"Mà chúng tôi đã cung cấp!");
+					int madatphong = 0;
+					if(madatphongs!=null) {
+					try {
+						madatphong = Integer.parseInt(madatphongs);
+					} catch (NumberFormatException e1) {
+						JOptionPane.showMessageDialog(null, "Nhập không đúng định dạng");
+					}
+					boolean phanhoi = checkmaDP(madatphong, phong[8]);
+					if(phanhoi == true){
 						cardhd.show(pn_hoatdong, "phong 301");
 					} else {
 						JOptionPane.showMessageDialog(null, "Mã đặt phòng không đúng!");
 					}
+					}
+					
+					
 				}
 			}
 		});
@@ -643,16 +723,25 @@ public class UserUI extends JFrame {
 		panel_phong10.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				if(phong[0].getTrangThai()==TrangThaiPhong.TRONG) cardhd.show(pn_hoatdong, "phong 302");
+				if(phong[9].getTrangThai()==TrangThaiPhong.TRONG) cardhd.show(pn_hoatdong, "phong 302");
 				else {
-					String madatphongs = JOptionPane.showInputDialog("Nhập mã đặt phòng \n+"+"Mà chúng tôi đã cung cấp!");
-					String phanhoi = checkmaDP("CHECKINROOM", madatphongs, phong[9]);
-					int reply = Integer.parseInt(phanhoi);
-					if(reply == 1){
+					String madatphongs = JOptionPane.showInputDialog(null, "Nhập mã đặt phòng \n"+"Mà chúng tôi đã cung cấp!");
+					int madatphong = 0;
+					if(madatphongs!=null) {
+					try {
+						madatphong = Integer.parseInt(madatphongs);
+					} catch (NumberFormatException e1) {
+						JOptionPane.showMessageDialog(null, "Nhập không đúng định dạng");
+					}
+					boolean phanhoi = checkmaDP(madatphong, phong[9]);
+					if(phanhoi == true){
 						cardhd.show(pn_hoatdong, "phong 302");
 					} else {
 						JOptionPane.showMessageDialog(null, "Mã đặt phòng không đúng!");
 					}
+					}
+					
+					
 				}
 			}
 		});
@@ -687,16 +776,25 @@ public class UserUI extends JFrame {
 		panel_phong11.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				if(phong[0].getTrangThai()==TrangThaiPhong.TRONG) cardhd.show(pn_hoatdong, "phong 303");
+				if(phong[10].getTrangThai()==TrangThaiPhong.TRONG) cardhd.show(pn_hoatdong, "phong 303");
 				else {
-					String madatphongs = JOptionPane.showInputDialog("Nhập mã đặt phòng \n+"+"Mà chúng tôi đã cung cấp!");
-					String phanhoi = checkmaDP("CHECKINROOM", madatphongs, phong[10]);
-					int reply = Integer.parseInt(phanhoi);
-					if(reply == 1){
+					String madatphongs = JOptionPane.showInputDialog(null, "Nhập mã đặt phòng \n"+"Mà chúng tôi đã cung cấp!");
+					int madatphong = 0;
+					if(madatphongs!=null) {
+					try {
+						madatphong = Integer.parseInt(madatphongs);
+					} catch (NumberFormatException e1) {
+						JOptionPane.showMessageDialog(null, "Nhập không đúng định dạng");
+					}
+					boolean phanhoi = checkmaDP(madatphong, phong[10]);
+					if(phanhoi == true){
 						cardhd.show(pn_hoatdong, "phong 303");
 					} else {
 						JOptionPane.showMessageDialog(null, "Mã đặt phòng không đúng!");
 					}
+					}
+					
+					
 				}
 			}
 		});
@@ -740,16 +838,25 @@ public class UserUI extends JFrame {
 		panel_phong12.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				if(phong[0].getTrangThai()==TrangThaiPhong.TRONG) cardhd.show(pn_hoatdong, "phong 304");
+				if(phong[11].getTrangThai()==TrangThaiPhong.TRONG) cardhd.show(pn_hoatdong, "phong 304");
 				else {
-					String madatphongs = JOptionPane.showInputDialog("Nhập mã đặt phòng \n+"+"Mà chúng tôi đã cung cấp!");
-					String phanhoi = checkmaDP("CHECKINROOM", madatphongs, phong[11]);
-					int reply = Integer.parseInt(phanhoi);
-					if(reply == 1){
+					String madatphongs = JOptionPane.showInputDialog(null, "Nhập mã đặt phòng \n"+"Mà chúng tôi đã cung cấp!");
+					int madatphong = 0;
+					if(madatphongs!=null) {
+					try {
+						madatphong = Integer.parseInt(madatphongs);
+					} catch (NumberFormatException e1) {
+						JOptionPane.showMessageDialog(null, "Nhập không đúng định dạng");
+					}
+					boolean phanhoi = checkmaDP(madatphong, phong[11]);
+					if(phanhoi == true){
 						cardhd.show(pn_hoatdong, "phong 304");
 					} else {
 						JOptionPane.showMessageDialog(null, "Mã đặt phòng không đúng!");
 					}
+					}
+					
+					
 				}
 			}
 		});
@@ -821,24 +928,23 @@ public class UserUI extends JFrame {
         }
     }
 	
-	public String checkmaDP(String request, String data, Phong phong) {
-		out.println(request+"#"+data+"#"+phong.getId());
-		try {
-			return in.readLine();
-		} catch (Exception e) {
-			return "Lỗi khi nhận phản hồi từ server";
-		}
+	public boolean checkmaDP(int data, Phong phong) {
+		client.sendMessage("CHECKDP#"+data+"#"+phong.getId());
+		String result = client.receiveMessage();
+		if(result.equals("1")) return true;
+		else return false;
 	}
 	
-	public void Order(String request, String maDP, String tenDV, int dongia, int soluong, int thanhtien) {
-		out.println(request+"#"+maDP+"#"+tenDV+"#"+dongia+"#"+soluong+"#"+thanhtien);
+	public void Order(int maphong, int madv, int soluong) {
+		
+		client.sendMessage("ORDER#"+maphong+"#"+madv+"#"+soluong);
 	}
 	
 	public int booking(String chuoithongtindp) {
-		out.println("BOOKING#"+chuoithongtindp);
+		client.sendMessage("BOOKING#"+chuoithongtindp);
 		String a = "";
 		try {
-			a = in.readLine();
+			a = client.receiveMessage();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -846,11 +952,12 @@ public class UserUI extends JFrame {
 		return madp;
 	}
 	
-	public void Cancel(String thongtin) {
-		out.println("CANCEL#"+thongtin);
+	public void xacnhan(int maphong, String tgian) {
+		client.sendMessage("XACNHANPHONG#"+maphong+"#"+tgian);
 	}
-	public void xacnhan(String thongtin) {
-		
+	
+	public void Cancel(String thongtin) {
+		client.sendMessage("CANCEL#"+thongtin);
 	}
 	
 	public void setdulieukh(pn_Datphong datphong ,UserUI view) {
@@ -860,7 +967,35 @@ public class UserUI extends JFrame {
 		datphong.tfsdt.setText(view.khachHang.getSdt());
 	}
 	
-	
-	
-	
+	public void xulydongbo(String message) {
+		Gson gson = new Gson();
+		Modelthongtinphong thongtinphong[] = new Modelthongtinphong[12]; 
+		String part[] = message.split("#");
+	    int i = 0;
+		for (String string : part) {
+			if (!string.isEmpty()) {
+				Modelthongtinphong thongtin = new Modelthongtinphong();
+				thongtin = gson.fromJson(string, Modelthongtinphong.class);
+				thongtinphong[i] = thongtin;
+				i++;
+			}
+		}
+		int j = 0;
+	   	for (PhongManager phong : quanLyPhong) {
+			if (thongtinphong[j].getTrangthai()== TrangThaiPhong.TRONG) {
+				if(phong.phong.getTrangThai() == TrangThaiPhong.CHO_XAC_NHAN) {
+					phong.xacnhan.huyphong(JOptionPane.OK_OPTION, phong.phong, this);
+					j++;
+				} else if(thongtinphong[j].getTrangthai() == TrangThaiPhong.DANG_HOAT_DONG){
+					phong.hoatdong.xoaform();
+					phong.phong.setTrangThai(TrangThaiPhong.TRONG);
+					j++;
+				}
+			} else if(thongtinphong[j].getTrangthai() == TrangThaiPhong.CHO_XAC_NHAN) {
+				if(makh.equals(thongtinphong[j].getMakh())) {
+					
+				}
+			}
+		}
+	}
 }

@@ -47,7 +47,7 @@ public class pn_Danghoatdong extends JPanel {
 	public JTextField TNgayGioNHanPhong;
 	public JTextField TSDTH;
 	protected JTextField Tsoluong;
-	public int maKH;
+
 	public Object datadattrc[][] = {};
 	public Object datadatsau[][] = {};
 	ModelDichVu[] danhsachDV = new ModelDichVu[17];
@@ -117,7 +117,7 @@ public class pn_Danghoatdong extends JPanel {
 				int soluong = Integer.parseInt(Tsoluong.getText());
 				if(soluong>0) {
 					soluong--;
-					Tsoluong.setText(soluong+"1");
+					Tsoluong.setText(soluong+"");
 				}
 			}
 		});
@@ -333,8 +333,10 @@ public class pn_Danghoatdong extends JPanel {
 		JButton btorder = new JButton("Đặt");
 		btorder.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				
 				int lc = cbDv.getSelectedIndex();
 				int soluong = Integer.parseInt(Tsoluong.getText());
+				view.Order(phong.getId(), lc, soluong);
 				switch (lc) {
 				case 0:
 					dbsau.addRow(new Object[] { danhsachDV[0].getTenDichvu(), phantichgia(danhsachDV[0].getGiaca()),
@@ -435,24 +437,10 @@ public class pn_Danghoatdong extends JPanel {
 	}
 	
 	public void xoaform() {
-		THovaten.setText(null);
-		TMaKH.setText(null);
-		TCCCD.setText(null);
-		TSDTH.setText(null);
 		TMadatphong.setText(null);
 		TNgayGioNHanPhong.setText(null);
-		TMaKH.setText(null);
-		lbMaPhong.setText(null);
 		db.setRowCount(0);
 		dbsau.setRowCount(0);
 	}
-	public static int convert(String input) {
-	    // Loại bỏ ký tự "VND" và dấu chấm phẩy
-	    String cleanedInput = input.replaceAll("[^0-9]", "");
-	    
-	    // Chuyển đổi chuỗi thành số nguyên kiểu int
-	    int value = Integer.parseInt(cleanedInput);
-	    
-	    return value;
-	}
+	
 }

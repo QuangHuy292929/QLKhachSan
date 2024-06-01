@@ -286,14 +286,11 @@ public class pn_DatphongQL extends JPanel {
 					LocalDateTime now = LocalDateTime.now();
 		            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss dd/MM/yyyy");
 		            String formattedDateTime = now.format(formatter);
-		            
 		            hoatdong.THovaten.setText(tfhovaten.getText());
 					hoatdong.TCCCD.setText(tfcccd.getText());
-					
 		            hoatdong.TNgayGioNHanPhong.setText(formattedDateTime);
 		            hoatdong.lbMaPhong.setText(phong.getId()+"");
 		            hoatdong.TSDTH.setText(tfsdt.getText());
-		            
 
 		            if(cbchothuexe.isSelected()) {
 		            	hoatdong.db.addRow(new Object[] {
@@ -340,9 +337,8 @@ public class pn_DatphongQL extends JPanel {
 //							u.getSdthlienhe() + "", u.getDoituong() + "", ngay, u.getLoaighe() + "",
 //							u.getKhuHoi() + "", u.getNoiDi() + "", u.getNoiDen() + "", u.getGiaVe(),
 //							u.getMasove() });
-					int ma = taomaKH();
-					hoatdong.maKH = ma;
-					hoatdong.TMaKH.setText(ma+"");
+					
+					
 					xoaform();		
 				} else JOptionPane.showMessageDialog(null, "Nhập sai định dạng\n Vui lòng nhập lại!");
 			}
@@ -363,9 +359,7 @@ public class pn_DatphongQL extends JPanel {
 					xacnhan.THovaten.setText(tfhovaten.getText());
 					xacnhan.TCCCD.setText(tfcccd.getText());
 					
-					int ma = taomaKH();
-					xacnhan.maKH = ma;
-					xacnhan.TMaKH.setText(ma+"");
+					
 					xacnhan.lbMaPhong.setText(phong.getId()+"");
 					if(cbchothuexe.isSelected()) {
 		            	xacnhan.db.addRow(new Object[] {
@@ -459,17 +453,13 @@ public class pn_DatphongQL extends JPanel {
 		} else s = nghin+"."+dongs+" VND";
 		return s;
 	}
-	private int taomaKH() { 
-        Random random = new Random();
-        int randomNumber = random.nextInt(8999) + 1000;
-        return randomNumber;
-    }
+	
 	
 	public void xoaform() {
 		tfhovaten.setText(null);
-	        calendar.set(2024, 0, 1); // Năm 2024, tháng 0 (tháng 1), ngày 1
-	        Date date = calendar.getTime();
-	        spinnerngaysinh.setValue(date);
+	    calendar.set(2024, 0, 1); // Năm 2024, tháng 0 (tháng 1), ngày 1
+	    Date date = calendar.getTime();
+	    spinnerngaysinh.setValue(date);
 
 		
 		tfcccd.setText(null);
@@ -500,24 +490,5 @@ public class pn_DatphongQL extends JPanel {
 			return true;
 		} else return false;
 	}
-	private static class UpdateReceiver extends Thread {
-        private BufferedReader reader;
-
-        public UpdateReceiver(BufferedReader reader) {
-            this.reader = reader;
-        }
-
-        @Override
-        public void run() {
-            try {
-                String update;
-                while ((update = reader.readLine()) != null) {
-                    System.out.println("Received update from server: " + update);
-                    // Xử lý cập nhật ở đây
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-    }
+	
 }
