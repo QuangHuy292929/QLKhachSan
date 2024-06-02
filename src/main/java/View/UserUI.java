@@ -1,6 +1,6 @@
 package View;
 
-import javax.swing.JFrame;   
+import javax.swing.JFrame;    
 import javax.swing.JPanel;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -18,14 +18,21 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.util.ArrayList;
-
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
 import java.awt.CardLayout;
 import javax.swing.border.BevelBorder;
 import javax.swing.border.Border;
 
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
+
+import Model.ModelDVSau;
+import Model.ModelDVTruoc;
 import Model.ModelKhachHang;
 import Model.Modelthongtinphong;
 import Model.Phong;
@@ -39,12 +46,7 @@ import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.geom.RoundRectangle2D;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
 
-import java.net.Socket;
 
 public class UserUI extends JFrame {
 
@@ -60,30 +62,27 @@ public class UserUI extends JFrame {
 	public CardLayout cardhd;
 	public JLabel lb_makhachhang;
 	public ModelKhachHang khachHang;
-	private ClientReceiver clientreceive;
 	private ArrayList<PhongManager> quanLyPhong;
 	private static Client client;
 	private String makh;
-	
+    private static final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
+
 	
 
 
 	public UserUI(ModelKhachHang khachHang, Client client){
+		
 		this.khachHang = khachHang;
 		makh = khachHang.getMakhachhang();
 		UserUI.client = client;
-		clientreceive = new ClientReceiver(client, this);
-		clientreceive.start();
 		
 		setTitle("Hệ thống quản lý Khách Sạn");
+		dongvangatkenoi();
 		getContentPane().setBackground(new Color(204, 255, 255));
 		Border border = BorderFactory.createEmptyBorder(10, 10, 10, 10);
         border = BorderFactory.createCompoundBorder(new RoundedBorder(20, 20, Color.GRAY), border);
         Font font = new Font("Roboto", Font.BOLD, 22);
         Font font2 = new Font("Roboto",Font.CENTER_BASELINE, 18);
-        
-    
-        
         
 		quanLyPhong = new ArrayList<PhongManager>();
 		this.setVisible(true);
@@ -128,6 +127,9 @@ public class UserUI extends JFrame {
 		JButton bt_dangxuat = new JButton("Đăng xuất");
 		bt_dangxuat.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				dispose();
+				LoginUI login = new LoginUI(client);
+				login.setVisible(true);
 			}
 		});
 		bt_dangxuat.setIcon(new ImageIcon(UserUI.class.getResource("/FileAnh/logout (1).png")));
@@ -136,11 +138,30 @@ public class UserUI extends JFrame {
 		bt_dangxuat.setFont(font2);
 		pn_button.add(bt_dangxuat);
 		
-		JButton bt_Lichsu = new JButton("Lịch sử giao dịch");
+		JButton bt_Lichsu = new JButton("Lịch sử đặt phòng");
 		bt_Lichsu.setFont(new Font("Dialog", Font.BOLD, 18));
 		bt_Lichsu.setBackground(new Color(102, 102, 102));
 		bt_Lichsu.setBounds(2, 146, 207, 67);
 		pn_button.add(bt_Lichsu);
+		
+		JButton capnhat = new JButton("Cập nhật");
+		capnhat.setFont(new Font("Dialog", Font.BOLD, 18));
+		capnhat.setBackground(new Color(102, 102, 102));
+		capnhat.setBounds(2, 665, 207, 67);
+		capnhat.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				dongbo();
+			}
+		});
+		pn_button.add(capnhat);
+		
+		JLabel lblNewLabel_16 = new JLabel("<html>TRƯỚC KHI ĐẶT PHÒNG<br>HÃY NHẤN NÚT NÀY!!!</html>");
+		lblNewLabel_16.setEnabled(false);
+		lblNewLabel_16.setFont(new Font("Monospaced", Font.BOLD | Font.ITALIC, 13));
+		lblNewLabel_16.setBounds(10, 621, 191, 35);
+		pn_button.add(lblNewLabel_16);
 		 
 
 		JPanel pn_trangchu = new JPanel();
@@ -193,13 +214,13 @@ public class UserUI extends JFrame {
 		
 		phong = new Phong[]{
 				new Phong(101, "Phòng 101", TrangThaiPhong.TRONG, 400000, LoaiPhong.THUONG),
-				new Phong(102, "Phòng 102", TrangThaiPhong.CHO_XAC_NHAN, 400000, LoaiPhong.THUONG),
-				new Phong(103, "Phòng 103", TrangThaiPhong.DANG_HOAT_DONG, 400000, LoaiPhong.THUONG),
+				new Phong(102, "Phòng 102", TrangThaiPhong.TRONG, 400000, LoaiPhong.THUONG),
+				new Phong(103, "Phòng 103", TrangThaiPhong.TRONG, 400000, LoaiPhong.THUONG),
 				new Phong(104, "Phòng 104", TrangThaiPhong.TRONG, 400000, LoaiPhong.THUONG),
 				new Phong(201, "Phòng 201", TrangThaiPhong.TRONG, 600000, LoaiPhong.TRUNG),
 				new Phong(202, "Phòng 202", TrangThaiPhong.TRONG, 600000, LoaiPhong.TRUNG),
 				new Phong(203, "Phòng 203", TrangThaiPhong.TRONG, 600000, LoaiPhong.TRUNG),
-				new Phong(204, "Phòng 204", TrangThaiPhong.DANG_HOAT_DONG, 600000, LoaiPhong.TRUNG),
+				new Phong(204, "Phòng 204", TrangThaiPhong.TRONG, 600000, LoaiPhong.TRUNG),
 				new Phong(301, "Phòng 301", TrangThaiPhong.TRONG, 800000, LoaiPhong.VIP),
 				new Phong(302, "Phòng 302", TrangThaiPhong.TRONG, 800000, LoaiPhong.VIP),
 				new Phong(303, "Phòng 303", TrangThaiPhong.TRONG, 800000, LoaiPhong.VIP),
@@ -884,6 +905,18 @@ public class UserUI extends JFrame {
 		
 		JPanel panel_1 = new JPanel();
 		pn_hoatdong.add(panel_1, "name_2281070891800");
+		panel_1.setLayout(null);
+		
+		JPanel panel_2 = new JPanel();
+		panel_2.setBackground(new Color(245, 245, 220, 0));
+		panel_2.setBounds(97, 26, 753, 388);
+		panel_1.add(panel_2);
+		
+		JLabel lblNewLabel_17 = new JLabel("");
+		lblNewLabel_17.setIcon(new ImageIcon("C:\\Users\\OS\\Downloads\\resort.jpg"));
+		lblNewLabel_17.setBounds(0, 0, 947, 742);
+		panel_1.add(lblNewLabel_17);
+		dongbo();
 
 	}
 	
@@ -967,35 +1000,173 @@ public class UserUI extends JFrame {
 		datphong.tfsdt.setText(view.khachHang.getSdt());
 	}
 	
+	public void dongbo() {
+		client.sendMessage("DONGBOHOA");
+		String tt = client.receiveMessage();
+		xulydongbo(tt);
+	}
+	
 	public void xulydongbo(String message) {
 		Gson gson = new Gson();
-		Modelthongtinphong thongtinphong[] = new Modelthongtinphong[12]; 
-		String part[] = message.split("#");
-	    int i = 0;
-		for (String string : part) {
-			if (!string.isEmpty()) {
-				Modelthongtinphong thongtin = new Modelthongtinphong();
-				thongtin = gson.fromJson(string, Modelthongtinphong.class);
-				thongtinphong[i] = thongtin;
-				i++;
-			}
-		}
+		java.lang.reflect.Type phongModelType = new TypeToken<Modelthongtinphong[]>() {}.getType();
+        Modelthongtinphong[] danhSachPhongNhan = gson.fromJson(message, phongModelType);
 		int j = 0;
 	   	for (PhongManager phong : quanLyPhong) {
-			if (thongtinphong[j].getTrangthai()== TrangThaiPhong.TRONG) {
+			if (danhSachPhongNhan[j].getTrangthai()== TrangThaiPhong.TRONG) {
 				if(phong.phong.getTrangThai() == TrangThaiPhong.CHO_XAC_NHAN) {
 					phong.xacnhan.huyphong(JOptionPane.OK_OPTION, phong.phong, this);
 					j++;
-				} else if(thongtinphong[j].getTrangthai() == TrangThaiPhong.DANG_HOAT_DONG){
+				} else if(phong.phong.getTrangThai() == TrangThaiPhong.DANG_HOAT_DONG){
 					phong.hoatdong.xoaform();
 					phong.phong.setTrangThai(TrangThaiPhong.TRONG);
 					j++;
 				}
-			} else if(thongtinphong[j].getTrangthai() == TrangThaiPhong.CHO_XAC_NHAN) {
-				if(makh.equals(thongtinphong[j].getMakh())) {
+			} else if(danhSachPhongNhan[j].getTrangthai() == TrangThaiPhong.CHO_XAC_NHAN) {
+				if(phong.phong.getTrangThai() == TrangThaiPhong.TRONG) {
+					if(phong.datphong.tfmaKhachHang.getText().equals(danhSachPhongNhan[j].getMakh())) {
+						phong.phong.setTrangThai(TrangThaiPhong.CHO_XAC_NHAN);
+						phong.xacnhan.TMaKH.setText(danhSachPhongNhan[j].getMakh());
+						phong.xacnhan.TMadatphong.setText(danhSachPhongNhan[j].getMadp()+"");
+						phong.xacnhan.TSdth.setText(danhSachPhongNhan[j].getSdth());
+						phong.xacnhan.TCCCD.setText(danhSachPhongNhan[j].getCccd());
+						phong.xacnhan.THovaten.setText(danhSachPhongNhan[j].getHoten());
+						ArrayList<ModelDVTruoc> dvtrc = danhSachPhongNhan[j].getDvtruoc();
+						for (ModelDVTruoc dv : dvtrc) {
+							String tendv = dv.getTendv();
+							String gia = phantichgia(dv.getGia());
+							phong.xacnhan.db.addRow(new Object[] {
+								tendv, gia
+							});
+						}
+						j++;
+					} else {
+						phong.phong.setTrangThai(TrangThaiPhong.CHO_XAC_NHAN);
+						j++;
+					}
+				}
+			} else {
+				if(phong.phong.getTrangThai() == TrangThaiPhong.TRONG) {
+					if (phong.datphong.tfmaKhachHang.getText().equals(danhSachPhongNhan[j].getMakh())) {
+						phong.phong.setTrangThai(TrangThaiPhong.DANG_HOAT_DONG);
+						phong.hoatdong.TMaKH.setText(danhSachPhongNhan[j].getMakh());
+						phong.hoatdong.TMadatphong.setText(danhSachPhongNhan[j].getMadp()+"");
+						phong.hoatdong.TSDTH.setText(danhSachPhongNhan[j].getSdth());
+						phong.hoatdong.TCCCD.setText(danhSachPhongNhan[j].getCccd());
+						phong.hoatdong.THovaten.setText(danhSachPhongNhan[j].getHoten());
+						phong.hoatdong.TNgayGioNHanPhong.setText(danhSachPhongNhan[j].getNgayvao());
+						ArrayList<ModelDVTruoc> dvtrc = danhSachPhongNhan[j].getDvtruoc();
+						for (ModelDVTruoc dv : dvtrc) {
+							String tendv = dv.getTendv();
+							String gia = phantichgia(dv.getGia());
+							phong.hoatdong.db.addRow(new Object[] {
+								tendv, gia
+							});
+						}
+						ArrayList<ModelDVSau> dvsau = danhSachPhongNhan[j].getDvsau();
+						for (ModelDVSau dv : dvsau) {
+							String tendv = dv.getTendv();
+							String gia = phantichgia(dv.getDongia());
+							String soluong = dv.getSoluong()+"";
+							String thanhtien = phantichgia(dv.getThanhtien());
+							phong.hoatdong.dbsau.addRow(new Object[] {
+								tendv, gia, soluong, thanhtien
+							});
+						}
+						j++;
+					} else {
+						phong.phong.setTrangThai(TrangThaiPhong.DANG_HOAT_DONG);
+						j++;
+					}
 					
+				} else if(phong.phong.getTrangThai() == TrangThaiPhong.CHO_XAC_NHAN) {
+					if (phong.datphong.tfmaKhachHang.getText().equals(danhSachPhongNhan[j].getMakh())) {
+						phong.phong.setTrangThai(TrangThaiPhong.DANG_HOAT_DONG);
+						phong.hoatdong.TMaKH.setText(danhSachPhongNhan[j].getMakh());
+						phong.hoatdong.TMadatphong.setText(danhSachPhongNhan[j].getMadp()+"");
+						phong.hoatdong.TSDTH.setText(danhSachPhongNhan[j].getSdth());
+						phong.hoatdong.TCCCD.setText(danhSachPhongNhan[j].getCccd());
+						phong.hoatdong.THovaten.setText(danhSachPhongNhan[j].getHoten());
+						phong.hoatdong.TNgayGioNHanPhong.setText(danhSachPhongNhan[j].getNgayvao());
+						ArrayList<ModelDVTruoc> dvtrc = danhSachPhongNhan[j].getDvtruoc();
+						for (ModelDVTruoc dv : dvtrc) {
+							String tendv = dv.getTendv();
+							String gia = phantichgia(dv.getGia());
+							phong.hoatdong.db.addRow(new Object[] {
+								tendv, gia
+							});
+						}
+						ArrayList<ModelDVSau> dvsau = danhSachPhongNhan[j].getDvsau();
+						for (ModelDVSau dv : dvsau) {
+							String tendv = dv.getTendv();
+							String gia = phantichgia(dv.getDongia());
+							String soluong = dv.getSoluong()+"";
+							String thanhtien = phantichgia(dv.getThanhtien());
+							phong.hoatdong.dbsau.addRow(new Object[] {
+								tendv, gia, soluong, thanhtien
+							});
+						}
+						phong.xacnhan.db.setRowCount(0);
+						j++;
+					} else {
+						phong.phong.setTrangThai(TrangThaiPhong.DANG_HOAT_DONG);
+						j++;
+					}
 				}
 			}
 		}
+	}
+	
+	public String phantichgia(int gia) {
+		String s = new String();
+		int dong = 0, trieu = 0, nghin = 0, copy = gia;
+		String dongs = null, trieus = null, nghins = null;
+		if(copy>0) {
+			dong = copy%1000;
+			copy/=1000;
+			if(copy>0) {
+				nghin = copy%1000;
+				copy/=1000;
+				if(copy>0) {
+					trieu = copy%1000;
+				}
+			}
+		}
+		if(trieu>0&&trieu<=99) {
+			trieus =  "0"+dong;
+		} else if(trieu == 0){
+			trieus = "000";
+		} else if(trieu>99) {
+			trieus = dong+"";
+		}
+		if(dong>0&&dong<=99) {
+			dongs =  "0"+dong;
+		} else if(dong == 0){
+			dongs = "000";
+		} else if(dong>99) {
+			dongs = dong+"";
+		}
+		
+		if(nghin>0&&nghin<=99) {
+			nghins =  "0"+nghin;
+		} else if(nghin == 0){
+			nghins = "000";
+		} else if(nghin>99) {
+			nghins = nghin+"";
+		}
+		
+		if(gia>=1000000) {
+			s = trieu+"."+nghins+"."+dongs+" VND";
+		} else s = nghin+"."+dongs+" VND";
+		return s;
+	}
+	
+	public void dongvangatkenoi() {
+		this.addWindowListener(new WindowAdapter() {
+			@Override
+			public void windowClosing(WindowEvent e) {
+				client.closeConnection();
+				System.exit(0);
+			}
+		});
 	}
 }

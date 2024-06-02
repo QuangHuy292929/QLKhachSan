@@ -9,6 +9,8 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
 import com.google.gson.JsonArray;
 
 import Model.ModelDVSau;
@@ -16,6 +18,7 @@ import Model.ModelDVTruoc;
 import Model.Modelthongtinphong;
 import Model.Phong.TrangThaiPhong;
 import controller.PhongManagerQL;
+
 
 public class ClientThread extends Thread {
 	private Socket socket;
@@ -99,6 +102,9 @@ public class ClientThread extends Thread {
 			break;
 		case "XACNHANPHONG":
 			xacnhan(remainingData);
+			break;
+		case "DONGBOHOA":
+			dongbo();
 			break;
 		default:
 			out.println("Yêu cầu không hợp lệ");
@@ -215,21 +221,18 @@ public class ClientThread extends Thread {
 			out.println("0");
 	}
 	
-	public void dongbohoa() {
-		out.println("DOGBOHOA#"+dongbo());
-	}
+	
 
-	public String dongbo() {
-		JsonArray mangthongtin = new JsonArray();
+	public void dongbo() {
 		Gson gson = new Gson();
-
+		Modelthongtinphong []thongtinnnnn = new Modelthongtinphong[12];
+		int i = 0;
 		for (PhongManagerQL phongql : QuanLy.quanLyPhong) {
 			if (phongql.phong.getTrangThai() == TrangThaiPhong.TRONG) {
 				Modelthongtinphong thongtin = new Modelthongtinphong(TrangThaiPhong.TRONG, null, null, null, null, null,
 						null, null, null);
-				String json = gson.toJson(thongtin);
-				mangthongtin.add(json);
-				mangthongtin.add("#");
+				thongtinnnnn[i] = thongtin;
+				i++;
 			} else if (phongql.phong.getTrangThai() == TrangThaiPhong.CHO_XAC_NHAN) {
 				Modelthongtinphong thongtin = new Modelthongtinphong();
 				thongtin.setTrangthai(TrangThaiPhong.CHO_XAC_NHAN);
@@ -250,9 +253,8 @@ public class ClientThread extends Thread {
 				}
 				thongtin.setDvtruoc(dichvutrc);
 				thongtin.setDvsau(null);
-				String json = gson.toJson(thongtin);
-				mangthongtin.add(json);
-				mangthongtin.add("#");
+				thongtinnnnn[i] = thongtin;
+				i++;
 			} else {
 				Modelthongtinphong thongtin = new Modelthongtinphong();
 				thongtin.setTrangthai(TrangThaiPhong.DANG_HOAT_DONG);
@@ -286,12 +288,13 @@ public class ClientThread extends Thread {
 					dichvusau.add(dvsau);
 				}
 				thongtin.setDvsau(dichvusau);
-				String json = gson.toJson(thongtin);
-				mangthongtin.add(json);
-				mangthongtin.add("#");
+				thongtinnnnn[i] = thongtin;
+				i++;
 			}
 		}
-		return mangthongtin.toString();
+		String jsonString = gson.toJson(thongtinnnnn);
+		System.out.println(jsonString);
+		out.println(jsonString);
 	}
 
 }
