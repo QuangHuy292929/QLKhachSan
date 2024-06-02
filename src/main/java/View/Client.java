@@ -40,6 +40,7 @@ public class Client {
             in.close();
             out.close();
             socket.close();
+            System.out.println("Đã ngắt kết nối tới server");
         } catch (IOException e) {
             e.printStackTrace();
         }

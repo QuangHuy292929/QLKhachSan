@@ -115,7 +115,7 @@ public class pn_Danghoatdong extends JPanel {
 		btnNewButton_1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				int soluong = Integer.parseInt(Tsoluong.getText());
-				if(soluong>0) {
+				if(soluong>1) {
 					soluong--;
 					Tsoluong.setText(soluong+"");
 				}

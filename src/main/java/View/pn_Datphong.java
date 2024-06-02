@@ -64,6 +64,7 @@ public class pn_Datphong extends JPanel {
 	private JCheckBox cbSPA;
 	private JCheckBox cbFitness;
 	private String ngaygionhan;
+	private JLabel lbmaphong;
 
 	
 	
@@ -253,9 +254,9 @@ public class pn_Datphong extends JPanel {
 		lblNewLabel_8.setBounds(660, 40, 64, 23);
 		pnthongtin.add(lblNewLabel_8);
 		
-		JLabel lbmaphong = new JLabel("");
+		lbmaphong = new JLabel(phong.getId()+"");
 		lbmaphong.setFont(new Font("Tahoma", Font.BOLD, 12));
-		lbmaphong.setBounds(731, 40, 64, 23);
+		lbmaphong.setBounds(731, 40, 147, 23);
 		pnthongtin.add(lbmaphong);
 
 		JPanel pn_button = new JPanel();
@@ -298,6 +299,7 @@ public class pn_Datphong extends JPanel {
 		            ngaygionhan = now.format(formatter);
 		            String thongtindp = chuoithongtindp(phong);
 		            int madp = view.booking(thongtindp);
+		            view.sendmail(view.khachHang.getEmail(), "MÃ ĐẶT PHÒNG CỦA BẠN", madp, view.khachHang.getHoten());
 		            hoatdong.TMadatphong.setText(madp+"");
 		            hoatdong.THovaten.setText(tfhovaten.getText());
 					hoatdong.TCCCD.setText(tfcccd.getText());
@@ -372,6 +374,7 @@ public class pn_Datphong extends JPanel {
 					ngaygionhan = "";
 					String tt  = chuoithongtindp(phong);
 					int madp = view.booking(tt);
+					view.sendmail(view.khachHang.getEmail(), "MÃ ĐẶT PHÒNG CỦA BẠN", madp, view.khachHang.getHoten());
 					xacnhan.TMadatphong.setText(madp+"");
 					xacnhan.THovaten.setText(tfhovaten.getText());
 					xacnhan.TCCCD.setText(tfcccd.getText());

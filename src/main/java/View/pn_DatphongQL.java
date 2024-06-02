@@ -62,7 +62,6 @@ public class pn_DatphongQL extends JPanel {
 	private JCheckBox cbSPA;
 	private JCheckBox cbFitness;
 	private Calendar calendar;
-	private JTextField TMaKH;
 	
 
 	public pn_DatphongQL(Phong phong, pn_ChoxacnhanQL xacnhan, pn_DanghoatdongQL hoatdong, ManagerUI view) {
@@ -129,19 +128,6 @@ public class pn_DatphongQL extends JPanel {
 		panel.add(tfsdt);
 		tfsdt.setFont(new Font("Monospaced", Font.PLAIN, 14));
 		tfsdt.setColumns(10);
-		
-		JLabel lblNewLabel_1_1 = new JLabel("Mã khách hàng:");
-		lblNewLabel_1_1.setFont(new Font("Arial", Font.BOLD, 14));
-		lblNewLabel_1_1.setBackground(Color.WHITE);
-		lblNewLabel_1_1.setBounds(32, 93, 120, 17);
-		panel.add(lblNewLabel_1_1);
-		
-		TMaKH = new JTextField();
-		TMaKH.setFont(new Font("Monospaced", Font.PLAIN, 14));
-		TMaKH.setColumns(10);
-		TMaKH.setBackground(Color.WHITE);
-		TMaKH.setBounds(224, 90, 246, 23);
-		panel.add(TMaKH);
 
 		JPanel panel_1 = new JPanel();
 		panel_1.setBackground(new Color(255, 255, 255));
@@ -282,7 +268,6 @@ public class pn_DatphongQL extends JPanel {
 				if (checkdata() == true) {
 					
 					phong.setTrangThai(TrangThaiPhong.DANG_HOAT_DONG);
-					
 					LocalDateTime now = LocalDateTime.now();
 		            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss dd/MM/yyyy");
 		            String formattedDateTime = now.format(formatter);
@@ -291,7 +276,10 @@ public class pn_DatphongQL extends JPanel {
 		            hoatdong.TNgayGioNHanPhong.setText(formattedDateTime);
 		            hoatdong.lbMaPhong.setText(phong.getId()+"");
 		            hoatdong.TSDTH.setText(tfsdt.getText());
-
+		            String sdth = tfsdt.getText();
+					String lastThreeDigits = sdth.substring(sdth.length() - 3);
+		            hoatdong.TMaKH.setText(view.TaoMaKH(lastThreeDigits));
+		            hoatdong.TMadatphong.setText(view.taomaDatphong()+"");
 		            if(cbchothuexe.isSelected()) {
 		            	hoatdong.db.addRow(new Object[] {
 							"Cho thuê xe tự lái",  phantichgia(view.danhsachDV[9].getGiaca()) 
@@ -358,8 +346,12 @@ public class pn_DatphongQL extends JPanel {
 					phong.setTrangThai(TrangThaiPhong.CHO_XAC_NHAN);
 					xacnhan.THovaten.setText(tfhovaten.getText());
 					xacnhan.TCCCD.setText(tfcccd.getText());
-					
-					
+					xacnhan.TSdth.setText(tfsdt.getText());
+					//tạo một makh dbiet
+					String sdth = tfsdt.getText();
+					String lastThreeDigits = sdth.substring(sdth.length() - 3);
+					xacnhan.TMaKH.setText(view.TaoMaKH(lastThreeDigits));
+					xacnhan.TMadatphong.setText(view.taomaDatphong()+"");
 					xacnhan.lbMaPhong.setText(phong.getId()+"");
 					if(cbchothuexe.isSelected()) {
 		            	xacnhan.db.addRow(new Object[] {
@@ -457,11 +449,6 @@ public class pn_DatphongQL extends JPanel {
 	
 	public void xoaform() {
 		tfhovaten.setText(null);
-	    calendar.set(2024, 0, 1); // Năm 2024, tháng 0 (tháng 1), ngày 1
-	    Date date = calendar.getTime();
-	    spinnerngaysinh.setValue(date);
-
-		
 		tfcccd.setText(null);
 		tfsdt.setText(null);
 		cbdungdiemtam.setSelected(false);

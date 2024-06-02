@@ -14,6 +14,7 @@ import java.awt.GridLayout;
 
 import java.awt.Insets;
 import java.awt.RenderingHints;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
@@ -21,6 +22,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.ArrayList;
+import java.util.Properties;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.awt.CardLayout;
@@ -39,6 +41,14 @@ import Model.Phong;
 import Model.Phong.LoaiPhong;
 import Model.Phong.TrangThaiPhong;
 import controller.PhongManager;
+import jakarta.mail.Authenticator;
+import jakarta.mail.Message;
+import jakarta.mail.MessagingException;
+import jakarta.mail.PasswordAuthentication;
+import jakarta.mail.Session;
+import jakarta.mail.Transport;
+import jakarta.mail.internet.InternetAddress;
+import jakarta.mail.internet.MimeMessage;
 
 import java.awt.Color;
 import java.awt.Component;
@@ -67,15 +77,12 @@ public class UserUI extends JFrame {
 	private String makh;
     private static final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
 
-	
-
-
 	public UserUI(ModelKhachHang khachHang, Client client){
 		
 		this.khachHang = khachHang;
 		makh = khachHang.getMakhachhang();
 		UserUI.client = client;
-		
+		setIconImage(Toolkit.getDefaultToolkit().getImage(UserUI.class.getResource("/fileanh/hotel.png")));
 		setTitle("Hệ thống quản lý Khách Sạn");
 		dongvangatkenoi();
 		getContentPane().setBackground(new Color(204, 255, 255));
@@ -134,17 +141,12 @@ public class UserUI extends JFrame {
 		});
 		bt_dangxuat.setIcon(new ImageIcon(UserUI.class.getResource("/FileAnh/logout (1).png")));
 		bt_dangxuat.setBackground(new Color(102, 102, 102));
-		bt_dangxuat.setBounds(2, 218, 207, 67);
+		bt_dangxuat.setBounds(2, 146, 207, 67);
 		bt_dangxuat.setFont(font2);
 		pn_button.add(bt_dangxuat);
 		
-		JButton bt_Lichsu = new JButton("Lịch sử đặt phòng");
-		bt_Lichsu.setFont(new Font("Dialog", Font.BOLD, 18));
-		bt_Lichsu.setBackground(new Color(102, 102, 102));
-		bt_Lichsu.setBounds(2, 146, 207, 67);
-		pn_button.add(bt_Lichsu);
-		
 		JButton capnhat = new JButton("Cập nhật");
+		capnhat.setIcon(new ImageIcon(UserUI.class.getResource("/FileAnh/update.png")));
 		capnhat.setFont(new Font("Dialog", Font.BOLD, 18));
 		capnhat.setBackground(new Color(102, 102, 102));
 		capnhat.setBounds(2, 665, 207, 67);
@@ -405,7 +407,7 @@ public class UserUI extends JFrame {
 		panel_phong4.setBounds(737, 79, 200, 200);
 		pn_sodophong.add(panel_phong4);
 		panel_phong4.setLayout(null);
-		JLabel lblNewLabel_6 = new JLabel("P_102");
+		JLabel lblNewLabel_6 = new JLabel("P_104");
 		lblNewLabel_6.setBounds(10, 10, 70, 30);
 		lblNewLabel_6.setFont(font);
 		panel_phong4.add(lblNewLabel_6);
@@ -511,7 +513,7 @@ public class UserUI extends JFrame {
 		panel_phong6.setBounds(10, 532, 200, 200);
 		pn_sodophong.add(panel_phong6);
 		panel_phong6.setLayout(null);
-		JLabel lblNewLabel_11 = new JLabel("P_202");
+		JLabel lblNewLabel_11 = new JLabel("P_301");
 		lblNewLabel_11.setBounds(10, 10, 70, 30);
 		lblNewLabel_11.setFont(font);
 		panel_phong6.add(lblNewLabel_11);
@@ -563,7 +565,7 @@ public class UserUI extends JFrame {
 		panel_phong7.setBounds(252, 532, 200, 200);
 		pn_sodophong.add(panel_phong7);
 		panel_phong7.setLayout(null);
-		JLabel lblNewLabel_12 = new JLabel("P_203");
+		JLabel lblNewLabel_12 = new JLabel("P_302");
 		lblNewLabel_12.setBounds(10, 10, 70, 30);
 		lblNewLabel_12.setFont(font);
 		panel_phong7.add(lblNewLabel_12);
@@ -615,7 +617,7 @@ public class UserUI extends JFrame {
 		panel_phong8.setBounds(498, 532, 200, 200);
 		pn_sodophong.add(panel_phong8);
 		panel_phong8.setLayout(null);
-		JLabel lblNewLabel_13 = new JLabel("P_204");
+		JLabel lblNewLabel_13 = new JLabel("P_303");
 		lblNewLabel_13.setBounds(10, 10, 70, 30);
 		lblNewLabel_13.setFont(font);
 		panel_phong8.add(lblNewLabel_13);
@@ -668,7 +670,7 @@ public class UserUI extends JFrame {
 		panel_phong9.setBounds(737, 532, 200, 200);
 		pn_sodophong.add(panel_phong9);
 		panel_phong9.setLayout(null);
-		JLabel lblNewLabel_14 = new JLabel("P_301");
+		JLabel lblNewLabel_14 = new JLabel("P_304");
 		lblNewLabel_14.setBounds(10, 10, 70, 30);
 		lblNewLabel_14.setFont(font);
 		panel_phong9.add(lblNewLabel_14);
@@ -721,7 +723,7 @@ public class UserUI extends JFrame {
 		panel_phong10.setBounds(737, 306, 200, 200);
 		pn_sodophong.add(panel_phong10);
 		panel_phong10.setLayout(null);
-		JLabel lblNewLabel_10 = new JLabel("P_302");
+		JLabel lblNewLabel_10 = new JLabel("P_204");
 		lblNewLabel_10.setBounds(10, 10, 70, 30);
 		lblNewLabel_10.setFont(font);
 		panel_phong10.add(lblNewLabel_10);
@@ -773,7 +775,7 @@ public class UserUI extends JFrame {
 		panel_phong11.setBounds(252, 306, 200, 200);
 		pn_sodophong.add(panel_phong11);
 		panel_phong11.setLayout(null);
-		JLabel lblNewLabel_8 = new JLabel("P_303");
+		JLabel lblNewLabel_8 = new JLabel("P_202");
 		lblNewLabel_8.setBounds(10, 10, 70, 30);
 		lblNewLabel_8.setFont(font);
 		panel_phong11.add(lblNewLabel_8);
@@ -826,7 +828,7 @@ public class UserUI extends JFrame {
 		panel_phong12.setBounds(498, 306, 200, 200);
 		pn_sodophong.add(panel_phong12);
 		panel_phong12.setLayout(null);
-		JLabel lblNewLabel_9 = new JLabel("P_304");
+		JLabel lblNewLabel_9 = new JLabel("P_203");
 		lblNewLabel_9.setBounds(10, 10, 70, 30);
 		lblNewLabel_9.setFont(font);
 		panel_phong12.add(lblNewLabel_9);
@@ -846,13 +848,13 @@ public class UserUI extends JFrame {
 		PhongManager manager12 = new PhongManager(phong[11], panel_phong12, cardP12, datphong304, xacnhan304, hoatdong304, pn_p304);
 		
 		JLabel lblNewLabel_15 = new JLabel("MÃ KHÁCH HÀNG:");
-		lblNewLabel_15.setFont(new Font("Monospaced", Font.BOLD | Font.ITALIC, 14));
-		lblNewLabel_15.setBounds(708, 20, 112, 30);
+		lblNewLabel_15.setFont(new Font("Monospaced", Font.BOLD | Font.ITALIC, 10));
+		lblNewLabel_15.setBounds(708, 20, 90, 30);
 		pn_sodophong.add(lblNewLabel_15);
 		
-		lb_makhachhang = new JLabel("");
-		lb_makhachhang.setFont(new Font("Monospaced", Font.BOLD | Font.ITALIC, 14));
-		lb_makhachhang.setBounds(841, 20, 106, 30);
+		lb_makhachhang = new JLabel(khachHang.getMakhachhang()+"");
+		lb_makhachhang.setFont(new Font("Monospaced", Font.BOLD | Font.ITALIC, 10));
+		lb_makhachhang.setBounds(796, 20, 151, 30);
 		pn_sodophong.add(lb_makhachhang);
 		manager12.start();
 		quanLyPhong.add(manager12);
@@ -902,20 +904,6 @@ public class UserUI extends JFrame {
 		pn_hoatdong.add(pn_p302, "phong 302");
 		pn_hoatdong.add(pn_p303, "phong 303");
 		pn_hoatdong.add(pn_p304, "phong 304");
-		
-		JPanel panel_1 = new JPanel();
-		pn_hoatdong.add(panel_1, "name_2281070891800");
-		panel_1.setLayout(null);
-		
-		JPanel panel_2 = new JPanel();
-		panel_2.setBackground(new Color(245, 245, 220, 0));
-		panel_2.setBounds(97, 26, 753, 388);
-		panel_1.add(panel_2);
-		
-		JLabel lblNewLabel_17 = new JLabel("");
-		lblNewLabel_17.setIcon(new ImageIcon("C:\\Users\\OS\\Downloads\\resort.jpg"));
-		lblNewLabel_17.setBounds(0, 0, 947, 742);
-		panel_1.add(lblNewLabel_17);
 		dongbo();
 
 	}
@@ -1168,5 +1156,42 @@ public class UserUI extends JFrame {
 				System.exit(0);
 			}
 		});
+	}
+	
+	public void sendmail(String email, String tieude, int madp, String hoten) {
+		String host = "smtp.gmail.com";
+		final String user = "kimnganlele2015@gmail.com";
+		final String password = "cduf yyef bpnj kuma"; // Replace with your actual password
+
+		String to = email;
+		String subject = tieude;
+		Properties props = new Properties();
+		props.put("mail.smtp.host", host);
+		props.put("mail.smtp.auth", "true");
+		props.put("mail.smtp.starttls.enable", "true");
+		props.put("mail.smtp.port", "587");
+
+		Session session = Session.getInstance(props, new Authenticator() {
+			protected PasswordAuthentication getPasswordAuthentication() {
+				return new PasswordAuthentication(user, password);
+			}
+		});
+
+		try {
+			MimeMessage message = new MimeMessage(session);
+			message.setFrom(new InternetAddress(user));
+			message.addRecipient(Message.RecipientType.TO, new InternetAddress(to));
+			message.setSubject(subject);
+			message.setText("HI"+hoten+
+							"\nMã đặt phòng của bạn là\n"+
+							"         "+madp+
+							"\nHãy dùng mã này để đăng nhập vào phòng"+
+							"\nCảm ơn bạn đã sử dụng dịch vụ của chúng tôi\n"+
+							"Chúc bạn có một trải nghiệm vui vẻ.");
+			Transport.send(message);
+		} catch (MessagingException e) {
+			e.printStackTrace();
+		}
+		
 	}
 }

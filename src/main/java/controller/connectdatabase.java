@@ -12,8 +12,8 @@ public class connectdatabase {
 		Connection c = null;
 		try {
 			// đăng kí my sql với drivermanager
-			DriverManager.registerDriver(new com.mysql.jdbc.Driver());
-			String url = "jdbc:mysql://localhost:3306/datahotel";
+			
+			String url = "jdbc:mysql://localhost:3306/hoteldata";
 			String username = "root";
 			String password = "";
 			

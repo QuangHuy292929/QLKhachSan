@@ -184,11 +184,12 @@ public class ClientThread extends Thread {
 		String email = parts[3];
 		String mk = parts[4];
 		String username = parts[5];
-		if (QuanLy.KiemTraTonTai(username, CCCD) == false) {
+		if (QuanLy.KiemTraTonTai(username, CCCD) != true) {
 			QuanLy.DangKy(name, CCCD, Sdth, email, mk, username);
 			out.println("1");// thông báo về ng dùng là đăng ký thành công
-		} else
-			out.println("0");// thông báo về ng dùng là đky không thành công do name hay cccd đã tồn tại
+		} else {
+			out.println("0");
+			}// thông báo về ng dùng là đky không thành công do name hay cccd đã tồn tại
 	}
 
 	public void ChangePass(String thongtin) throws SQLException {

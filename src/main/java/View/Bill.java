@@ -48,7 +48,7 @@ public class Bill extends JDialog {
 	protected String Ngaysinh;
 	protected JTextField TMadp;
 	protected JTextField TTienPhong;
-	private DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
+	private DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("HH:mm:ss dd/MM/yyyy");
 
 
 	/**
@@ -299,7 +299,7 @@ public class Bill extends JDialog {
 	            String tenDichVu = db.getValueAt(row, 0)+"";
 	            int madv = 0;
 	            for(int i = 9; i<17; i++) {
-	            	if (view.danhsachDV[i].getTenDichvu() == tenDichVu) {
+	            	if (view.danhsachDV[i].getTenDichvu().equals(tenDichVu)) {
 						madv = i;
 					}
 	            }
@@ -349,8 +349,8 @@ public class Bill extends JDialog {
 	        for (int row = 0; row < dbsau.getRowCount(); row++) {
 	            String tenDichVu = dbsau.getValueAt(row, 0)+"";
 	            int madv = 0;
-	            for(int i = 9; i<17; i++) {
-	            	if (view.danhsachDV[i].getTenDichvu() == tenDichVu) {
+	            for(int i = 0; i<9; i++) {
+	            	if (view.danhsachDV[i].getTenDichvu().equals(tenDichVu)) {
 						madv = i;
 					}
 	            }

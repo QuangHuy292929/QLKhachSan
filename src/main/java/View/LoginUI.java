@@ -14,6 +14,7 @@ import jakarta.mail.Session;
 import jakarta.mail.Transport;
 import jakarta.mail.internet.InternetAddress;
 import jakarta.mail.internet.MimeMessage;
+import view.BanVeTauView;
 
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -38,9 +39,13 @@ import Model.ModelKhachHang;
 
 import javax.swing.border.BevelBorder;
 import java.awt.SystemColor;
+import java.awt.Toolkit;
+
 import javax.swing.JCheckBox;
 import javax.swing.border.EtchedBorder;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.BufferedReader;
 import java.io.IOException;
 
@@ -81,6 +86,9 @@ public class LoginUI extends JFrame {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setSize(1200, 800);
 		setLocationRelativeTo(null);
+		setIconImage(Toolkit.getDefaultToolkit().getImage(LoginUI.class.getResource("/fileanh/hotel.png")));
+
+		dongvangatkenoi();
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		
@@ -231,11 +239,11 @@ public class LoginUI extends JFrame {
 		panel_3.add(pn_NhapOTP, "quên");
 		pn_NhapOTP.setLayout(null);
 		
-		JLabel lblNewLabel_7 = new JLabel("XÁC THỰC EMAIL");
+		JLabel lblNewLabel_7 = new JLabel("ĐỔI MẬT KHẨU");
 		lblNewLabel_7.setBackground(SystemColor.activeCaption);
 		lblNewLabel_7.setFont(new Font("Monospaced", Font.BOLD | Font.ITALIC, 25));
 		lblNewLabel_7.setForeground(SystemColor.desktop);
-		lblNewLabel_7.setBounds(27, 28, 400, 50);
+		lblNewLabel_7.setBounds(10, 28, 238, 50);
 		pn_NhapOTP.add(lblNewLabel_7);
 		
 		tfemail = new JTextField();
@@ -258,7 +266,7 @@ public class LoginUI extends JFrame {
 		JLabel lblNewLabel_1 = new JLabel("<html>Nhập email để chúng tôi gửi mã OTP<br> để bảo vệ thông tin của bạn </html>");
 		lblNewLabel_1.setFont(new Font("Tahoma", Font.ITALIC, 14));
 		lblNewLabel_1.setEnabled(false);
-		lblNewLabel_1.setBounds(24, 66, 305, 64);
+		lblNewLabel_1.setBounds(10, 67, 305, 64);
 		pn_NhapOTP.add(lblNewLabel_1);
 		
 		JLabel lblNewLabel_9_1 = new JLabel("Nhập Tên Đăng Nhập");
@@ -279,6 +287,19 @@ public class LoginUI extends JFrame {
 		lblNewLabel_14.setBounds(364, 312, 100, 20);
 		pn_NhapOTP.add(lblNewLabel_14);
 		
+		JButton btnNewButton_1 = new JButton("");
+		btnNewButton_1.setIcon(new ImageIcon(UserUI.class.getResource("/FileAnh/arrow-left.png")));
+		btnNewButton_1.setBounds(10, 362, 50, 50);
+		btnNewButton_1.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				cardtt.show(panel_3, "thông tin");
+				
+			}
+		});
+		pn_NhapOTP.add(btnNewButton_1);
+		
 		btMinhDanh.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -290,12 +311,12 @@ public class LoginUI extends JFrame {
 				}
 
 				if (!isValidEmail(email)) {
-				    JOptionPane.showMessageDialog(null, "Email không hợp lệ! Email phải có định dạng @gmail.com.", "Lỗi", JOptionPane.ERROR_MESSAGE);
+				    JOptionPane.showMessageDialog(null, "Email không hợp lệ!\n"+" Email phải có định dạng @gmail.com.", "Lỗi", JOptionPane.ERROR_MESSAGE);
 				    return;
 				}
 
 				if (checkXacthuc(tendangnhap, email)) {
-				    mailxacthuc(email, "Xác thực email");
+				    mailxacthuc(email, "MAIL XÁC THỰC", "Xin chào bạn\n"+"Đây là mã dùng để đổi mật khẩu\n"+"TUYỆT ĐỐI KHÔNG CHIA SẺ MÃ NÀY VỚI AI!\n"+"Mã của bạn là:");
 				    cardtt.show(panel_3,"changepass");
 				} else {
 				    JOptionPane.showMessageDialog(null, "Thông tin Tên Đăng Nhập hoặc email không đúng.", "Lỗi", JOptionPane.ERROR_MESSAGE);
@@ -315,7 +336,7 @@ public class LoginUI extends JFrame {
 		JLabel lblNewLabel_7_1 = new JLabel("ĐỔI MẬT KHẨU");
 		lblNewLabel_7_1.setForeground(Color.BLACK);
 		lblNewLabel_7_1.setFont(new Font("Monospaced", Font.BOLD | Font.ITALIC, 22));
-		lblNewLabel_7_1.setBounds(20, 23, 430, 64);
+		lblNewLabel_7_1.setBounds(10, 23, 430, 64);
 		pn_Changepass.add(lblNewLabel_7_1);
 		
 		JPanel panel_4 = new JPanel();
@@ -325,11 +346,11 @@ public class LoginUI extends JFrame {
 		panel_4.setLayout(cardchange);
 		
 		JPanel panel_5 = new JPanel();
-		panel_5.setBackground(new Color(250, 250, 210));
+		panel_5.setBackground(new Color(255, 255, 255, 100));
 		panel_4.add(panel_5, "name_18580681152400");
 		panel_5.setLayout(null);
 		
-		JLabel lblNewLabel_10 = new JLabel("Nhập mã OTP để đặt mậu khẩu");
+		JLabel lblNewLabel_10 = new JLabel("Nhập mã OTP để đặt mật khẩu");
 		lblNewLabel_10.setEnabled(false);
 		lblNewLabel_10.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		lblNewLabel_10.setBounds(10, 21, 246, 33);
@@ -341,13 +362,15 @@ public class LoginUI extends JFrame {
 		panel_5.add(jtotp);
 		jtotp.setColumns(10);
 		
-		JButton btnNewButton_3 = new JButton("=>");
-		btnNewButton_3.setBounds(171, 172, 85, 33);
+		JButton btnNewButton_3 = new JButton("");
+		btnNewButton_3.setIcon(new ImageIcon(UserUI.class.getResource("/FileAnh/right.png")));
+
+		btnNewButton_3.setBounds(190, 168, 50, 50);
 		panel_5.add(btnNewButton_3);
 		
 		
 		JPanel panel_6 = new JPanel();
-		panel_6.setBackground(new Color(250, 250, 210));
+		panel_6.setBackground(new Color(255, 255, 255, 100));
 		panel_4.add(panel_6, "panelchangepass");
 		panel_6.setLayout(null);
 		
@@ -414,7 +437,7 @@ public class LoginUI extends JFrame {
         pn_dangky.setLayout(null);
         
         JLabel lblNewLabel_3 = new JLabel("Đăng Ký Tài Khoản ");
-        lblNewLabel_3.setBounds(20, 10, 300, 30);
+        lblNewLabel_3.setBounds(119, 10, 245, 30);
         lblNewLabel_3.setFont(new Font("Monospaced", Font.BOLD | Font.ITALIC, 22));
         pn_dangky.add(lblNewLabel_3);
         
@@ -439,11 +462,11 @@ public class LoginUI extends JFrame {
         pn_dangky.add(lblNewLabel_8_3);
         
         JLabel lblNewLabel_8_4 = new JLabel("Tên đăng nhập:");
-        lblNewLabel_8_4.setBounds(10, 300, 100, 30);
+        lblNewLabel_8_4.setBounds(10, 300, 140, 30);
         lblNewLabel_8_4.setFont(new Font("Tahoma", Font.PLAIN, 14));
         pn_dangky.add(lblNewLabel_8_4);
         JCheckBox cbShowPassword3 = new JCheckBox("Hiển thị mật khẩu");
-		cbShowPassword3.setBounds(315, 357, 125, 20);
+		cbShowPassword3.setBounds(313, 306, 125, 20);
 		cbShowPassword3.setBackground(colordat);
         cbShowPassword3.setFont(new Font("Tahoma", Font.PLAIN, 12));
         pn_dangky.add(cbShowPassword3);
@@ -488,7 +511,7 @@ public class LoginUI extends JFrame {
         pn_dangky.add(jtusername);
         
         JButton btxacnhanthong= new JButton("Xác Nhận Thông Tin");
-        btxacnhanthong.setBounds(215, 410, 220, 35);
+        btxacnhanthong.setBounds(113, 407, 220, 35);
         btxacnhanthong.setFont(new Font("Monospaced", Font.BOLD | Font.ITALIC, 12));
         
         pn_dangky.add(btxacnhanthong);
@@ -505,7 +528,7 @@ public class LoginUI extends JFrame {
         
         JLabel lblNewLabel_8_4_1_1 = new JLabel("Nhập OTP :");
         lblNewLabel_8_4_1_1.setFont(new Font("Tahoma", Font.PLAIN, 14));
-        lblNewLabel_8_4_1_1.setBounds(10, 367, 100, 30);
+        lblNewLabel_8_4_1_1.setBounds(220, 367, 83, 30);
         pn_dangky.add(lblNewLabel_8_4_1_1);
         
         JLabel lblNewLabel_12 = new JLabel("<html>Lưu ý phải nhập OTP gửi về mail<br> mới đăng kí tài khoản được</html>");
@@ -524,12 +547,12 @@ public class LoginUI extends JFrame {
         jtotpcreate.setEditable(false);
         jtotpcreate.setFont(new Font("Tahoma", Font.PLAIN, 14));
         jtotpcreate.setColumns(10);
-        jtotpcreate.setBounds(83, 367, 127, 30);
+        jtotpcreate.setBounds(313, 368, 127, 30);
         pn_dangky.add(jtotpcreate);
         
         JButton btotp = new JButton("Gửi mã OTP");
         btotp.setFont(new Font("Monospaced", Font.BOLD | Font.ITALIC, 12));
-        btotp.setBounds(10, 410, 200, 35);
+        btotp.setBounds(10, 366, 187, 35);
         btotp.addActionListener(new ActionListener() {
 			
 			@Override
@@ -540,7 +563,7 @@ public class LoginUI extends JFrame {
                 if(checktontai(username, cccd)==false) {
                 String email = jtemail.getText();
                 jtotpcreate.setEditable(true);
-                mailxacthuc(email, "otp xác thực!!!");				
+                mailxacthuc(email, "Mã đăng ký", "Xin chào bạn.\n"+"Đây là mã kích hoạt tài khoản của bạn");				
                 }else {
                 	JOptionPane.showMessageDialog(null, "TÊN ĐĂNG NHẬP HOẶC CCCD ĐÃ TỒN TẠI");
                 }
@@ -548,6 +571,19 @@ public class LoginUI extends JFrame {
                 
 		});
         pn_dangky.add(btotp);
+        
+        JButton btnNewButton = new JButton("");
+        btnNewButton.setIcon(new ImageIcon(UserUI.class.getResource("/FileAnh/arrow-left.png")));
+        btnNewButton.setBounds(10, 19, 40, 40);
+        btnNewButton.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				cardtt.show(panel_3, "thông tin");
+			}
+		});
+        
+        pn_dangky.add(btnNewButton);
         btxacnhanthong.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -566,7 +602,6 @@ public class LoginUI extends JFrame {
                 	boolean check = checkDky(hoten, cccd, sdt, email, pass, username);
                 	if(check == true) {
                 		JOptionPane.showMessageDialog(null, "CHÚC MỪNG BẠN ĐÃ TẠO TÀI KHOẢN THÀNH CÔNG.");
-                		
                         cardtt.show(panel_3, "thông tin");
                 	} else 
                 		JOptionPane.showMessageDialog(null, "ĐÃ CÓ LỖI Ở KHI ĐĂNG KÝ.");
@@ -609,8 +644,8 @@ public class LoginUI extends JFrame {
 	public boolean checkDky(String hoten, String CCCD, String Sdth, String email, String mk, String Username) {
 		client.sendMessage("CHECKDKY#"+hoten+"#"+CCCD+"#"+Sdth+"#"+email+"#"+mk+"#"+Username);
 			String result = client.receiveMessage();
-			if(result.equals("1")) return true;
-			else return false;		
+			if(result.equals("1")) return false;
+			else return true;		
 	}
 	
 	
@@ -625,8 +660,8 @@ public class LoginUI extends JFrame {
 	public boolean ChangePass(String username, String newpass) {
 		client.sendMessage("CHANGEPASS"+"#"+username+"#"+newpass);
 		String result = client.receiveMessage();
-		if(result.equals("1")) return true;
-		else return false;	
+		if(result.equals("1")) return false;
+		else return true;	
 	}
 	
 	public boolean checkXacthuc(String username, String email) {
@@ -652,7 +687,7 @@ public class LoginUI extends JFrame {
 	
 	
 
-	public void mailxacthuc(String email, String tieude) {
+	public void mailxacthuc(String email, String tieude, String noidung) {
 		String host = "smtp.gmail.com";
 		final String user = "kimnganlele2015@gmail.com";
 		final String password = "cduf yyef bpnj kuma"; // Replace with your actual password
@@ -660,7 +695,7 @@ public class LoginUI extends JFrame {
 		String to = email;
 		String subject = tieude;
 		body = String.valueOf(taomaOTP()); // Convert int to String
-		client.sendMessage(body);
+		client.sendMessage(noidung+"\n"+body);
 		Properties props = new Properties();
 		props.put("mail.smtp.host", host);
 		props.put("mail.smtp.auth", "true");
@@ -694,7 +729,15 @@ public class LoginUI extends JFrame {
 		return client.receiveMessage();
 	}
 	
-	
+	public void dongvangatkenoi() {
+		this.addWindowListener(new WindowAdapter() {
+			@Override
+			public void windowClosing(WindowEvent e) {
+				client.closeConnection();
+				System.exit(0);
+			}
+		});
+	}
 }
 	
 

@@ -1,6 +1,6 @@
 package View;
 
-import java.awt.Dimension;            
+import java.awt.Dimension;             
 
 import javax.swing.JPanel;
 import javax.swing.border.BevelBorder;
@@ -24,13 +24,10 @@ import javax.swing.border.TitledBorder;
 import javax.swing.border.EtchedBorder;
 import java.awt.Color;
 import javax.swing.JTextField;
-
 import javax.swing.ImageIcon;
-
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
-
 
 import java.awt.BorderLayout;
 import javax.swing.JComboBox;
@@ -114,9 +111,9 @@ public class pn_DanghoatdongQL extends JPanel {
 		btnNewButton_1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				int soluong = Integer.parseInt(Tsoluong.getText());
-				if(soluong>0) {
+				if(soluong>1) {
 					soluong--;
-					Tsoluong.setText(soluong+"1");
+					Tsoluong.setText(soluong+"");
 				}
 			}
 		});
@@ -360,8 +357,8 @@ public class pn_DanghoatdongQL extends JPanel {
 					dbsau.addRow(new Object[] { view.danhsachDV[8].getTenDichvu(), phantichgia(view.danhsachDV[8].getGiaca()),
 							soluong, phantichgia(view.danhsachDV[8].getGiaca() * soluong) });
 					break;
-				default:  Tsoluong.setText("1");
 				}
+				Tsoluong.setText("1");
 				
 			}
 		});
