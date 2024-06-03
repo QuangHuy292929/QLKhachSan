@@ -1,6 +1,6 @@
 package View;
 
-import java.io.BufferedReader;          
+import java.io.BufferedReader;           
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
@@ -9,9 +9,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-
-import com.google.gson.JsonArray;
 
 import Model.ModelDVSau;
 import Model.ModelDVTruoc;
@@ -168,8 +165,7 @@ public class ClientThread extends Thread {
 		String MK = parts[1];
 		// cần trả về 0 hay 1
 		if (QuanLy.CheckIn(Username, MK) == true) {
-			String a = QuanLy.laymakh(Username);
-			QuanLy.dulieukhach.put(this, a);
+			
 			out.println("1");// thông báo về đăng nhập là có class->cho đăng nhập
 		} else
 			out.println("0");// thông báo về đăng nhập là không có ->yêu cầu nhập lại
@@ -177,7 +173,7 @@ public class ClientThread extends Thread {
 
 	public void Dangky(String thongtin) {
 		String[] parts = thongtin.split("#");
-		// String Username, String CCCD, String Sdth, String email, String mk
+		// String name, String CCCD, String Sdth, String email, String mk
 		String name = parts[0];
 		String CCCD = parts[1];
 		String Sdth = parts[2];
@@ -185,8 +181,10 @@ public class ClientThread extends Thread {
 		String mk = parts[4];
 		String username = parts[5];
 		if (QuanLy.KiemTraTonTai(username, CCCD) != true) {
-			QuanLy.DangKy(name, CCCD, Sdth, email, mk, username);
-			out.println("1");// thông báo về ng dùng là đăng ký thành công
+			System.out.println("dky");
+			if(QuanLy.DangKy(name, CCCD, Sdth, email, mk, username)==true)
+			out.println("1");
+			else out.println("0");// thông báo về ng dùng là đăng ký thành công
 		} else {
 			out.println("0");
 			}// thông báo về ng dùng là đky không thành công do name hay cccd đã tồn tại

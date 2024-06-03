@@ -10,15 +10,16 @@ import javax.swing.JOptionPane;
 
 import java.awt.BorderLayout;
 import java.sql.*;
-import java.sql.Date;
+
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
-import java.util.*;
-import org.jfree.data.category.DefaultCategoryDataset;
+
 import org.jfree.data.general.DefaultPieDataset;
 import org.jfree.data.time.Day;
 import org.jfree.data.time.TimeSeries;
 import org.jfree.data.time.TimeSeriesCollection;
+
+import com.google.gson.Gson;
 
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
@@ -31,6 +32,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.HashMap;
@@ -39,6 +42,10 @@ import java.util.Random;
 import java.awt.CardLayout;
 import javax.swing.border.BevelBorder;
 import javax.swing.border.Border;
+import javax.swing.table.DefaultTableModel;
+import javax.xml.stream.XMLOutputFactory;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamWriter;
 
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
@@ -47,14 +54,6 @@ import org.jfree.chart.axis.DateAxis;
 import org.jfree.chart.axis.NumberAxis;
 import org.jfree.chart.axis.NumberTickUnit;
 import org.jfree.chart.plot.XYPlot;
-import org.jfree.data.category.DefaultCategoryDataset;
-import org.jfree.data.general.Dataset;
-import org.jfree.data.general.DefaultPieDataset;
-
-import com.google.gson.Gson;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
-import com.google.protobuf.TextFormat.ParseException;
 
 import Model.ModelDichVu;
 import Model.ModelKhachHang;
@@ -73,6 +72,8 @@ import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.geom.RoundRectangle2D;
+import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -89,6 +90,8 @@ public class ManagerUI extends JFrame {
 	JPanel pn_sodophong;
 	JPanel pn_hoatdong;
 	private static List<ClientThread> clients = new ArrayList<>();
+	private static Socket clientSocket;
+	private static ServerSocket serverSocket;
 	Color colordat = new Color(205, 180, 219);
 	Color colorchoxacnhan = new Color(255, 200, 221);
 	public CardLayout cardhd;
@@ -99,17 +102,18 @@ public class ManagerUI extends JFrame {
 	public ArrayList<PhongManagerQL> quanLyPhong;
 	ModelDichVu[] danhsachDV = new ModelDichVu[17];
 	private JTable table;
+	public DefaultTableModel df;
 
 	public static void main(String[] args) {
 		try {
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 			ManagerUI manager = new ManagerUI();
 			try {
-				ServerSocket serverSocket = new ServerSocket(8000);
+				serverSocket = new ServerSocket(8000);
 				System.out.println("Server đang lắng nghe trên cổng " + 8000);
 
 				while (true) {
-					Socket clientSocket = serverSocket.accept();
+					clientSocket = serverSocket.accept();
 					System.out.println("Đã kết nối với Client: " + clientSocket.getInetAddress().getHostAddress());
 
 					ClientThread clientThread = new ClientThread(clientSocket, manager);
@@ -136,7 +140,7 @@ public class ManagerUI extends JFrame {
 		border = BorderFactory.createCompoundBorder(new RoundedBorder(20, 20, Color.GRAY), border);
 		Font font = new Font("Roboto", Font.BOLD, 22);
 		Font font2 = new Font("Roboto", Font.CENTER_BASELINE, 18);
-		
+
 		Connection conn = connectdatabase.getConnection();
 		quanLyPhong = new ArrayList<PhongManagerQL>();
 		phong = new Phong[] { new Phong(101, "Phòng 101", TrangThaiPhong.TRONG, 400000, LoaiPhong.THUONG),
@@ -822,44 +826,43 @@ public class ManagerUI extends JFrame {
 		btcapnhatsolieu.setBounds(400, 680, 200, 50);
 		pn_thongke.add(btcapnhatsolieu);
 		btcapnhatsolieu.addActionListener(new ActionListener() {
-		    @Override
-		    public void actionPerformed(ActionEvent e) {
-		    	
-		        // Sử dụng Thread.sleep() để tạo độ trễ giả lập thời gian tải dữ liệu
-		        try {
-		        	btcapnhatsolieu.setText("Đang tải dữ liệu...");
-			        btcapnhatsolieu.setEnabled(false);
-		            Thread.sleep(5000);// Độ trễ 2 giây (2000 milliseconds)
-		            btcapnhatsolieu.setText("Cập Nhật Số Liệu");
-			        btcapnhatsolieu.setEnabled(true);
-		        } catch (InterruptedException ex) {
-		            ex.printStackTrace();
-		        }
-		    	
+			@Override
+			public void actionPerformed(ActionEvent e) {
 
-		        // Gọi phương thức để tạo lại biểu đồ doanh thu
-		        JFreeChart bieudodoanhthu = thongkedoanhthu.createRevenueChart(conn);
-		        
-		        // Gọi phương thức để tạo lại biểu đồ sử dụng dịch vụ
-		        JFreeChart bieudodichvu = thongkedichvu.createServiceChart(conn);
-		        
-		        // Xóa biểu đồ cũ và thêm biểu đồ mới vào panel tương ứng
-		        pn_tkdoanhthu.removeAll();
-		        ChartPanel bddoanhthu = new ChartPanel(bieudodoanhthu);
-		        bddoanhthu.setPreferredSize(new Dimension(900, 300));
-		        ChartPanel bddichvu = new ChartPanel(bieudodichvu);
+				// Sử dụng Thread.sleep() để tạo độ trễ giả lập thời gian tải dữ liệu
+				try {
+					btcapnhatsolieu.setText("Đang tải dữ liệu...");
+					btcapnhatsolieu.setEnabled(false);
+					Thread.sleep(5000);// Độ trễ 2 giây (2000 milliseconds)
+					btcapnhatsolieu.setText("Cập Nhật Số Liệu");
+					btcapnhatsolieu.setEnabled(true);
+				} catch (InterruptedException ex) {
+					ex.printStackTrace();
+				}
+
+				// Gọi phương thức để tạo lại biểu đồ doanh thu
+				JFreeChart bieudodoanhthu = thongkedoanhthu.createRevenueChart(conn);
+
+				// Gọi phương thức để tạo lại biểu đồ sử dụng dịch vụ
+				JFreeChart bieudodichvu = thongkedichvu.createServiceChart(conn);
+
+				// Xóa biểu đồ cũ và thêm biểu đồ mới vào panel tương ứng
+				pn_tkdoanhthu.removeAll();
+				ChartPanel bddoanhthu = new ChartPanel(bieudodoanhthu);
+				bddoanhthu.setPreferredSize(new Dimension(900, 300));
+				ChartPanel bddichvu = new ChartPanel(bieudodichvu);
 				bddichvu.setPreferredSize(new Dimension(350, 340));
 
-		        pn_tkdoanhthu.add(bddoanhthu);
-		        pn_tkusedevice.add(bddichvu);
-		        
-		        // Tương tự cho biểu đồ sử dụng dịch vụ (nếu có)
-		        // ...
-		        
-		        // Cập nhật lại giao diện
-		        pn_thongke.revalidate();
-		        pn_thongke.repaint();
-		    }
+				pn_tkdoanhthu.add(bddoanhthu);
+				pn_tkusedevice.add(bddichvu);
+
+				// Tương tự cho biểu đồ sử dụng dịch vụ (nếu có)
+				// ...
+
+				// Cập nhật lại giao diện
+				pn_thongke.revalidate();
+				pn_thongke.repaint();
+			}
 		});
 		pn_trangchu.add(lbanhtrangchu);
 
@@ -878,17 +881,76 @@ public class ManagerUI extends JFrame {
 		pn_xuatbaocao.setBounds(10, 10, 927, 408);
 		pn_baocao.add(pn_xuatbaocao);
 		pn_xuatbaocao.setLayout(new GridLayout(1, 0, 0, 0));
-		
+
 		table = new JTable();
-		pn_xuatbaocao.add(table);
-		
+		Object data[][] = null;
+		String cl[] = { "MÃ ĐẶT PHÒNG", "MÃ KHÁCH HÀNG", "MÃ PHÒNG", "NGÀY GIỜ VÀO PHÒNG", "NGÀY GIỜ TRẢ PHÒNG" };
+		df = new DefaultTableModel(data, cl);
+		table.setModel(df);
+		JScrollPane sc = new JScrollPane(table);
+		try {
+			baocao();
+		} catch (SQLException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		pn_xuatbaocao.add(sc);
+
 		JPanel panel_1 = new JPanel();
 		panel_1.setBounds(10, 428, 927, 84);
 		pn_baocao.add(panel_1);
 		panel_1.setLayout(null);
-		
-		JButton btnNewButton = new JButton("New button");
+
+		JButton btnNewButton = new JButton("Xuất file xml");
+		btnNewButton.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		btnNewButton.setBounds(384, 10, 145, 64);
+		btnNewButton.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+		        int selectedRow = table.getSelectedRow();
+		        if (selectedRow != -1) {
+		            try {
+		                // Tạo timestamp
+		                DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss");
+		                LocalDateTime now = LocalDateTime.now();
+		                String timestamp = dtf.format(now);
+
+		                // Tạo tên file với timestamp và thư mục đích
+		                File directory = new File("C:\\Users\\OS\\OneDrive\\Computer\\JAVA_HUY\\KhachSanXML");
+
+		                // Tạo thư mục nếu chưa tồn tại
+		                if (!directory.exists()) {
+		                    directory.mkdir();
+		                }
+
+		                String fileName = "row_" + timestamp + ".xml";
+		                String filePath = "C:\\Users\\OS\\OneDrive\\Computer\\JAVA_HUY\\KhachSanXML" + File.separator + fileName;
+
+		                XMLOutputFactory outputFactory = XMLOutputFactory.newInstance();
+		                XMLStreamWriter writer = outputFactory.createXMLStreamWriter(new FileWriter(filePath));
+
+		                writer.writeStartDocument();
+		                writer.writeStartElement("row");
+
+		                for (int column = 0; column < table.getColumnCount(); column++) {
+		                    Object value = table.getValueAt(selectedRow, column);
+		                    writer.writeStartElement(table.getColumnName(column));
+		                    writer.writeCharacters(value.toString());
+		                    writer.writeEndElement();
+		                }
+
+		                writer.writeEndElement();
+		                writer.writeEndDocument();
+
+		                writer.flush();
+		                writer.close();
+		                JOptionPane.showMessageDialog(null, "Xuất file thành công");
+		            } catch (XMLStreamException | IOException ex) {
+		                ex.printStackTrace();
+		            }
+		        }
+		    }		});
 		panel_1.add(btnNewButton);
 
 		// add vào panel hoạt động và đặt tên
@@ -1032,7 +1094,7 @@ public class ManagerUI extends JFrame {
 		return result;
 	}
 
-	public void DangKy(String hoten, String cccd, String sdt, String email, String pass, String username) {
+	public boolean DangKy(String hoten, String cccd, String sdt, String email, String pass, String username) {
 		Connection connection = null;
 		PreparedStatement preparedStatement = null;
 
@@ -1065,13 +1127,14 @@ public class ManagerUI extends JFrame {
 			int rowsAffected = preparedStatement.executeUpdate();
 
 			if (rowsAffected > 0) {
+				return true;
 			} else {
-				JOptionPane.showMessageDialog(this, "Đăng ký tài khoản thất bại.", "Lỗi", JOptionPane.ERROR_MESSAGE);
+				return false;
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
-			JOptionPane.showMessageDialog(this, "Có lỗi xảy ra khi đăng ký tài khoản.", "Lỗi",
-					JOptionPane.ERROR_MESSAGE);
+			return false;
+			
 		} finally {
 			// Đóng các tài nguyên
 			try {
@@ -1280,7 +1343,6 @@ public class ManagerUI extends JFrame {
 		}
 	}
 
-
 	public int booking(String chuoithongtin) {
 		Gson tt = new Gson();
 		Modelchuoi chuoi = tt.fromJson(chuoithongtin, Modelchuoi.class);
@@ -1353,10 +1415,9 @@ public class ManagerUI extends JFrame {
 				}
 			}
 		}
-		
+
 		return madp;
 	}
-	
 
 	public void xacnhan(int maphong, String tgian) {
 		for (PhongManagerQL phongql : quanLyPhong) {
@@ -1425,122 +1486,134 @@ public class ManagerUI extends JFrame {
 	}
 
 	// Lớp xử lý biểu đồ doanh thu
-		// Lớp xử lý biểu đồ doanh thu
-		public static class Thongkedoanhthu {
+	// Lớp xử lý biểu đồ doanh thu
+	public static class Thongkedoanhthu {
 
 		public JFreeChart createRevenueChart(Connection conn) {
-		    TimeSeries series = new TimeSeries("Doanh thu");
+			TimeSeries series = new TimeSeries("Doanh thu");
 
-		    try {
-		        // Truy vấn dữ liệu từ cơ sở dữ liệu
-		        String query = "SELECT NGAYGIOTT AS NGAY, SUM(TONGCHIPHI) AS DOANHTHU " +
-		                       "FROM thanhtoan " +
-		                       "INNER JOIN datphong ON thanhtoan.MADP = datphong.MADP " +
-		                       "GROUP BY NGAYGIOTT " +
-		                       "ORDER BY NGAYGIOTT";
-		        Statement stmt = conn.createStatement();
-		        ResultSet rs = stmt.executeQuery(query);
+			try {
+				// Truy vấn dữ liệu từ cơ sở dữ liệu
+				String query = "SELECT NGAYGIOTT AS NGAY, SUM(TONGCHIPHI) AS DOANHTHU " + "FROM thanhtoan "
+						+ "INNER JOIN datphong ON thanhtoan.MADP = datphong.MADP " + "GROUP BY NGAYGIOTT "
+						+ "ORDER BY NGAYGIOTT";
+				Statement stmt = conn.createStatement();
+				ResultSet rs = stmt.executeQuery(query);
 
-		        // Thêm dữ liệu vào series
-		        SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss dd/MM/yyyy");
-		        while (rs.next()) {
-		            String ngay = rs.getString("NGAY");
-		            double doanhthu = rs.getDouble("DOANHTHU");
-		            
-		            try {
-		                java.util.Date date = dateFormat.parse(ngay);
-		                series.addOrUpdate(new Day(date), doanhthu);
-		            } catch (java.text.ParseException e) {
-		                e.printStackTrace();
-		            }
-		        }
+				// Thêm dữ liệu vào series
+				SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss dd/MM/yyyy");
+				while (rs.next()) {
+					String ngay = rs.getString("NGAY");
+					double doanhthu = rs.getDouble("DOANHTHU");
 
-		        rs.close();
-		        stmt.close();
-		    } catch (SQLException e) {
-		        e.printStackTrace();
-		    }
+					try {
+						java.util.Date date = dateFormat.parse(ngay);
+						series.addOrUpdate(new Day(date), doanhthu);
+					} catch (java.text.ParseException e) {
+						e.printStackTrace();
+					}
+				}
 
-		    // Tạo dataset từ series
-		    TimeSeriesCollection dataset = new TimeSeriesCollection();
-		    dataset.addSeries(series);
+				rs.close();
+				stmt.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
 
-		    // Tạo biểu đồ doanh thu
-		    JFreeChart chart = ChartFactory.createTimeSeriesChart(
-		        "Doanh thu theo ngày",
-		        "Ngày",
-		        "Tiền",
-		        dataset,
-		        true,
-		        true,
-		        false
-		    );
+			// Tạo dataset từ series
+			TimeSeriesCollection dataset = new TimeSeriesCollection();
+			dataset.addSeries(series);
 
-		    // Lấy trục x của biểu đồ
-		    XYPlot plot = (XYPlot) chart.getPlot();
-		    DateAxis axis = (DateAxis) plot.getDomainAxis();
+			// Tạo biểu đồ doanh thu
+			JFreeChart chart = ChartFactory.createTimeSeriesChart("Doanh thu theo ngày", "Ngày", "Tiền", dataset, true,
+					true, false);
 
-		    // Đặt định dạng ngày cho trục x
-		    axis.setDateFormatOverride(new SimpleDateFormat("dd/MM/yyyy"));
-		 // Lấy trục y của biểu đồ
-		   
-		    NumberAxis yAxis = (NumberAxis) plot.getRangeAxis();
+			// Lấy trục x của biểu đồ
+			XYPlot plot = (XYPlot) chart.getPlot();
+			DateAxis axis = (DateAxis) plot.getDomainAxis();
 
-		    // Đặt tiêu đề cho trục y
-		    yAxis.setLabel("Doanh thu (VND)");
+			// Đặt định dạng ngày cho trục x
+			axis.setDateFormatOverride(new SimpleDateFormat("dd/MM/yyyy"));
+			// Lấy trục y của biểu đồ
 
-		    // Đặt định dạng số cho trục y
-		    DecimalFormat format = new DecimalFormat("#,###");
-		    yAxis.setNumberFormatOverride(format);
+			NumberAxis yAxis = (NumberAxis) plot.getRangeAxis();
 
-		    // Đặt khoảng cách giữa các giá trị trên trục y
-		    yAxis.setTickUnit(new NumberTickUnit(100000000)); // Khoảng cách 500,000 VND
+			// Đặt tiêu đề cho trục y
+			yAxis.setLabel("Doanh thu (VND)");
 
-		    // Đặt giá trị tối thiểu và tối đa cho trục y (nếu cần)
-		    yAxis.setRange(1000000, 500000000); // Từ 0 đến 5,000,000 VND
+			// Đặt định dạng số cho trục y
+			DecimalFormat format = new DecimalFormat("#,###");
+			yAxis.setNumberFormatOverride(format);
 
-		    return chart;
+			// Đặt khoảng cách giữa các giá trị trên trục y
+			yAxis.setTickUnit(new NumberTickUnit(50000000)); // Khoảng cách 500,000 VND
+
+			// Đặt giá trị tối thiểu và tối đa cho trục y (nếu cần)
+			yAxis.setRange(1000000, 500000000); // Từ 0 đến 5,000,000 VND
+
+			return chart;
 		}
 	}
 
-		// Lớp xử lý biểu đồ sử dụng dịch vụ
-		public static class Thongkedichvu {
-			public static JFreeChart createServiceChart(Connection conn) {
-				DefaultPieDataset dataset = new DefaultPieDataset();
+	// Lớp xử lý biểu đồ sử dụng dịch vụ
+	public static class Thongkedichvu {
+		public static JFreeChart createServiceChart(Connection conn) {
+			DefaultPieDataset dataset = new DefaultPieDataset();
 
-				try {
-					// Truy vấn dữ liệu từ cơ sở dữ liệu
-					String query = "SELECT dv.TENDV, SUM(sdv.SLDV) AS SDDICHVU " + "FROM sudungthemdichvu sdv "
-							+ "INNER JOIN dichvu dv ON sdv.MADV = dv.MADV " + "GROUP BY dv.TENDV";
-					Statement stmt = conn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
-					ResultSet rs = stmt.executeQuery(query);
+			try {
+				// Truy vấn dữ liệu từ cơ sở dữ liệu
+				String query = "SELECT dv.TENDV, SUM(sdv.SLDV) AS SDDICHVU " + "FROM sudungthemdichvu sdv "
+						+ "INNER JOIN dichvu dv ON sdv.MADV = dv.MADV " + "GROUP BY dv.TENDV";
+				Statement stmt = conn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+				ResultSet rs = stmt.executeQuery(query);
 
-					// Tính tổng số lượng dịch vụ
-					int totalServices = 0;
-					while (rs.next()) {
-						int sddv = rs.getInt("SDDICHVU");
-						totalServices += sddv;
-					}
-
-					// Quay lại đầu kết quả và thêm dữ liệu vào dataset
-					rs.beforeFirst();
-					while (rs.next()) {
-						String tendv = rs.getString("TENDV");
-						int sddv = rs.getInt("SDDICHVU");
-						double percentage = (double) sddv / totalServices * 100;
-						dataset.setValue(tendv + " (" + String.format("%.2f", percentage) + "%)", sddv);
-					}
-
-					rs.close();
-					stmt.close();
-				} catch (SQLException e) {
-					e.printStackTrace();
+				// Tính tổng số lượng dịch vụ
+				int totalServices = 0;
+				while (rs.next()) {
+					int sddv = rs.getInt("SDDICHVU");
+					totalServices += sddv;
 				}
 
-				// Tạo biểu đồ sử dụng dịch vụ
-				JFreeChart chart = ChartFactory.createPieChart("Tỷ lệ sử dụng dịch vụ", dataset, true, true, false);
+				// Quay lại đầu kết quả và thêm dữ liệu vào dataset
+				rs.beforeFirst();
+				while (rs.next()) {
+					String tendv = rs.getString("TENDV");
+					int sddv = rs.getInt("SDDICHVU");
+					double percentage = (double) sddv / totalServices * 100;
+					dataset.setValue(tendv + " (" + String.format("%.2f", percentage) + "%)", sddv);
+				}
 
-				return chart;
+				rs.close();
+				stmt.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
 			}
+
+			// Tạo biểu đồ sử dụng dịch vụ
+			JFreeChart chart = ChartFactory.createPieChart("Tỷ lệ sử dụng dịch vụ", dataset, true, true, false);
+
+			return chart;
+		}
 	}
+	
+	public void baocao() throws SQLException {
+		 try (Connection connection = connectdatabase.getConnection();
+		        PreparedStatement statement = connection.prepareStatement("SELECT MADP, MAKH, MAPHONG, NGAYGIOVP, NGAYGIOTP FROM datphong");) {
+		        ResultSet resultSet = statement.executeQuery();
+		        while (resultSet.next()) {
+		            String madp = resultSet.getString("MADP");
+		            String makh = resultSet.getString("MAKH");
+		            String maphong = resultSet.getString("MAPHONG");
+		            String ngayvao = resultSet.getString("NGAYGIOVP");
+		            String ngayra = resultSet.getString("NGAYGIOTP");
+
+		            df.addRow(new Object[]{madp, makh, maphong, ngayvao, ngayra});
+		        }
+		    } catch (SQLException e) {
+		        e.printStackTrace();
+		    }
+	}
+	
+	
+
 }

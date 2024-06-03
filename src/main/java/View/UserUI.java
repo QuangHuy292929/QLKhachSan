@@ -1158,7 +1158,7 @@ public class UserUI extends JFrame {
 		});
 	}
 	
-	public void sendmail(String email, String tieude, int madp, String hoten) {
+	public void sendmail(String email, String tieude, int madp, String hoten, Phong phong) {
 		String host = "smtp.gmail.com";
 		final String user = "kimnganlele2015@gmail.com";
 		final String password = "cduf yyef bpnj kuma"; // Replace with your actual password
@@ -1182,8 +1182,9 @@ public class UserUI extends JFrame {
 			message.setFrom(new InternetAddress(user));
 			message.addRecipient(Message.RecipientType.TO, new InternetAddress(to));
 			message.setSubject(subject);
-			message.setText("HI"+hoten+
-							"\nMã đặt phòng của bạn là\n"+
+			message.setText("NOVA HOTEL.\n"+
+							"XIN CHÀO "+hoten+
+							"\nMã đặt phòng cho phòng "+phong.getId()+" là\n"+
 							"         "+madp+
 							"\nHãy dùng mã này để đăng nhập vào phòng"+
 							"\nCảm ơn bạn đã sử dụng dịch vụ của chúng tôi\n"+

@@ -414,7 +414,9 @@ public class Bill extends JDialog {
 	        int tongtien = ManagerUI.convert(TTongTien.getText());
 	        LocalDateTime now = LocalDateTime.now();
 		    String ngaygiott = now.format(DATE_TIME_FORMATTER);
-
+		    view.df.addRow(new Object[] {
+		    		madatphong, maKhachHang, maPhong, ngayVao, ngayRa
+		    });
 
 	        // Tạo câu lệnh SQL INSERT cho bảng datphong
 	        String sql1 = "INSERT INTO datphong (MADP, MAKH, MAPHONG, NGAYGIOVP, NGAYGIOTP, CHIPHI) VALUES (?, ?, ?, ?, ?, ?)";

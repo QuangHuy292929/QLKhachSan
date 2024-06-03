@@ -299,7 +299,7 @@ public class pn_Datphong extends JPanel {
 		            ngaygionhan = now.format(formatter);
 		            String thongtindp = chuoithongtindp(phong);
 		            int madp = view.booking(thongtindp);
-		            view.sendmail(view.khachHang.getEmail(), "MÃ ĐẶT PHÒNG CỦA BẠN", madp, view.khachHang.getHoten());
+		            view.sendmail(view.khachHang.getEmail(), "MÃ ĐẶT PHÒNG CỦA BẠN", madp, view.khachHang.getHoten(), phong);
 		            hoatdong.TMadatphong.setText(madp+"");
 		            hoatdong.THovaten.setText(tfhovaten.getText());
 					hoatdong.TCCCD.setText(tfcccd.getText());
@@ -374,7 +374,7 @@ public class pn_Datphong extends JPanel {
 					ngaygionhan = "";
 					String tt  = chuoithongtindp(phong);
 					int madp = view.booking(tt);
-					view.sendmail(view.khachHang.getEmail(), "MÃ ĐẶT PHÒNG CỦA BẠN", madp, view.khachHang.getHoten());
+					view.sendmail(view.khachHang.getEmail(), "MÃ ĐẶT PHÒNG CỦA BẠN", madp, view.khachHang.getHoten(), phong);
 					xacnhan.TMadatphong.setText(madp+"");
 					xacnhan.THovaten.setText(tfhovaten.getText());
 					xacnhan.TCCCD.setText(tfcccd.getText());

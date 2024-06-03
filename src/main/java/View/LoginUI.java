@@ -2,7 +2,7 @@ package View;
 
        
 
-import javax.swing.JFrame;
+import javax.swing.JFrame; 
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
@@ -14,7 +14,6 @@ import jakarta.mail.Session;
 import jakarta.mail.Transport;
 import jakarta.mail.internet.InternetAddress;
 import jakarta.mail.internet.MimeMessage;
-import view.BanVeTauView;
 
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -46,11 +45,9 @@ import javax.swing.border.EtchedBorder;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.io.BufferedReader;
 import java.io.IOException;
 
-import java.io.PrintWriter;
-import java.net.Socket;
+
 
 import java.awt.event.ActionEvent;
 
@@ -82,7 +79,7 @@ public class LoginUI extends JFrame {
 
 	
 	public LoginUI(Client client) {
-		this.client = client;
+		LoginUI.client = client;
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setSize(1200, 800);
 		setLocationRelativeTo(null);
@@ -150,10 +147,11 @@ public class LoginUI extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				remove(pn_nhapthongtin);
 				cardtt.show(panel_3, "quên");
-				
+				jttenDangnhap.setText("");
+			    jpassword.setText("");
 			}
 		});
-		btnNewButton_2.setFont(new Font("Monospaced", Font.BOLD | Font.ITALIC, 14));
+		btnNewButton_2.setFont(new Font("Monospaced", Font.BOLD, 14));
 		pn_nhapthongtin.add(btnNewButton_2);
 		
 		jpassword = new JPasswordField();
@@ -174,7 +172,9 @@ public class LoginUI extends JFrame {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-             cardtt.show(panel_3, "dangky");				
+             cardtt.show(panel_3, "dangky");
+             jttenDangnhap.setText("");
+			 jpassword.setText("");
 			}
 		});
         pn_nhapthongtin.add(btdangky);
@@ -194,7 +194,6 @@ public class LoginUI extends JFrame {
 				    // Đăng nhập thành công
 					
 				    JOptionPane.showMessageDialog(null, "Đăng nhập thành công");
-				    
 				    jttenDangnhap.setText("");
 				    jpassword.setText("");
 				    String khs = null;
@@ -202,7 +201,6 @@ public class LoginUI extends JFrame {
 						khs = receiKH(username);
 						
 					} catch (IOException e1) {
-						// TODO Auto-generated catch block
 						e1.printStackTrace();
 					}
 				    Gson gs = new Gson();
@@ -295,34 +293,13 @@ public class LoginUI extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				cardtt.show(panel_3, "thông tin");
-				
+				tftendangnhap.setText("");
+				tfemail.setText("");
 			}
 		});
 		pn_NhapOTP.add(btnNewButton_1);
 		
-		btMinhDanh.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                String tendangnhap = tftendangnhap.getText();
-                String email = tfemail.getText();
-                if (tendangnhap == null || tendangnhap.isEmpty() || email == null || email.isEmpty()) {
-				    JOptionPane.showMessageDialog(null, "Vui lòng điền đầy đủ thông tin.", "Lỗi", JOptionPane.ERROR_MESSAGE);
-				    return;
-				}
-
-				if (!isValidEmail(email)) {
-				    JOptionPane.showMessageDialog(null, "Email không hợp lệ!\n"+" Email phải có định dạng @gmail.com.", "Lỗi", JOptionPane.ERROR_MESSAGE);
-				    return;
-				}
-
-				if (checkXacthuc(tendangnhap, email)) {
-				    mailxacthuc(email, "MAIL XÁC THỰC", "Xin chào bạn\n"+"Đây là mã dùng để đổi mật khẩu\n"+"TUYỆT ĐỐI KHÔNG CHIA SẺ MÃ NÀY VỚI AI!\n"+"Mã của bạn là:");
-				    cardtt.show(panel_3,"changepass");
-				} else {
-				    JOptionPane.showMessageDialog(null, "Thông tin Tên Đăng Nhập hoặc email không đúng.", "Lỗi", JOptionPane.ERROR_MESSAGE);
-				}
-            }
-        });
+		
 			
 		
 		
@@ -347,7 +324,7 @@ public class LoginUI extends JFrame {
 		
 		JPanel panel_5 = new JPanel();
 		panel_5.setBackground(new Color(255, 255, 255, 100));
-		panel_4.add(panel_5, "name_18580681152400");
+		panel_4.add(panel_5, "pn otp");
 		panel_5.setLayout(null);
 		
 		JLabel lblNewLabel_10 = new JLabel("Nhập mã OTP để đặt mật khẩu");
@@ -381,6 +358,7 @@ public class LoginUI extends JFrame {
 			     String otp= jtotp.getText();
 			     if(otp.equals(body) ) {
 			    	 cardchange.show(panel_4, "panelchangepass");
+			    	 jtotp.setText(null);
 			     }
 			}
 		});
@@ -480,6 +458,33 @@ public class LoginUI extends JFrame {
             }
         });
         
+        btMinhDanh.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+            	
+                String tendangnhap = tftendangnhap.getText();
+                String email = tfemail.getText();
+                if (tendangnhap == null || tendangnhap.isEmpty() || email == null || email.isEmpty()) {
+				    JOptionPane.showMessageDialog(null, "Vui lòng điền đầy đủ thông tin.", "Lỗi", JOptionPane.ERROR_MESSAGE);
+				    return;
+				}
+
+				if (!isValidEmail(email)) {
+				    JOptionPane.showMessageDialog(null, "Email không hợp lệ!\n"+" Email phải có định dạng @gmail.com.", "Lỗi", JOptionPane.ERROR_MESSAGE);
+				    return;
+				}
+
+				if (checkXacthuc(tendangnhap, email)) {
+				    mailxacthuc(email, "MAIL XÁC THỰC", "NOVA HOTEL XIN CHÀO BẠN\n"+"Đây là mã dùng để đổi mật khẩu\n"+"TUYỆT ĐỐI KHÔNG CHIA SẺ MÃ NÀY VỚI AI!\n"+"Mã của bạn là:");
+				    cardtt.show(panel_3,"changepass");
+				    cardchange.show(panel_4, "pn otp");
+				    
+				} else {
+				    JOptionPane.showMessageDialog(null, "Thông tin Tên Đăng Nhập hoặc email không đúng.", "Lỗi", JOptionPane.ERROR_MESSAGE);
+				}
+            }
+        });
+        
         jthoten = new JTextField();
         jthoten.setBounds(10, 89, 430, 30);
         jthoten.setFont(new Font("Tahoma", Font.PLAIN, 14));
@@ -563,7 +568,7 @@ public class LoginUI extends JFrame {
                 if(checktontai(username, cccd)==false) {
                 String email = jtemail.getText();
                 jtotpcreate.setEditable(true);
-                mailxacthuc(email, "Mã đăng ký", "Xin chào bạn.\n"+"Đây là mã kích hoạt tài khoản của bạn");				
+                mailxacthuc(email, "Mã đăng ký", "NOVA HOTEL XIN CHÀO BẠN.\n"+"Cảm ơn bạn đã chọn khách sạn của chúng tôi!\n"+"Đây là mã OTP dùng để đăng ký tài khoản của bạn:");				
                 }else {
                 	JOptionPane.showMessageDialog(null, "TÊN ĐĂNG NHẬP HOẶC CCCD ĐÃ TỒN TẠI");
                 }
@@ -580,6 +585,11 @@ public class LoginUI extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				cardtt.show(panel_3, "thông tin");
+				jthoten.setText(null);
+				jtcccd.setText(null);
+				jtemail.setText(null);
+				jtusername.setText(null);
+				jpcreatepass.setText(null);
 			}
 		});
         
@@ -603,8 +613,16 @@ public class LoginUI extends JFrame {
                 	if(check == true) {
                 		JOptionPane.showMessageDialog(null, "CHÚC MỪNG BẠN ĐÃ TẠO TÀI KHOẢN THÀNH CÔNG.");
                         cardtt.show(panel_3, "thông tin");
-                	} else 
+                        jthoten.setText(null);
+        				jtcccd.setText(null);
+        				jtemail.setText(null);
+        				jtusername.setText(null);
+        				jpcreatepass.setText(null);
+        				jtotpcreate.setText(null);
+        				jtotpcreate.setEditable(false);
+                	} else {
                 		JOptionPane.showMessageDialog(null, "ĐÃ CÓ LỖI Ở KHI ĐĂNG KÝ.");
+                	}
                 } else {
                     // OTP không đúng
                     JOptionPane.showMessageDialog(null, "Mã OTP không đúng, vui lòng kiểm tra lại.", "Lỗi", JOptionPane.ERROR_MESSAGE);
@@ -644,8 +662,8 @@ public class LoginUI extends JFrame {
 	public boolean checkDky(String hoten, String CCCD, String Sdth, String email, String mk, String Username) {
 		client.sendMessage("CHECKDKY#"+hoten+"#"+CCCD+"#"+Sdth+"#"+email+"#"+mk+"#"+Username);
 			String result = client.receiveMessage();
-			if(result.equals("1")) return false;
-			else return true;		
+			if(result.equals("1")) return true;
+			else return false;		
 	}
 	
 	
@@ -695,7 +713,6 @@ public class LoginUI extends JFrame {
 		String to = email;
 		String subject = tieude;
 		body = String.valueOf(taomaOTP()); // Convert int to String
-		client.sendMessage(noidung+"\n"+body);
 		Properties props = new Properties();
 		props.put("mail.smtp.host", host);
 		props.put("mail.smtp.auth", "true");
@@ -713,7 +730,7 @@ public class LoginUI extends JFrame {
 			message.setFrom(new InternetAddress(user));
 			message.addRecipient(Message.RecipientType.TO, new InternetAddress(to));
 			message.setSubject(subject);
-			message.setText(body);
+			message.setText(noidung+"\n"+body);
 
 			Transport.send(message);
 

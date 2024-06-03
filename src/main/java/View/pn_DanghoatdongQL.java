@@ -415,13 +415,14 @@ public class pn_DanghoatdongQL extends JPanel {
 				}
 	            
 	            double thuedb = (Math.abs(tongtien)*20)/100;
+	            thuedb = Math.abs(thuedb);
 	            int thue = (int) thuedb;
 	            bill.TThue.setText(phantichgia(thue));
 	            bill.TTongTien.setText(phantichgia(tongtien+thue+tienphong));
 				
-//				phong.setTrangThai(TrangThaiPhong.TRONG);
+
 				xoaform();
-//				view.cardhd.show(view.pn_hoatdong, "sơ đồ phòng");
+
 				
 			}
 		});

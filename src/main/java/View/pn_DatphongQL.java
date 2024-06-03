@@ -51,7 +51,7 @@ public class pn_DatphongQL extends JPanel {
 	private JButton btquaylai;
 	private JButton btxacnhan;
 	private JButton btchoxacnhan;
-	private JSpinner spinnerngaysinh;
+
 	public Color colordat = new Color(205, 180, 219);
 	public Color colorchoxacnhan = new Color(255, 200, 221);
 	SimpleDateFormat formatNgayGio = new SimpleDateFormat("dd:MM:yyyy HH:mm:ss");
@@ -61,7 +61,7 @@ public class pn_DatphongQL extends JPanel {
 	private JCheckBox cbGiatui;
 	private JCheckBox cbSPA;
 	private JCheckBox cbFitness;
-	private Calendar calendar;
+
 	
 
 	public pn_DatphongQL(Phong phong, pn_ChoxacnhanQL xacnhan, pn_DanghoatdongQL hoatdong, ManagerUI view) {
