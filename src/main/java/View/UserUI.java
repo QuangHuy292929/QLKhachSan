@@ -510,10 +510,10 @@ public class UserUI extends JFrame {
 		
 		JPanel panel_phong6 = new JPanel();
 		panel_phong6.setBorder(border);
-		panel_phong6.setBounds(10, 532, 200, 200);
+		panel_phong6.setBounds(252, 306, 200, 200);
 		pn_sodophong.add(panel_phong6);
 		panel_phong6.setLayout(null);
-		JLabel lblNewLabel_11 = new JLabel("P_301");
+		JLabel lblNewLabel_11 = new JLabel("P_202");
 		lblNewLabel_11.setBounds(10, 10, 70, 30);
 		lblNewLabel_11.setFont(font);
 		panel_phong6.add(lblNewLabel_11);
@@ -562,10 +562,10 @@ public class UserUI extends JFrame {
 
 		JPanel panel_phong7 = new JPanel();
 		panel_phong7.setBorder(border);
-		panel_phong7.setBounds(252, 532, 200, 200);
+		panel_phong7.setBounds(498, 306, 200, 200);
 		pn_sodophong.add(panel_phong7);
 		panel_phong7.setLayout(null);
-		JLabel lblNewLabel_12 = new JLabel("P_302");
+		JLabel lblNewLabel_12 = new JLabel("P_203");
 		lblNewLabel_12.setBounds(10, 10, 70, 30);
 		lblNewLabel_12.setFont(font);
 		panel_phong7.add(lblNewLabel_12);
@@ -614,10 +614,10 @@ public class UserUI extends JFrame {
 		
 		JPanel panel_phong8 = new JPanel();
 		panel_phong8.setBorder(border);
-		panel_phong8.setBounds(498, 532, 200, 200);
+		panel_phong8.setBounds(737, 306, 200, 200);
 		pn_sodophong.add(panel_phong8);
 		panel_phong8.setLayout(null);
-		JLabel lblNewLabel_13 = new JLabel("P_303");
+		JLabel lblNewLabel_13 = new JLabel("P_204");
 		lblNewLabel_13.setBounds(10, 10, 70, 30);
 		lblNewLabel_13.setFont(font);
 		panel_phong8.add(lblNewLabel_13);
@@ -667,10 +667,10 @@ public class UserUI extends JFrame {
 
 		JPanel panel_phong9 = new JPanel();
 		panel_phong9.setBorder(border);
-		panel_phong9.setBounds(737, 532, 200, 200);
+		panel_phong9.setBounds(10, 532, 200, 200);
 		pn_sodophong.add(panel_phong9);
 		panel_phong9.setLayout(null);
-		JLabel lblNewLabel_14 = new JLabel("P_304");
+		JLabel lblNewLabel_14 = new JLabel("P_301");
 		lblNewLabel_14.setBounds(10, 10, 70, 30);
 		lblNewLabel_14.setFont(font);
 		panel_phong9.add(lblNewLabel_14);
@@ -720,10 +720,10 @@ public class UserUI extends JFrame {
 
 		JPanel panel_phong10 = new JPanel();
 		panel_phong10.setBorder(border);
-		panel_phong10.setBounds(737, 306, 200, 200);
+		panel_phong10.setBounds(252, 532, 200, 200);
 		pn_sodophong.add(panel_phong10);
 		panel_phong10.setLayout(null);
-		JLabel lblNewLabel_10 = new JLabel("P_204");
+		JLabel lblNewLabel_10 = new JLabel("P_302");
 		lblNewLabel_10.setBounds(10, 10, 70, 30);
 		lblNewLabel_10.setFont(font);
 		panel_phong10.add(lblNewLabel_10);
@@ -770,12 +770,23 @@ public class UserUI extends JFrame {
 		});
 		
 		
+		
+		pn_Danghoatdong hoatdong303 = new pn_Danghoatdong(phong[10], this);
+		pn_Choxacnhan xacnhan303 = new pn_Choxacnhan(phong[10], hoatdong303,  this);
+		pn_Datphong datphong303 = new pn_Datphong(phong[10], xacnhan303, hoatdong303, this);
+		setdulieukh(datphong303, this);
+		
+		CardLayout cardP11 = new CardLayout();
+		pn_p303.setLayout(cardP11);
+		pn_p303.add(datphong303, "datohong303");
+		pn_p303.add(xacnhan303, "xacnhan303");
+		pn_p303.add(hoatdong303, "hoatdong303");
 		JPanel panel_phong11 = new JPanel();
-		panel_phong11.setBorder(border);
-		panel_phong11.setBounds(252, 306, 200, 200);
+		panel_phong11.setBounds(498, 532, 200, 200);
 		pn_sodophong.add(panel_phong11);
+		panel_phong11.setBorder(border);
 		panel_phong11.setLayout(null);
-		JLabel lblNewLabel_8 = new JLabel("P_202");
+		JLabel lblNewLabel_8 = new JLabel("P_303");
 		lblNewLabel_8.setBounds(10, 10, 70, 30);
 		lblNewLabel_8.setFont(font);
 		panel_phong11.add(lblNewLabel_8);
@@ -783,19 +794,7 @@ public class UserUI extends JFrame {
 		photo11.setIcon(new ImageIcon(UserUI.class.getResource("/FileAnh/website.png")));
 		photo11.setBounds(36, 50, 128, 128);
 		panel_phong11.add(photo11);
-		pn_Danghoatdong hoatdong303 = new pn_Danghoatdong(phong[10], this);
-		pn_Choxacnhan xacnhan303 = new pn_Choxacnhan(phong[10], hoatdong303,  this);
-		pn_Datphong datphong303 = new pn_Datphong(phong[10], xacnhan303, hoatdong303, this);
-		setdulieukh(datphong303, this);
-
-		CardLayout cardP11 = new CardLayout();
-		pn_p303.setLayout(cardP11);
-		pn_p303.add(datphong303, "datohong303");
-		pn_p303.add(xacnhan303, "xacnhan303");
-		pn_p303.add(hoatdong303, "hoatdong303");
 		PhongManager manager11 = new PhongManager(phong[10], panel_phong11, cardP11, datphong303, xacnhan303, hoatdong303, pn_p303);
-		manager11.start();
-		quanLyPhong.add(manager11);
 		panel_phong11.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
@@ -821,14 +820,16 @@ public class UserUI extends JFrame {
 				}
 			}
 		});
+		manager11.start();
+		quanLyPhong.add(manager11);
 		
 		
 		JPanel panel_phong12 = new JPanel();
 		panel_phong12.setBorder(border);
-		panel_phong12.setBounds(498, 306, 200, 200);
+		panel_phong12.setBounds(737, 532, 200, 200);
 		pn_sodophong.add(panel_phong12);
 		panel_phong12.setLayout(null);
-		JLabel lblNewLabel_9 = new JLabel("P_203");
+		JLabel lblNewLabel_9 = new JLabel("P_304");
 		lblNewLabel_9.setBounds(10, 10, 70, 30);
 		lblNewLabel_9.setFont(font);
 		panel_phong12.add(lblNewLabel_9);
@@ -856,6 +857,9 @@ public class UserUI extends JFrame {
 		lb_makhachhang.setFont(new Font("Monospaced", Font.BOLD | Font.ITALIC, 10));
 		lb_makhachhang.setBounds(796, 20, 151, 30);
 		pn_sodophong.add(lb_makhachhang);
+		
+		
+		
 		manager12.start();
 		quanLyPhong.add(manager12);
 		panel_phong12.addMouseListener(new MouseAdapter() {
@@ -950,7 +954,12 @@ public class UserUI extends JFrame {
     }
 	
 	public boolean checkmaDP(int data, Phong phong) {
-		client.sendMessage("CHECKDP#"+data+"#"+phong.getId());
+		try {
+			client.sendMessage("CHECKDP#"+data+"#"+phong.getId());
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		String result = client.receiveMessage();
 		if(result.equals("1")) return true;
 		else return false;
@@ -958,11 +967,21 @@ public class UserUI extends JFrame {
 	
 	public void Order(int maphong, int madv, int soluong) {
 		
-		client.sendMessage("ORDER#"+maphong+"#"+madv+"#"+soluong);
+		try {
+			client.sendMessage("ORDER#"+maphong+"#"+madv+"#"+soluong);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	
 	public int booking(String chuoithongtindp) {
-		client.sendMessage("BOOKING#"+chuoithongtindp);
+		try {
+			client.sendMessage("BOOKING#"+chuoithongtindp);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		String a = "";
 		try {
 			a = client.receiveMessage();
@@ -974,11 +993,21 @@ public class UserUI extends JFrame {
 	}
 	
 	public void xacnhan(int maphong, String tgian) {
-		client.sendMessage("XACNHANPHONG#"+maphong+"#"+tgian);
+		try {
+			client.sendMessage("XACNHANPHONG#"+maphong+"#"+tgian);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	
 	public void Cancel(String thongtin) {
-		client.sendMessage("CANCEL#"+thongtin);
+		try {
+			client.sendMessage("CANCEL#"+thongtin);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	
 	public void setdulieukh(pn_Datphong datphong ,UserUI view) {
@@ -989,7 +1018,12 @@ public class UserUI extends JFrame {
 	}
 	
 	public void dongbo() {
-		client.sendMessage("DONGBOHOA");
+		try {
+			client.sendMessage("DONGBOHOA");
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		String tt = client.receiveMessage();
 		xulydongbo(tt);
 	}
@@ -1008,7 +1042,7 @@ public class UserUI extends JFrame {
 					phong.hoatdong.xoaform();
 					phong.phong.setTrangThai(TrangThaiPhong.TRONG);
 					j++;
-				}
+				} else j++;
 			} else if(danhSachPhongNhan[j].getTrangthai() == TrangThaiPhong.CHO_XAC_NHAN) {
 				if(phong.phong.getTrangThai() == TrangThaiPhong.TRONG) {
 					if(phong.datphong.tfmaKhachHang.getText().equals(danhSachPhongNhan[j].getMakh())) {
@@ -1027,11 +1061,11 @@ public class UserUI extends JFrame {
 							});
 						}
 						j++;
-					} else {
+					}else {
 						phong.phong.setTrangThai(TrangThaiPhong.CHO_XAC_NHAN);
 						j++;
 					}
-				}
+				} else if(phong.phong.getTrangThai() == TrangThaiPhong.CHO_XAC_NHAN) j++;
 			} else {
 				if(phong.phong.getTrangThai() == TrangThaiPhong.TRONG) {
 					if (phong.datphong.tfmaKhachHang.getText().equals(danhSachPhongNhan[j].getMakh())) {
@@ -1065,7 +1099,6 @@ public class UserUI extends JFrame {
 						phong.phong.setTrangThai(TrangThaiPhong.DANG_HOAT_DONG);
 						j++;
 					}
-					
 				} else if(phong.phong.getTrangThai() == TrangThaiPhong.CHO_XAC_NHAN) {
 					if (phong.datphong.tfmaKhachHang.getText().equals(danhSachPhongNhan[j].getMakh())) {
 						phong.phong.setTrangThai(TrangThaiPhong.DANG_HOAT_DONG);
@@ -1098,8 +1131,8 @@ public class UserUI extends JFrame {
 					} else {
 						phong.phong.setTrangThai(TrangThaiPhong.DANG_HOAT_DONG);
 						j++;
-					}
-				}
+					} 
+				} else j++;
 			}
 		}
 	}

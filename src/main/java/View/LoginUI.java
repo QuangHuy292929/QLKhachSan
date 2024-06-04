@@ -653,14 +653,24 @@ public class LoginUI extends JFrame {
 
 	
 	public boolean CheckIn(String data){
-		client.sendMessage("CHECKIN#"+data);
+		try {
+			client.sendMessage("CHECKIN#"+data);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 			String result = client.receiveMessage();
 			if(result.equals("1")) return true;
 			else return false;
 	}
 	
 	public boolean checkDky(String hoten, String CCCD, String Sdth, String email, String mk, String Username) {
-		client.sendMessage("CHECKDKY#"+hoten+"#"+CCCD+"#"+Sdth+"#"+email+"#"+mk+"#"+Username);
+		try {
+			client.sendMessage("CHECKDKY#"+hoten+"#"+CCCD+"#"+Sdth+"#"+email+"#"+mk+"#"+Username);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 			String result = client.receiveMessage();
 			if(result.equals("1")) return true;
 			else return false;		
@@ -676,21 +686,36 @@ public class LoginUI extends JFrame {
 	
 	
 	public boolean ChangePass(String username, String newpass) {
-		client.sendMessage("CHANGEPASS"+"#"+username+"#"+newpass);
+		try {
+			client.sendMessage("CHANGEPASS"+"#"+username+"#"+newpass);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		String result = client.receiveMessage();
 		if(result.equals("1")) return false;
 		else return true;	
 	}
 	
 	public boolean checkXacthuc(String username, String email) {
-		client.sendMessage("CHECKXACTHUC"+"#"+username+"#"+email);
+		try {
+			client.sendMessage("CHECKXACTHUC"+"#"+username+"#"+email);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		String result = client.receiveMessage();
 		if(result.equals("1")) return true;
 		else return false;	
 	}
 	
 	public boolean checktontai(String username, String cccd) {
-		client.sendMessage("CHECKTONTAI"+"#"+username+"#"+cccd);
+		try {
+			client.sendMessage("CHECKTONTAI"+"#"+username+"#"+cccd);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		String result = client.receiveMessage();
 		if(result.equals("1")) return true;
 		else return false;	
@@ -742,7 +767,12 @@ public class LoginUI extends JFrame {
 	}
 	
 	public String receiKH(String username) throws IOException {
-		client.sendMessage("TRUYENDULIEU"+"#"+username);
+		try {
+			client.sendMessage("TRUYENDULIEU"+"#"+username);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		return client.receiveMessage();
 	}
 	

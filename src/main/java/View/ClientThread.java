@@ -14,6 +14,7 @@ import Model.ModelDVSau;
 import Model.ModelDVTruoc;
 import Model.Modelthongtinphong;
 import Model.Phong.TrangThaiPhong;
+import RSA.Giaimaserver;
 import controller.PhongManagerQL;
 
 
@@ -22,6 +23,7 @@ public class ClientThread extends Thread {
 	private BufferedReader in;
 	private PrintWriter out;
 	private ManagerUI QuanLy;
+	private static Giaimaserver gmserver;
 
 	public ClientThread(Socket socket, ManagerUI quanLy) {
 
@@ -36,12 +38,16 @@ public class ClientThread extends Thread {
 
 			String inputLine;
 			while ((inputLine = in.readLine()) != null) {
+				String giaima = gmserver.giaiMaDuLieu(inputLine);
 				// Xử lý yêu cầu từ client
-				handleClientData(inputLine);
+				handleClientData(giaima);
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
 		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} finally {

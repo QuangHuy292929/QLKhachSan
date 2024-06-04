@@ -469,10 +469,10 @@ public class ManagerUI extends JFrame {
 
 		JPanel panel_phong6 = new JPanel();
 		panel_phong6.setBorder(border);
-		panel_phong6.setBounds(10, 532, 200, 200);
+		panel_phong6.setBounds(252, 306, 200, 200);
 		pn_sodophong.add(panel_phong6);
 		panel_phong6.setLayout(null);
-		JLabel lblNewLabel_11 = new JLabel("P_301");
+		JLabel lblNewLabel_11 = new JLabel("P_202");
 		lblNewLabel_11.setBounds(10, 10, 70, 30);
 		lblNewLabel_11.setFont(font);
 		panel_phong6.add(lblNewLabel_11);
@@ -501,10 +501,10 @@ public class ManagerUI extends JFrame {
 
 		JPanel panel_phong7 = new JPanel();
 		panel_phong7.setBorder(border);
-		panel_phong7.setBounds(252, 532, 200, 200);
+		panel_phong7.setBounds(498, 306, 200, 200);
 		pn_sodophong.add(panel_phong7);
 		panel_phong7.setLayout(null);
-		JLabel lblNewLabel_12 = new JLabel("P_302");
+		JLabel lblNewLabel_12 = new JLabel("P_203");
 		lblNewLabel_12.setBounds(10, 10, 70, 30);
 		lblNewLabel_12.setFont(font);
 		panel_phong7.add(lblNewLabel_12);
@@ -534,10 +534,10 @@ public class ManagerUI extends JFrame {
 
 		JPanel panel_phong8 = new JPanel();
 		panel_phong8.setBorder(border);
-		panel_phong8.setBounds(498, 532, 200, 200);
+		panel_phong8.setBounds(737, 306, 200, 200);
 		pn_sodophong.add(panel_phong8);
 		panel_phong8.setLayout(null);
-		JLabel lblNewLabel_13 = new JLabel("P_303");
+		JLabel lblNewLabel_13 = new JLabel("P_204");
 		lblNewLabel_13.setBounds(10, 10, 70, 30);
 		lblNewLabel_13.setFont(font);
 		panel_phong8.add(lblNewLabel_13);
@@ -563,20 +563,6 @@ public class ManagerUI extends JFrame {
 				cardhd.show(pn_hoatdong, "phong 204");
 			}
 		});
-
-		JPanel panel_phong9 = new JPanel();
-		panel_phong9.setBorder(border);
-		panel_phong9.setBounds(737, 532, 200, 200);
-		pn_sodophong.add(panel_phong9);
-		panel_phong9.setLayout(null);
-		JLabel lblNewLabel_14 = new JLabel("P_304");
-		lblNewLabel_14.setBounds(10, 10, 70, 30);
-		lblNewLabel_14.setFont(font);
-		panel_phong9.add(lblNewLabel_14);
-		JLabel photo9 = new JLabel("");
-		photo9.setIcon(new ImageIcon(ManagerUI.class.getResource("/FileAnh/website.png")));
-		photo9.setBounds(36, 50, 128, 128);
-		panel_phong9.add(photo9);
 		pn_DanghoatdongQL hoatdong301 = new pn_DanghoatdongQL(phong[8], this);
 		pn_ChoxacnhanQL xacnhan301 = new pn_ChoxacnhanQL(phong[8], hoatdong301, this);
 		pn_DatphongQL datphong301 = new pn_DatphongQL(phong[8], xacnhan301, hoatdong301, this);
@@ -585,23 +571,36 @@ public class ManagerUI extends JFrame {
 		pn_p301.add(datphong301, "datohong301");
 		pn_p301.add(xacnhan301, "xacnhan301");
 		pn_p301.add(hoatdong301, "hoatdong301");
+		JPanel panel_phong9 = new JPanel();
+		panel_phong9.setBounds(10, 532, 200, 200);
+		pn_sodophong.add(panel_phong9);
+		panel_phong9.setBorder(border);
+		panel_phong9.setLayout(null);
+		JLabel lblNewLabel_14 = new JLabel("P_301");
+		lblNewLabel_14.setBounds(10, 10, 70, 30);
+		lblNewLabel_14.setFont(font);
+		panel_phong9.add(lblNewLabel_14);
+		JLabel photo9 = new JLabel("");
+		photo9.setIcon(new ImageIcon(ManagerUI.class.getResource("/FileAnh/website.png")));
+		photo9.setBounds(36, 50, 128, 128);
+		panel_phong9.add(photo9);
 		PhongManagerQL manager9 = new PhongManagerQL(phong[8], panel_phong9, cardP9, datphong301, xacnhan301,
 				hoatdong301, pn_p301);
-		manager9.start();
-		quanLyPhong.add(manager9);
 		panel_phong9.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				cardhd.show(pn_hoatdong, "phong 301");
 			}
 		});
+		manager9.start();
+		quanLyPhong.add(manager9);
 
 		JPanel panel_phong10 = new JPanel();
 		panel_phong10.setBorder(border);
-		panel_phong10.setBounds(737, 306, 200, 200);
+		panel_phong10.setBounds(252, 532, 200, 200);
 		pn_sodophong.add(panel_phong10);
 		panel_phong10.setLayout(null);
-		JLabel lblNewLabel_10 = new JLabel("P_204");
+		JLabel lblNewLabel_10 = new JLabel("P_302");
 		lblNewLabel_10.setBounds(10, 10, 70, 30);
 		lblNewLabel_10.setFont(font);
 		panel_phong10.add(lblNewLabel_10);
@@ -630,10 +629,10 @@ public class ManagerUI extends JFrame {
 
 		JPanel panel_phong11 = new JPanel();
 		panel_phong11.setBorder(border);
-		panel_phong11.setBounds(252, 306, 200, 200);
+		panel_phong11.setBounds(498, 532, 200, 200);
 		pn_sodophong.add(panel_phong11);
 		panel_phong11.setLayout(null);
-		JLabel lblNewLabel_8 = new JLabel("P_202");
+		JLabel lblNewLabel_8 = new JLabel("P_303");
 		lblNewLabel_8.setBounds(10, 10, 70, 30);
 		lblNewLabel_8.setFont(font);
 		panel_phong11.add(lblNewLabel_8);
@@ -662,10 +661,10 @@ public class ManagerUI extends JFrame {
 
 		JPanel panel_phong12 = new JPanel();
 		panel_phong12.setBorder(border);
-		panel_phong12.setBounds(498, 306, 200, 200);
+		panel_phong12.setBounds(737, 532, 200, 200);
 		pn_sodophong.add(panel_phong12);
 		panel_phong12.setLayout(null);
-		JLabel lblNewLabel_9 = new JLabel("P_203");
+		JLabel lblNewLabel_9 = new JLabel("P_304");
 		lblNewLabel_9.setBounds(10, 10, 70, 30);
 		lblNewLabel_9.setFont(font);
 		panel_phong12.add(lblNewLabel_9);
@@ -683,6 +682,8 @@ public class ManagerUI extends JFrame {
 		pn_p304.add(hoatdong304, "hoatdong304");
 		PhongManagerQL manager12 = new PhongManagerQL(phong[11], panel_phong12, cardP12, datphong304, xacnhan304,
 				hoatdong304, pn_p304);
+		
+				
 		manager12.start();
 		quanLyPhong.add(manager12);
 		panel_phong12.addMouseListener(new MouseAdapter() {

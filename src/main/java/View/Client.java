@@ -1,10 +1,12 @@
 package View;
 
-import java.io.BufferedReader;  
+import java.io.BufferedReader;   
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
+
+import RSA.Mahoaclient;
 
 public class Client {
     private static String serverAddress = "localhost";
@@ -12,6 +14,7 @@ public class Client {
     private Socket socket;
     private BufferedReader in;
     private PrintWriter out;
+    private static Mahoaclient mhclient;
 
     public Client() {
         try {
@@ -23,8 +26,14 @@ public class Client {
         }
     }
 
-    public void sendMessage(String message) {
-        out.println(message);
+    public void sendMessage(String message) throws Exception {
+    	try {
+			String mahoa = mhclient.maHoaDuLieu(message);
+			out.println(mahoa);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
     }
 
     public String receiveMessage() {
